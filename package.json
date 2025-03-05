@@ -1,0 +1,45 @@
+{
+  "name": "@betterstore/react",
+  "version": "0.0.2",
+  "description": "E-commerce for Developers",
+  "private": false,
+  "publishConfig": {
+    "access": "public"
+  },
+  "main": "dist/index.js",
+  "module": "dist/index.mjs",
+  "types": "dist/index.d.ts",
+  "scripts": {
+    "build": "rollup -c",
+    "lint": "tsc",
+    "format:check": "prettier --check --ignore-path .prettierignore .",
+    "format": "prettier --write --ignore-path .prettierignore .",
+    "ci": "pnpm run lint && pnpm run format:check && pnpm run build",
+    "release": "pnpm run ci && changeset publish"
+  },
+  "keywords": [
+    "betterstore",
+    "ecommerce",
+    "storefront",
+    "storefronts"
+  ],
+  "author": "Better Store",
+  "license": "MIT",
+  "devDependencies": {
+    "@changesets/cli": "^2.28.1",
+    "@rollup/plugin-babel": "^6.0.4",
+    "@rollup/plugin-commonjs": "^28.0.2",
+    "@rollup/plugin-node-resolve": "^16.0.0",
+    "@rollup/plugin-typescript": "^12.1.2",
+    "@types/react": "^19.0.10",
+    "babel-preset-react": "^6.24.1",
+    "prettier": "^3.5.3",
+    "rollup": "^4.34.9",
+    "tsup": "^8.4.0",
+    "typescript": "^5.8.2"
+  },
+  "peerDependencies": {
+    "react": "^19.0.0",
+    "react-dom": "^19.0.0"
+  }
+}
