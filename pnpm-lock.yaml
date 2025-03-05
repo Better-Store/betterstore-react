@@ -29,7 +29,7 @@ importers:
         version: 16.0.0(rollup@4.34.9)
       '@rollup/plugin-typescript':
         specifier: ^12.1.2
-        version: 12.1.2(rollup@4.34.9)(typescript@5.8.2)
+        version: 12.1.2(rollup@4.34.9)(tslib@2.8.1)(typescript@5.8.2)
       '@types/react':
         specifier: ^19.0.10
         version: 19.0.10
@@ -42,6 +42,9 @@ importers:
       rollup:
         specifier: ^4.34.9
         version: 4.34.9
+      tslib:
+        specifier: ^2.8.1
+        version: 2.8.1
       tsup:
         specifier: ^8.4.0
         version: 8.4.0(typescript@5.8.2)
@@ -1212,6 +1215,9 @@ packages:
   ts-interface-checker@0.1.13:
     resolution: {integrity: sha512-Y/arvbn+rrz3JCKl9C4kVNfTfSm2/mEp5FSz5EsZSANGPSlQrpRI5M4PKF+mJnE52jOO90PnPSc3Ur3bTQw0gA==}
 
+  tslib@2.8.1:
+    resolution: {integrity: sha512-oJFu94HQb+KVduSUQL7wnpmqnfmLsOA/nAh6b6EH0wCEoK0/mPeXU6c3wKDV83MkOuHPRHtSXKKU99IBazS/2w==}
+
   tsup@8.4.0:
     resolution: {integrity: sha512-b+eZbPCjz10fRryaAA7C8xlIHnf8VnsaRqydheLIqwG/Mcpfk8Z5zp3HayX7GaTygkigHl5cBUs+IhcySiIexQ==}
     engines: {node: '>=18'}
@@ -1683,13 +1689,14 @@ snapshots:
     optionalDependencies:
       rollup: 4.34.9
 
-  '@rollup/plugin-typescript@12.1.2(rollup@4.34.9)(typescript@5.8.2)':
+  '@rollup/plugin-typescript@12.1.2(rollup@4.34.9)(tslib@2.8.1)(typescript@5.8.2)':
     dependencies:
       '@rollup/pluginutils': 5.1.4(rollup@4.34.9)
       resolve: 1.22.10
       typescript: 5.8.2
     optionalDependencies:
       rollup: 4.34.9
+      tslib: 2.8.1
 
   '@rollup/pluginutils@5.1.4(rollup@4.34.9)':
     dependencies:
@@ -2387,6 +2394,8 @@ snapshots:
   tree-kill@1.2.2: {}
 
   ts-interface-checker@0.1.13: {}
+
+  tslib@2.8.1: {}
 
   tsup@8.4.0(typescript@5.8.2):
     dependencies:

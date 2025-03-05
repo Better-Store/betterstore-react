@@ -1,38 +1,29 @@
 # Better Store SDK
 
-🚀 **Better Store SDK** is a modern, developer-friendly eCommerce toolkit designed to help developers build flexible and powerful online stores with ease.
-
-## ✨ Features
-
-- 🛒 **Custom Checkout** – Build checkout flows that suit your business needs.
-- 💳 **Payments** – Integrate with Stripe, PayPal, and custom gateways.
-- 📦 **Product & Order Management** – API-driven store management.
-- 🎨 **Customizable UI** – Prebuilt components and themes.
-- 📡 **Webhooks & API Events** – Extend and automate eCommerce operations.
-- 🚀 **Optimized for DX** – Built with TypeScript and fully documented.
+🚀 **Better Store SDK** is a modern, developer-friendly sdk toolkit designed to help developers build flexible and powerful e-commerce stores with ease.
 
 ## 📦 Installation
 
 ```sh
-npm install better-store-sdk
+npm install @betterstore/sdk
 ```
 
 ## 🚀 Quick Start
 
 ```javascript
-import { BetterStore } from "better-store-sdk";
+import { BetterStore } from "@betterstore/sdk";
 
-const store = new BetterStore({ apiKey: "YOUR_API_KEY" });
+const betterStore = new BetterStore("YOUR_API_KEY");
 
-store.checkout.start({
-  cart: [{ id: "prod_1", name: "T-Shirt", price: 20 }],
-  currency: "USD",
+betterStore.checkout.create({
+  type: "hosted",
+  lineItems: [{ productId: "example_id", quantity: 1 }],
 });
 ```
 
 ## 📚 Documentation
 
-Full documentation is available at **[betterstore.dev](https://betterstore.dev)**.
+Full documentation is available at **[betterstore.io](https://betterstore.io)**.
 
 ## 🤝 Contributing
 

@@ -1,5 +1,11 @@
 # @betterstore/sdk
 
+## 0.0.3
+
+### Patch Changes
+
+- cicd debug, readme changed
+
 ## 0.0.2
 
 ### Patch Changes
