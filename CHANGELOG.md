@@ -1,5 +1,11 @@
 # @betterstore/sdk
 
+## 0.1.0
+
+### Minor Changes
+
+- payment element added
+
 ## 0.0.3
 
 ### Patch Changes
