@@ -1,5 +1,3 @@
-"use client";
-
 import { Elements } from "@stripe/react-stripe-js";
 import {
   loadStripe,
