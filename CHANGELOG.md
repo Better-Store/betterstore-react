@@ -1,5 +1,11 @@
 # @betterstore/sdk
 
+## 0.1.6
+
+### Patch Changes
+
+- deps fix
+
 ## 0.1.5
 
 ### Patch Changes
