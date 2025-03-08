@@ -1,8 +1,7 @@
-import React, { useState } from "react";
+import React, { useEffect, useState } from "react";
 import type {
   CheckoutFormData,
   CustomerFormData,
-  PaymentMethodFormData,
   ShippingMethodFormData,
 } from "./checkout-schema";
 import CustomerForm from "./customer/form";
@@ -23,6 +22,7 @@ export default function CheckoutForm({
   onComplete,
   cancelUrl,
 }: CheckoutFormProps) {
+  const [paymentSecret, setPaymentSecret] = useState<string | null>(null);
   const [step, setStep] = useState<CheckoutStep>("customer");
   const [formData, setFormData] = useLocalStorage<Partial<CheckoutFormData>>(
     `checkout-${checkoutId}`,
@@ -67,7 +67,7 @@ export default function CheckoutForm({
   };
 
   // Handle payment form submission
-  const handlePaymentSubmit = (data: PaymentMethodFormData) => {
+  const handlePaymentSubmit = (data: any) => {
     const completeFormData = {
       ...formData,
       payment: data,
@@ -88,6 +88,18 @@ export default function CheckoutForm({
     if (step === "shipping") setStep("customer");
     if (step === "payment") setStep("shipping");
   };
+
+  useEffect(() => {
+    const fetchPaymentSecret = async () => {
+      const response = await fetch(
+        `/api/betterstore/checkout/payment/${checkoutId}`
+      );
+      const data = await response.json();
+      setPaymentSecret(data);
+    };
+
+    fetchPaymentSecret();
+  }, []);
 
   return (
     <div className="space-y-6">
@@ -114,7 +126,7 @@ export default function CheckoutForm({
         formData.customer &&
         formData.shipping && (
           <PaymentForm
-            initialData={formData.payment}
+            paymentSecret={paymentSecret}
             onSubmit={handlePaymentSubmit}
             onBack={handleBack}
             contactEmail={formData.customer.email}

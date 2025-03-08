@@ -21,22 +21,12 @@ export const shippingMethodSchema = z.object({
   method: z.enum(["economy", "standard"]),
 });
 
-// Payment method schema
-export const paymentMethodSchema = z.object({
-  cardNumber: z.string().min(1, "Card number is required"),
-  expiryDate: z.string().min(1, "Expiry date is required"),
-  cvv: z.string().min(1, "CVV is required"),
-  nameOnCard: z.string().min(1, "Name is required"),
-});
-
 // Combined checkout schema
 export const checkoutSchema = z.object({
   customer: customerSchema,
   shipping: shippingMethodSchema,
-  payment: paymentMethodSchema,
 });
 
 export type CheckoutFormData = z.infer<typeof checkoutSchema>;
 export type CustomerFormData = z.infer<typeof customerSchema>;
 export type ShippingMethodFormData = z.infer<typeof shippingMethodSchema>;
-export type PaymentMethodFormData = z.infer<typeof paymentMethodSchema>;

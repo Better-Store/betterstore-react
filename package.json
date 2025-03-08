@@ -1,6 +1,6 @@
 {
   "name": "@betterstore/react",
-  "version": "0.2.6",
+  "version": "0.2.7",
   "description": "E-commerce for Developers",
   "private": false,
   "publishConfig": {
@@ -11,6 +11,7 @@
   "types": "dist/index.d.ts",
   "type": "module",
   "scripts": {
+    "prepublish": "changeset && changeset version && git add .",
     "build": "rollup -c",
     "lint": "tsc",
     "format:check": "prettier --check --ignore-path .prettierignore .",
