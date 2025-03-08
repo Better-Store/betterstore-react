@@ -59,7 +59,7 @@ export const useCart = create<Cart>()(
           const productId = typeof product === "string" ? product : product?.id;
           const formattedNewItem = {
             productId: productId,
-            ...(typeof product !== "string" && { ...product }),
+            product: typeof product !== "string" ? product : undefined,
             quantity: additionalParams?.quantity ?? 1,
             variantOptions: additionalParams?.variantOptions ?? [],
             metadata: additionalParams?.metadata,
