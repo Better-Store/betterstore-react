@@ -1,5 +1,11 @@
 # @betterstore/sdk
 
+## 0.2.2
+
+### Patch Changes
+
+- next.js route handler removed
+
 ## 0.2.1
 
 ### Patch Changes
