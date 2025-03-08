@@ -1,5 +1,11 @@
 # @betterstore/sdk
 
+## 0.2.4
+
+### Patch Changes
+
+- b90dd3c: tailwind debugging
+
 ## 0.2.3
 
 ### Patch Changes
