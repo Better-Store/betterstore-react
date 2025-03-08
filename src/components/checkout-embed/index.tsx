@@ -1,4 +1,5 @@
 import React, { memo, useEffect, useState } from "react";
+import CheckoutForm from "./checkout-form";
 import CheckoutSummary from "./summary";
 
 function CheckoutEmbed({ checkoutId }: { checkoutId: string }) {
@@ -24,24 +25,35 @@ function CheckoutEmbed({ checkoutId }: { checkoutId: string }) {
     fetchCheckout();
   }, [checkoutId]);
 
-  if (loading) {
-    return <div>Loading...</div>;
-  }
+  const handleComplete = (formData: any) => {
+    console.log("Checkout complete:", formData);
+    // Here you would typically send the completed form data to your API
+  };
 
-  if (!checkout) {
+  if (!checkout && !loading) {
     return <div>Checkout not found</div>;
   }
 
   return (
     <div className="grid md:grid-cols-2 gap-4">
-      <div>forms here</div>
       <div>
-        <CheckoutSummary
-          currency={checkout.currency}
-          lineItems={checkout.lineItems}
-          shipping={checkout?.shipping}
-          tax={checkout?.tax}
-        />
+        {loading ? (
+          <div className="text-white">Loading...</div>
+        ) : (
+          <CheckoutForm checkoutId={checkoutId} onComplete={handleComplete} />
+        )}
+      </div>
+      <div>
+        {loading ? (
+          <div>Loading...</div>
+        ) : (
+          <CheckoutSummary
+            currency={checkout.currency}
+            lineItems={checkout.lineItems}
+            shipping={checkout?.shipping}
+            tax={checkout?.tax}
+          />
+        )}
       </div>
     </div>
   );

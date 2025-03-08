@@ -1,9 +1,7 @@
 import commonjs from "@rollup/plugin-commonjs";
 import resolve from "@rollup/plugin-node-resolve";
 import typescript from "@rollup/plugin-typescript";
-import autoprefixer from "autoprefixer";
 import postcss from "rollup-plugin-postcss";
-import tailwindcss from "tailwindcss";
 
 export default {
   input: "src/index.ts",
@@ -22,20 +20,41 @@ export default {
     commonjs(),
     typescript(),
     postcss({
-      plugins: [tailwindcss(), autoprefixer()],
-      extract: "styles.css",
+      config: {
+        path: "./postcss.config.cjs",
+      },
       extract: false,
       modules: false,
       minimize: true,
       inject: true,
-      autoModules: false,
     }),
   ],
   external: [
+    "@radix-ui/react-radio-group",
+    "@radix-ui/react-label",
+    "@radix-ui/react-checkbox",
+    "@radix-ui/react-select",
+    "@radix-ui/react-roving-focus",
+    "@radix-ui/react-presence",
+    "@radix-ui/react-dismissable-layer",
+    "@radix-ui/react-focus-guards",
+    "@radix-ui/react-collection",
+    "@radix-ui/react-popper",
+    "@radix-ui/react-portal",
+    "@radix-ui/react-focus-scope",
+
     "react",
     "react-dom",
     "@stripe/react-stripe-js",
     "@stripe/stripe-js",
     "zustand",
+    "zod",
+    "tailwindcss-animate",
+    "class-variance-authority",
+    "clsx",
+    "tailwind-merge",
+    "lucide-react",
+    "react-hook-form",
+    "@hookform/resolvers",
   ],
 };

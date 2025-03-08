@@ -33,16 +33,12 @@ export default function CheckoutSummary({
         <div key={index} className="flex items-center mb-6">
           <div className="relative">
             <div className="w-16 h-16 bg-zinc-900 rounded-lg overflow-hidden relative">
-              {item.product?.images[0] ? (
+              {item.product?.images[0] && (
                 <img
                   src={item.product.images[0] || "/placeholder.svg"}
                   alt={item.product?.title || "Product image"}
                   className="object-cover"
                 />
-              ) : (
-                <div className="w-full h-full flex items-center justify-center bg-zinc-800">
-                  <span className="text-zinc-500">No image</span>
-                </div>
               )}
             </div>
             <div className="absolute -top-2 -right-2 w-6 h-6 bg-zinc-700 rounded-full flex items-center justify-center text-sm">
