@@ -1,5 +1,11 @@
 # @betterstore/sdk
 
+## 0.1.2
+
+### Patch Changes
+
+- architecture redone
+
 ## 0.1.1
 
 ### Patch Changes
