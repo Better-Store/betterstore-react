@@ -5,16 +5,18 @@ type NextjsRouteConfig = {
   allowedOrigins?: string[];
 };
 
+type BSClient = InstanceType<typeof BetterStore>;
+
 type BetterStoreRouteHandler = {
-  GET?: (req: NextRequest, betterStore: BetterStore) => Promise<Response>;
-  POST?: (req: NextRequest, betterStore: BetterStore) => Promise<Response>;
-  PUT?: (req: NextRequest, betterStore: BetterStore) => Promise<Response>;
-  DELETE?: (req: NextRequest, betterStore: BetterStore) => Promise<Response>;
+  GET?: (req: NextRequest, betterStore: BSClient) => Promise<Response>;
+  POST?: (req: NextRequest, betterStore: BSClient) => Promise<Response>;
+  PUT?: (req: NextRequest, betterStore: BSClient) => Promise<Response>;
+  DELETE?: (req: NextRequest, betterStore: BSClient) => Promise<Response>;
 };
 
 const defaultBetterStoreRoutes: Record<string, BetterStoreRouteHandler> = {
   checkout: {
-    GET: async (req: NextRequest, betterStore: BetterStore) => {
+    GET: async (req: NextRequest, betterStore: BSClient) => {
       const { searchParams } = new URL(req.url);
       const checkoutId = searchParams.get("checkoutId");
 
@@ -29,7 +31,7 @@ const defaultBetterStoreRoutes: Record<string, BetterStoreRouteHandler> = {
         return new Response("Failed to fetch checkout", { status: 500 });
       }
     },
-    POST: async (req: NextRequest, betterStore: BetterStore) => {
+    POST: async (req: NextRequest, betterStore: BSClient) => {
       try {
         const body = await req.json();
         const checkout = await betterStore.checkout.create(body);
@@ -38,7 +40,7 @@ const defaultBetterStoreRoutes: Record<string, BetterStoreRouteHandler> = {
         return new Response("Failed to create checkout", { status: 500 });
       }
     },
-    PUT: async (req: NextRequest, betterStore: BetterStore) => {
+    PUT: async (req: NextRequest, betterStore: BSClient) => {
       const { searchParams } = new URL(req.url);
       const checkoutId = searchParams.get("checkoutId");
 
@@ -56,7 +58,7 @@ const defaultBetterStoreRoutes: Record<string, BetterStoreRouteHandler> = {
     },
   },
   "checkout/shipping": {
-    GET: async (req: NextRequest, betterStore: BetterStore) => {
+    GET: async (req: NextRequest, betterStore: BSClient) => {
       const { searchParams } = new URL(req.url);
       const checkoutId = searchParams.get("checkoutId");
 
@@ -73,7 +75,7 @@ const defaultBetterStoreRoutes: Record<string, BetterStoreRouteHandler> = {
     },
   },
   "checkout/payment": {
-    POST: async (req: NextRequest, betterStore: BetterStore) => {
+    POST: async (req: NextRequest, betterStore: BSClient) => {
       const { searchParams } = new URL(req.url);
       const checkoutId = searchParams.get("checkoutId");
 
@@ -93,7 +95,7 @@ const defaultBetterStoreRoutes: Record<string, BetterStoreRouteHandler> = {
     },
   },
   customer: {
-    GET: async (req: NextRequest, betterStore: BetterStore) => {
+    GET: async (req: NextRequest, betterStore: BSClient) => {
       const { searchParams } = new URL(req.url);
       const idOrEmail = searchParams.get("idOrEmail");
 
@@ -110,7 +112,7 @@ const defaultBetterStoreRoutes: Record<string, BetterStoreRouteHandler> = {
         return new Response("Failed to fetch customer", { status: 500 });
       }
     },
-    POST: async (req: NextRequest, betterStore: BetterStore) => {
+    POST: async (req: NextRequest, betterStore: BSClient) => {
       try {
         const body = await req.json();
         const customer = await betterStore.customer.create(body);
@@ -119,7 +121,7 @@ const defaultBetterStoreRoutes: Record<string, BetterStoreRouteHandler> = {
         return new Response("Failed to create customer", { status: 500 });
       }
     },
-    PUT: async (req: NextRequest, betterStore: BetterStore) => {
+    PUT: async (req: NextRequest, betterStore: BSClient) => {
       const { searchParams } = new URL(req.url);
       const customerId = searchParams.get("customerId");
 
@@ -135,7 +137,7 @@ const defaultBetterStoreRoutes: Record<string, BetterStoreRouteHandler> = {
         return new Response("Failed to update customer", { status: 500 });
       }
     },
-    DELETE: async (req: NextRequest, betterStore: BetterStore) => {
+    DELETE: async (req: NextRequest, betterStore: BSClient) => {
       const { searchParams } = new URL(req.url);
       const customerId = searchParams.get("customerId");
 
@@ -152,7 +154,7 @@ const defaultBetterStoreRoutes: Record<string, BetterStoreRouteHandler> = {
     },
   },
   product: {
-    GET: async (req: NextRequest, betterStore: BetterStore) => {
+    GET: async (req: NextRequest, betterStore: BSClient) => {
       const { searchParams } = new URL(req.url);
       const productId = searchParams.get("productId");
 
@@ -172,7 +174,7 @@ const defaultBetterStoreRoutes: Record<string, BetterStoreRouteHandler> = {
 };
 
 export function createNextJSHandler(
-  betterStore: BetterStore,
+  betterStore: BSClient,
   config: NextjsRouteConfig = {}
 ) {
   const { allowedOrigins = [] } = config;

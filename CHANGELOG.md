@@ -1,5 +1,11 @@
 # @betterstore/sdk
 
+## 0.2.1
+
+### Patch Changes
+
+- types fix
+
 ## 0.2.0
 
 ### Minor Changes
