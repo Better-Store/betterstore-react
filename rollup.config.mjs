@@ -24,15 +24,16 @@ export default {
     postcss({
       plugins: [tailwindcss(), autoprefixer()],
       extract: "styles.css",
+      extract: false,
       modules: false,
       minimize: true,
-      inject: false,
+      inject: true,
+      autoModules: false,
     }),
   ],
   external: [
     "react",
     "react-dom",
-    "@betterstore/sdk",
     "@stripe/react-stripe-js",
     "@stripe/stripe-js",
     "zustand",
