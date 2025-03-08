@@ -18,7 +18,10 @@ type LineItemOptionalParams = {
 
 interface Cart {
   lineItems: LineItem[];
-  addItem: (productId: string, item: LineItemOptionalParams) => void;
+  addItem: (
+    productId: string,
+    additionalParams?: LineItemOptionalParams
+  ) => void;
   removeItem: (id: string) => void;
   updateQuantity: (id: string, quantity: number) => void;
   getProductQuantity: (productId: string) => number;
@@ -40,13 +43,13 @@ export const useCart = create<Cart>()(
     (set, get) => ({
       lineItems: [],
 
-      addItem: (productId, newItem) =>
+      addItem: (productId, additionalParams) =>
         set((state) => {
           const formattedNewItem = {
             productId: productId,
-            quantity: newItem.quantity ?? 1,
-            variantOptions: newItem.variantOptions ?? [],
-            metadata: newItem.metadata,
+            quantity: additionalParams?.quantity ?? 1,
+            variantOptions: additionalParams?.variantOptions ?? [],
+            metadata: additionalParams?.metadata,
           };
 
           const id = generateLineItemId(formattedNewItem);
