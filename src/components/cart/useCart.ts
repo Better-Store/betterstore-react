@@ -9,18 +9,23 @@ interface LineItem {
   metadata?: string;
 }
 
-type LineItemWithoutId = Omit<LineItem, "id">;
+type LineItemOptionalParams = {
+  quantity?: number;
+  productId: string;
+  variantOptions?: { name: string; value: string }[];
+  metadata?: string;
+};
 
 interface Cart {
   lineItems: LineItem[];
-  addItem: (item: LineItemWithoutId) => void;
+  addItem: (productId: string, item: LineItemOptionalParams) => void;
   removeItem: (id: string) => void;
   updateQuantity: (id: string, quantity: number) => void;
   getProductQuantity: (productId: string) => number;
   clearCart: () => void;
 }
 
-const generateLineItemId = (item: LineItemWithoutId): string => {
+const generateLineItemId = (item: LineItemOptionalParams): string => {
   return btoa(
     JSON.stringify({
       productId: item.productId,
@@ -35,9 +40,16 @@ export const useCart = create<Cart>()(
     (set, get) => ({
       lineItems: [],
 
-      addItem: (newItem) =>
+      addItem: (productId, newItem) =>
         set((state) => {
-          const id = generateLineItemId(newItem);
+          const formattedNewItem = {
+            productId: productId,
+            quantity: newItem.quantity ?? 1,
+            variantOptions: newItem.variantOptions ?? [],
+            metadata: newItem.metadata,
+          };
+
+          const id = generateLineItemId(formattedNewItem);
           const existingItemIndex = state.lineItems.findIndex(
             (item) => item.id === id
           );
@@ -47,13 +59,14 @@ export const useCart = create<Cart>()(
             updatedItems[existingItemIndex] = {
               ...updatedItems[existingItemIndex]!,
               quantity:
-                updatedItems[existingItemIndex]!.quantity + newItem.quantity,
+                updatedItems[existingItemIndex]!.quantity +
+                formattedNewItem.quantity,
             };
             return { lineItems: updatedItems };
           }
 
           return {
-            lineItems: [...state.lineItems, { ...newItem, id }],
+            lineItems: [...state.lineItems, { ...formattedNewItem, id }],
           };
         }),
 
