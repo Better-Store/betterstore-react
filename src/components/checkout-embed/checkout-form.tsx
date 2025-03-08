@@ -10,18 +10,20 @@ import PaymentForm from "./payment/form";
 import ShippingMethodForm from "./shipping/form";
 import { useLocalStorage } from "./useLocalStorage";
 
-type CheckoutStep = "contact" | "customer" | "shipping" | "payment";
+type CheckoutStep = "customer" | "shipping" | "payment";
 
 interface CheckoutFormProps {
   checkoutId: string;
   onComplete?: (data: CheckoutFormData) => void;
+  cancelUrl: string;
 }
 
 export default function CheckoutForm({
   checkoutId,
   onComplete,
+  cancelUrl,
 }: CheckoutFormProps) {
-  const [step, setStep] = useState<CheckoutStep>("contact");
+  const [step, setStep] = useState<CheckoutStep>("customer");
   const [formData, setFormData] = useLocalStorage<Partial<CheckoutFormData>>(
     `checkout-${checkoutId}`,
     {}
@@ -80,7 +82,9 @@ export default function CheckoutForm({
 
   // Navigate back to previous step
   const handleBack = () => {
-    if (step === "customer") setStep("customer");
+    if (step === "customer") {
+      window.location.replace(cancelUrl);
+    }
     if (step === "shipping") setStep("customer");
     if (step === "payment") setStep("shipping");
   };

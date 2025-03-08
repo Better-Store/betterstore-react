@@ -12,14 +12,14 @@ export function useLocalStorage<T>(
     try {
       // Get from local storage by key
       const item = window.localStorage.getItem(key);
-      // Parse stored json or if none return initialValue
-      setStoredValue(item ? JSON.parse(item) : initialValue);
+      // Only set the value if we found something in localStorage
+      if (item) {
+        setStoredValue(JSON.parse(item));
+      }
     } catch (error) {
-      // If error, just use the initialValue
       console.error(error);
-      setStoredValue(initialValue);
     }
-  }, [initialValue, key]);
+  }, []); // Only run on mount
 
   // Return a wrapped version of useState's setter function that
   // persists the new value to localStorage.
