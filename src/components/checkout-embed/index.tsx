@@ -1,21 +1,18 @@
-import BetterStore from "@betterstore/sdk";
 import React, { memo, useEffect, useState } from "react";
 import CheckoutSummary from "./summary";
 
-function CheckoutEmbed({
-  betterStore,
-  checkoutId,
-}: {
-  betterStore: InstanceType<typeof BetterStore>;
-  checkoutId: string;
-}) {
+function CheckoutEmbed({ checkoutId }: { checkoutId: string }) {
   const [checkout, setCheckout] = useState<any>(null);
   const [loading, setLoading] = useState(true);
 
   useEffect(() => {
     async function fetchCheckout() {
       try {
-        const data = await betterStore.checkout.retrieve(checkoutId);
+        const response = await fetch(
+          `/api/betterstore/checkout?checkoutId=${checkoutId}`
+        );
+        const data = await response.json();
+
         setCheckout(data);
       } catch (error) {
         console.error("Failed to fetch checkout:", error);
@@ -25,7 +22,7 @@ function CheckoutEmbed({
     }
 
     fetchCheckout();
-  }, [betterStore, checkoutId]);
+  }, [checkoutId]);
 
   if (loading) {
     return <div>Loading...</div>;
