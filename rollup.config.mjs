@@ -13,8 +13,8 @@ export default {
       format: "cjs",
     },
     {
-      file: "dist/index.esm.js",
-      format: "esm",
+      file: "dist/index.mjs",
+      format: "es",
     },
   ],
   plugins: [
@@ -26,5 +26,12 @@ export default {
       plugins: [tailwindcss("./tailwind.config.js"), autoprefixer()],
     }),
   ],
-  external: ["react", "react-dom"],
+  external: [
+    "react",
+    "react-dom",
+    "@betterstore/sdk",
+    "@stripe/react-stripe-js",
+    "@stripe/stripe-js",
+    "zustand",
+  ],
 };

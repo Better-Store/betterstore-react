@@ -1,5 +1,3 @@
-"use client";
-
 import BetterStore from "@betterstore/sdk";
 import React, { memo, useEffect, useState } from "react";
 import CheckoutSummary from "./summary";
