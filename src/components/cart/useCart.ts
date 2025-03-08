@@ -1,10 +1,21 @@
 import { create } from "zustand";
 import { persist } from "zustand/middleware";
 
+type Product =
+  | {
+      id: string;
+      title: string;
+      description?: string;
+      images: string[];
+      priceInCents: number;
+    }
+  | string;
+
 interface LineItem {
   id: string;
-  quantity: number;
   productId: string;
+  product?: Product;
+  quantity: number;
   variantOptions: { name: string; value: string }[];
   metadata?: string;
 }
@@ -19,7 +30,7 @@ type LineItemOptionalParams = {
 interface Cart {
   lineItems: LineItem[];
   addItem: (
-    productId: string,
+    product: Product,
     additionalParams?: LineItemOptionalParams
   ) => void;
   removeItem: (id: string) => void;
@@ -43,10 +54,12 @@ export const useCart = create<Cart>()(
     (set, get) => ({
       lineItems: [],
 
-      addItem: (productId, additionalParams) =>
+      addItem: (product, additionalParams) =>
         set((state) => {
+          const productId = typeof product === "string" ? product : product?.id;
           const formattedNewItem = {
             productId: productId,
+            ...(typeof product !== "string" && { ...product }),
             quantity: additionalParams?.quantity ?? 1,
             variantOptions: additionalParams?.variantOptions ?? [],
             metadata: additionalParams?.metadata,

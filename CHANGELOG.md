@@ -1,5 +1,11 @@
 # @betterstore/sdk
 
+## 0.1.8
+
+### Patch Changes
+
+- product data added to cart
+
 ## 0.1.7
 
 ### Patch Changes
