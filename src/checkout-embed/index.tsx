@@ -17,7 +17,7 @@ export default async function CheckoutEmbed({
 
   return (
     <div className="grid md:grid-cols-2 gap-4">
-      <div>forms here</div>
+      <div>forms heres</div>
       <div>
         <CheckoutSummary
           currency={checkout.currency}
