@@ -160,10 +160,10 @@ const defaultBetterStoreRoutes: Record<string, BetterStoreRouteHandler> = {
 
       try {
         if (productId) {
-          const product = await betterStore.product.retrieve(productId);
+          const product = await betterStore.products.retrieve(productId);
           return Response.json(product);
         } else {
-          const products = await betterStore.product.list();
+          const products = await betterStore.products.list();
           return Response.json(products);
         }
       } catch (error) {

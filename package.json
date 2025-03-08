@@ -27,7 +27,7 @@
   "author": "Better Store",
   "license": "MIT",
   "devDependencies": {
-    "@betterstore/sdk": "^0.2.0",
+    "@betterstore/sdk": "^0.2.1",
     "@changesets/cli": "^2.28.1",
     "@rollup/plugin-commonjs": "^28.0.2",
     "@rollup/plugin-node-resolve": "^16.0.0",
