@@ -25,7 +25,7 @@ export default {
       },
       extract: false,
       modules: false,
-      minimize: true,
+      minimize: false,
       inject: true,
     }),
   ],
@@ -45,6 +45,7 @@ export default {
 
     "react",
     "react-dom",
+    "react/jsx-runtime",
     "@stripe/react-stripe-js",
     "@stripe/stripe-js",
     "zustand",
