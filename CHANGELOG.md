@@ -1,5 +1,17 @@
 # @betterstore/sdk
 
+## 0.2.10
+
+### Patch Changes
+
+- prep commit
+
+## 0.2.9
+
+### Patch Changes
+
+- cicd test
+
 ## 0.2.8
 
 ### Patch Changes

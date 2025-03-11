@@ -1,3 +1,5 @@
 node_modules/
 dist
 .vscode
+vite.config.ts
+src/dev/

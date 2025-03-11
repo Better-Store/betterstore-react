@@ -1,17 +1,30 @@
+import BetterStore from "@betterstore/sdk";
 import React, { memo, useEffect, useState } from "react";
 import CheckoutForm from "./checkout-form";
 import { CheckoutFormData } from "./checkout-schema";
 import CheckoutSummary from "./summary";
 
+type BetterStoreClient = () => {
+  retrieveCheckout: InstanceType<typeof BetterStore>["checkout"]["retrieve"];
+  updateCheckout: InstanceType<typeof BetterStore>["checkout"]["update"];
+  getShippingRates: InstanceType<
+    typeof BetterStore
+  >["checkout"]["getShippingRates"];
+};
+
+interface CheckoutEmbedProps {
+  checkoutId: string;
+  cancelUrl: string;
+  successUrl: string;
+  client: BetterStoreClient;
+}
+
 function CheckoutEmbed({
   checkoutId,
   cancelUrl,
   successUrl,
-}: {
-  checkoutId: string;
-  cancelUrl: string;
-  successUrl: string;
-}) {
+  client,
+}: CheckoutEmbedProps) {
   const [checkout, setCheckout] = useState<any>(null);
   const [loading, setLoading] = useState(true);
 
@@ -20,14 +33,12 @@ function CheckoutEmbed({
 
     async function fetchCheckout() {
       try {
-        const response = await fetch(
-          `/api/betterstore/checkout?checkoutId=${checkoutId}`
-        );
-        const data = await response.json();
+        const checkout = await client().retrieveCheckout(checkoutId);
+        console.log("checkout", checkout);
 
         if (mounted) {
           // Only update state if component is still mounted
-          setCheckout(data);
+          setCheckout(checkout);
           setLoading(false);
         }
       } catch (error) {
