@@ -4,6 +4,10 @@ import { Button } from "@/components/ui/button";
 import { ChevronLeft } from "lucide-react";
 import React from "react";
 import { useTranslation } from "react-i18next";
+import {
+  AppearanceConfig,
+  convertCheckoutAppearanceToStripeAppearance,
+} from "../../appearance";
 
 interface PaymentFormProps {
   paymentSecret: string | null;
@@ -15,6 +19,7 @@ interface PaymentFormProps {
   shippingAddress: string;
   shippingProvider: string;
   shippingPrice: string;
+  checkoutAppearance?: AppearanceConfig;
 }
 
 export default function PaymentForm({
@@ -27,6 +32,7 @@ export default function PaymentForm({
   shippingAddress,
   shippingProvider,
   shippingPrice,
+  checkoutAppearance,
 }: PaymentFormProps) {
   const { t } = useTranslation();
 
@@ -78,14 +84,17 @@ export default function PaymentForm({
         </div>
       </div>
 
-      <div className="mt-4">
+      <div className="mt-8">
         {paymentSecret && (
           <PaymentElement
+            checkoutAppearance={convertCheckoutAppearanceToStripeAppearance(
+              checkoutAppearance
+            )}
             paymentSecret={paymentSecret}
             onSuccess={onSuccess}
             onError={onError}
           >
-            <div className="flex justify-between items-center pt-4">
+            <div className="flex justify-between items-center pt-8">
               <Button type="button" variant="ghost" onClick={onBack}>
                 <ChevronLeft />
                 {t("CheckoutEmbed.Payment.back")}

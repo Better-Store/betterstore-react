@@ -1,5 +1,11 @@
 # @betterstore/sdk
 
+## 0.2.14
+
+### Patch Changes
+
+- multi currency, stripe styling
+
 ## 0.2.13
 
 ### Patch Changes

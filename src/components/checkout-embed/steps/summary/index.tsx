@@ -9,11 +9,13 @@ export default function CheckoutSummary({
   tax,
   currency,
   cancelUrl,
+  exchangeRate,
 }: {
   lineItems: CheckoutSession["lineItems"];
   shipping?: number;
   tax?: number;
   currency: string;
+  exchangeRate: number;
   cancelUrl: string;
 }) {
   const { t } = useTranslation();
@@ -24,7 +26,7 @@ export default function CheckoutSummary({
   const total = subtotal + (tax ?? 0) + (shipping ?? 0);
 
   const formatPrice = (cents: number) => {
-    return `${(cents / 100).toFixed(2)} ${currency}`;
+    return `${((cents / 100) * exchangeRate).toFixed(2)} ${currency}`;
   };
 
   return (

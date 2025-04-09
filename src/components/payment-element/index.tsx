@@ -1,5 +1,6 @@
 import { Elements } from "@stripe/react-stripe-js";
 import {
+  Appearance,
   loadStripe,
   StripeElementLocale,
   StripeElementsOptions,
@@ -20,14 +21,14 @@ function PaymentElement({
   children,
 }: {
   paymentSecret: string;
-  checkoutAppearance?: Omit<StripeElementsOptions, "clientSecret" | "mode">;
+  checkoutAppearance?: Appearance;
   onSuccess?: () => void;
   onError?: () => void;
   children: React.ReactNode;
 }) {
   const options = {
     locale: "en" as StripeElementLocale,
-    ...(checkoutAppearance ? checkoutAppearance : {}),
+    appearance: checkoutAppearance,
     clientSecret: paymentSecret as string,
   } satisfies StripeElementsOptions;
 

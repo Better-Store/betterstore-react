@@ -81,6 +81,7 @@ function CheckoutEmbed({ checkoutId, config }: CheckoutEmbedProps) {
           <CheckoutFormLoading />
         ) : (
           <CheckoutForm
+            checkoutAppearance={appearance}
             currency={checkout?.currency ?? ""}
             customer={checkout?.customer}
             cancelUrl={cancelUrl}
@@ -101,6 +102,7 @@ function CheckoutEmbed({ checkoutId, config }: CheckoutEmbedProps) {
             shipping={checkout?.shipping}
             tax={checkout?.tax}
             cancelUrl={cancelUrl}
+            exchangeRate={checkout?.exchangeRate ?? 1}
           />
         )}
       </div>

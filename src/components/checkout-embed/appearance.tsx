@@ -1,3 +1,4 @@
+import { Appearance as StripeAppearance } from "@stripe/stripe-js";
 import { useEffect } from "react";
 
 export type Themes = "dark" | "light";
@@ -168,4 +169,72 @@ const getColorVariablesFromAppearanceConfig = (
   };
 
   return colors;
+};
+
+export const convertCheckoutAppearanceToStripeAppearance = (
+  appearance?: AppearanceConfig
+): StripeAppearance => {
+  const currentVariables = getVariablesFromAppearanceConfig(appearance);
+  const newAppearance: StripeAppearance = {
+    theme: "flat",
+    rules: {
+      ".Input": {
+        padding: "12px",
+        border: `1px solid ${currentVariables["--border"]}`,
+        backgroundColor: currentVariables["--background"],
+        fontSize: "14px",
+        outline: "none",
+      },
+      ".Input:focus": {
+        backgroundColor: currentVariables["--secondary"],
+      },
+      ".Input::placeholder": {
+        fontSize: "14px",
+        color: currentVariables["--muted-foreground"],
+      },
+      ".Label": {
+        marginBottom: "8px",
+        fontSize: "14px",
+        fontWeight: "500",
+      },
+      ".Input:disabled, .Input--invalid:disabled": {
+        cursor: "not-allowed",
+      },
+      // ".Block": {
+      //   backgroundColor: "#000000",
+      //   boxShadow: "none",
+      //   padding: "12px",
+      // },
+      ".Tab": {
+        padding: "10px 12px 8px 12px",
+        border: `1px solid ${currentVariables["--border"]}`,
+        backgroundColor: currentVariables["--background"],
+      },
+      ".Tab:hover": {
+        backgroundColor: currentVariables["--secondary"],
+      },
+      ".Tab--selected, .Tab--selected:focus, .Tab--selected:hover": {
+        border: `1px solid ${currentVariables["--border"]}`,
+        backgroundColor: currentVariables["--secondary"],
+        color: currentVariables["--foreground"],
+      },
+    },
+    variables: {
+      focusOutline: "none",
+      focusBoxShadow: "none",
+
+      fontFamily: currentVariables["--font-sans"],
+      borderRadius: currentVariables["--radius"],
+      // colorSuccess: currentVariables["--success"],
+      // colorWarning: currentVariables["--warning"],
+      colorDanger: currentVariables["--destructive"],
+      colorBackground: currentVariables["--background"],
+      colorPrimary: currentVariables["--primary"],
+      colorText: currentVariables["--foreground"],
+      colorTextSecondary: currentVariables["--secondary-foreground"],
+      colorTextPlaceholder: currentVariables["--muted-foreground"],
+    },
+  };
+
+  return newAppearance;
 };

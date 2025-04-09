@@ -2,6 +2,7 @@ import { storeClient } from "@/lib/betterstore";
 import { CheckoutSession, ShippingRate } from "@betterstore/sdk";
 import { AnimatePresence, motion, MotionProps } from "motion/react";
 import React, { useCallback, useEffect, useState } from "react";
+import { AppearanceConfig } from "./appearance";
 import {
   customerSchema,
   shippingMethodSchema,
@@ -14,7 +15,6 @@ import CustomerForm from "./steps/customer/form";
 import PaymentForm from "./steps/payment/form";
 import ShippingMethodForm from "./steps/shipping/form";
 import { useFormStore } from "./useFormStore";
-
 interface CheckoutFormProps {
   checkoutId: string;
   onSuccess: () => void;
@@ -23,6 +23,7 @@ interface CheckoutFormProps {
   clientSecret: string;
   customer?: CheckoutSession["customer"];
   currency: string;
+  checkoutAppearance?: AppearanceConfig;
 }
 
 const motionSettings = {
@@ -40,6 +41,7 @@ export default function CheckoutForm({
   clientSecret,
   customer,
   currency,
+  checkoutAppearance,
 }: CheckoutFormProps) {
   const { formData, setFormData, step, setStep } = useFormStore(checkoutId)();
   const [paymentSecret, setPaymentSecret] = useState<string | null>(null);
@@ -247,6 +249,7 @@ export default function CheckoutForm({
             className="absolute w-full"
           >
             <PaymentForm
+              checkoutAppearance={checkoutAppearance}
               paymentSecret={paymentSecret}
               onSuccess={onSuccess}
               onError={onError}
