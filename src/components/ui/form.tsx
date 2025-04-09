@@ -12,7 +12,9 @@ import {
 } from "react-hook-form";
 
 import { Label } from "@/components/ui/label";
+import { validateErrorMessageKey } from "@/lib/error-message-utils";
 import { cn } from "@/lib/utils";
+import { useTranslation } from "react-i18next";
 
 const Form = FormProvider;
 
@@ -137,10 +139,15 @@ function FormDescription({ className, ...props }: React.ComponentProps<"p">) {
 function FormMessage({ className, ...props }: React.ComponentProps<"p">) {
   const { error, formMessageId } = useFormField();
   const body = error ? String(error?.message ?? "") : props.children;
+  const { t } = useTranslation();
 
   if (!body) {
     return null;
   }
+
+  const key = validateErrorMessageKey(String(body));
+
+  const message = t(`Errors.${key}`);
 
   return (
     <p
@@ -149,7 +156,7 @@ function FormMessage({ className, ...props }: React.ComponentProps<"p">) {
       className={cn("text-destructive-foreground text-sm", className)}
       {...props}
     >
-      {body}
+      {message}
     </p>
   );
 }

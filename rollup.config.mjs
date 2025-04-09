@@ -57,5 +57,9 @@ export default {
     "lucide-react",
     "react-hook-form",
     "@hookform/resolvers",
+
+    "i18next",
+    "i18next-browser-languagedetector",
+    "react-i18next",
   ],
 };

@@ -3,3 +3,4 @@ dist
 .vscode
 vite.config.ts
 src/dev/
+.env

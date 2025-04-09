@@ -1,83 +1,183 @@
-import React, { useEffect, useState } from "react";
-import type {
-  CheckoutFormData,
-  CustomerFormData,
-  ShippingMethodFormData,
+import { storeClient } from "@/lib/betterstore";
+import { CheckoutSession, ShippingRate } from "@betterstore/sdk";
+import { AnimatePresence, motion, MotionProps } from "motion/react";
+import React, { useCallback, useEffect, useState } from "react";
+import {
+  customerSchema,
+  shippingMethodSchema,
+  type CheckoutFormData,
+  type CustomerFormData,
+  type ShippingMethodFormData,
 } from "./checkout-schema";
-import CustomerForm from "./customer/form";
-import PaymentForm from "./payment/form";
-import ShippingMethodForm from "./shipping/form";
-import { useLocalStorage } from "./useLocalStorage";
-
-type CheckoutStep = "customer" | "shipping" | "payment";
+import { formatAddress } from "./steps/customer/address-utils";
+import CustomerForm from "./steps/customer/form";
+import PaymentForm from "./steps/payment/form";
+import ShippingMethodForm from "./steps/shipping/form";
+import { useFormStore } from "./useFormStore";
 
 interface CheckoutFormProps {
   checkoutId: string;
-  onComplete?: (data: CheckoutFormData) => void;
+  onSuccess: () => void;
+  onError: () => void;
   cancelUrl: string;
+  clientSecret: string;
+  customer?: CheckoutSession["customer"];
+  currency: string;
 }
+
+const motionSettings = {
+  initial: { opacity: 0 },
+  animate: { opacity: 1 },
+  exit: { opacity: 0 },
+  transition: { duration: 0.2 },
+} satisfies MotionProps;
 
 export default function CheckoutForm({
   checkoutId,
-  onComplete,
+  onSuccess,
+  onError,
   cancelUrl,
+  clientSecret,
+  customer,
+  currency,
 }: CheckoutFormProps) {
+  const { formData, setFormData, step, setStep } = useFormStore(checkoutId)();
   const [paymentSecret, setPaymentSecret] = useState<string | null>(null);
-  const [step, setStep] = useState<CheckoutStep>("customer");
-  const [formData, setFormData] = useLocalStorage<Partial<CheckoutFormData>>(
-    `checkout-${checkoutId}`,
-    {}
-  );
+  const [shippingRates, setShippingRates] = useState<ShippingRate[]>([]);
 
-  // Helper function to format address for display
-  const formatAddress = (address: CustomerFormData): string => {
-    return `${address.address}, ${address.city} ${address.state} ${address.zipCode}, ${address.country}`;
-  };
+  const validateStep = useCallback(() => {
+    if (step === "customer") return;
 
-  // Format shipping method for display
-  const formatShippingMethod = (
-    method: string
-  ): { name: string; price: string } => {
-    switch (method) {
-      case "economy":
-        return { name: "Economy", price: "$4.90" };
-      case "standard":
-        return { name: "Standard", price: "$6.90" };
-      default:
-        return { name: "Economy", price: "$4.90" };
+    const isShippingValid =
+      formData.shipping &&
+      shippingMethodSchema.safeParse(formData.shipping).success;
+    const isCustomerValid =
+      formData.customer && customerSchema.safeParse(formData.customer).success;
+
+    if (step === "shipping" && !isCustomerValid) {
+      setStep("customer");
     }
-  };
+    if (step === "payment") {
+      if (!isShippingValid) setStep("shipping");
+      if (!isCustomerValid) setStep("customer");
+    }
+  }, [step, formData]);
+
+  useEffect(() => {
+    validateStep();
+  }, [step]);
+
+  useEffect(() => {
+    if (customer && !formData.customer?.email) {
+      setFormData({
+        ...formData,
+        customerId: customer.id,
+        customer: {
+          firstName: customer.address?.name?.split(" ")[0] ?? "",
+          lastName: customer.address?.name?.split(" ")[1] ?? "",
+          phone: customer.address?.phone ?? "",
+          email: customer.email ?? "",
+          address: {
+            line1: customer.address?.line1 ?? "",
+            line2: customer.address?.line2 ?? "",
+            city: customer.address?.city ?? "",
+            zipCode: customer.address?.zipCode ?? "",
+            country: customer.address?.country ?? "",
+          },
+        },
+      });
+    }
+  }, [customer]);
+
+  useEffect(() => {
+    if (step !== "shipping") return;
+    if (shippingRates.length > 0) return;
+
+    const getShippingRates = async () => {
+      const shippingRates = await storeClient.getCheckoutShippingRates(
+        clientSecret,
+        checkoutId
+      );
+      setShippingRates(shippingRates);
+    };
+
+    getShippingRates();
+  }, [step, shippingRates]);
 
   // Handle address form submission
-  const handleCustomerSubmit = (data: CustomerFormData) => {
+  const handleCustomerSubmit = async (data: CustomerFormData) => {
+    let newCustomerId = formData.customerId;
+
+    if (!newCustomerId) {
+      const newCustomer = await storeClient.createCustomer(clientSecret, {
+        email: data.email,
+        phone: data.phone,
+        firstName: data.firstName,
+        lastName: data.lastName,
+        address: {
+          ...data.address,
+          phone: data.phone,
+          name: data.firstName + " " + data.lastName,
+        },
+      });
+
+      await storeClient.updateCheckout(clientSecret, checkoutId, {
+        customerId: newCustomer.id,
+      });
+      newCustomerId = newCustomer.id;
+    } else {
+      await storeClient.updateCustomer(clientSecret, newCustomerId, {
+        email: data.email,
+        phone: data.phone,
+        firstName: data.firstName,
+        lastName: data.lastName,
+        address: {
+          ...data.address,
+          phone: data.phone,
+          name: data.firstName + " " + data.lastName,
+        },
+      });
+    }
+
+    const shippingRates = await storeClient.getCheckoutShippingRates(
+      clientSecret,
+      checkoutId
+    );
+
+    setShippingRates(shippingRates);
+
     setFormData({
       ...formData,
       customer: data,
+      customerId: newCustomerId,
     });
     setStep("shipping");
   };
 
   // Handle shipping method form submission
-  const handleShippingSubmit = (data: ShippingMethodFormData) => {
-    setFormData({
+  const handleShippingSubmit = async (data: ShippingMethodFormData) => {
+    const newFormData = {
       ...formData,
       shipping: data,
-    });
-    setStep("payment");
-  };
-
-  // Handle payment form submission
-  const handlePaymentSubmit = (data: any) => {
-    const completeFormData = {
-      ...formData,
-      payment: data,
     } as CheckoutFormData;
 
-    setFormData(completeFormData);
+    setFormData(newFormData);
 
-    if (onComplete) {
-      onComplete(completeFormData);
-    }
+    await storeClient.updateCheckout(clientSecret, checkoutId, {
+      shipping: data.amount * 100,
+      shippingInfo: {
+        rateId: data.rateId,
+        name: data.name,
+        provider: data.provider,
+      },
+    });
+    const paymentSecret = await storeClient.generateCheckoutsPaymentSecret(
+      clientSecret,
+      checkoutId
+    );
+    setPaymentSecret(paymentSecret);
+
+    setStep("payment");
   };
 
   // Navigate back to previous step
@@ -89,52 +189,79 @@ export default function CheckoutForm({
     if (step === "payment") setStep("shipping");
   };
 
+  const handleDoubleBack = () => {
+    setStep("customer");
+  };
+
   useEffect(() => {
-    const fetchPaymentSecret = async () => {
-      const response = await fetch(
-        `/api/betterstore/checkout/payment/${checkoutId}`
+    const asyncFunc = async () => {
+      const paymentSecret = await storeClient.generateCheckoutsPaymentSecret(
+        clientSecret,
+        checkoutId
       );
-      const data = await response.json();
-      setPaymentSecret(data);
+      setPaymentSecret(paymentSecret);
     };
 
-    fetchPaymentSecret();
-  }, []);
+    if (!paymentSecret && step === "payment") {
+      asyncFunc();
+    }
+  }, [paymentSecret]);
 
   return (
-    <div className="space-y-6">
-      {step === "customer" && (
-        <CustomerForm
-          initialData={formData.customer}
-          onSubmit={handleCustomerSubmit}
-          onBack={handleBack}
-        />
-      )}
-
-      {step === "shipping" && formData.customer && (
-        <ShippingMethodForm
-          initialData={formData.shipping}
-          onSubmit={handleShippingSubmit}
-          onBack={handleBack}
-          contactEmail={formData.customer.email}
-          shippingAddress={formatAddress(formData.customer)}
-        />
-      )}
-
-      {step === "payment" &&
-        formData.customer &&
-        formData.customer &&
-        formData.shipping && (
-          <PaymentForm
-            paymentSecret={paymentSecret}
-            onSubmit={handlePaymentSubmit}
-            onBack={handleBack}
-            contactEmail={formData.customer.email}
-            shippingAddress={formatAddress(formData.customer)}
-            shippingMethod={formatShippingMethod(formData.shipping.method).name}
-            shippingPrice={formatShippingMethod(formData.shipping.method).price}
-          />
+    <div className="relative min-h-full w-full">
+      <AnimatePresence mode="wait">
+        {step === "customer" && (
+          <motion.div
+            key="customer"
+            {...motionSettings}
+            className="absolute w-full"
+          >
+            <CustomerForm
+              initialData={formData.customer}
+              onSubmit={handleCustomerSubmit}
+            />
+          </motion.div>
         )}
+
+        {step === "shipping" && formData.customer && (
+          <motion.div
+            key="shipping"
+            {...motionSettings}
+            className="absolute w-full"
+          >
+            <ShippingMethodForm
+              shippingRates={shippingRates}
+              initialData={formData.shipping}
+              onSubmit={handleShippingSubmit}
+              onBack={handleBack}
+              contactEmail={formData.customer.email}
+              shippingAddress={formatAddress(formData.customer.address)}
+            />
+          </motion.div>
+        )}
+
+        {step === "payment" && formData.customer && formData.shipping && (
+          <motion.div
+            key="payment"
+            {...motionSettings}
+            className="absolute w-full"
+          >
+            <PaymentForm
+              paymentSecret={paymentSecret}
+              onSuccess={onSuccess}
+              onError={onError}
+              onBack={handleBack}
+              onDoubleBack={handleDoubleBack}
+              contactEmail={formData.customer.email}
+              shippingAddress={formatAddress(formData.customer.address)}
+              shippingProvider={formData.shipping.provider}
+              shippingPrice={
+                formData.shipping.amount.toString() + " " + currency
+              }
+            />
+          </motion.div>
+        )}
+      </AnimatePresence>
     </div>
   );
 }

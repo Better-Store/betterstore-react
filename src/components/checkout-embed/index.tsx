@@ -1,31 +1,28 @@
-import BetterStore from "@betterstore/sdk";
+import { default as createI18nInstance, Locale } from "@/i18n";
+import { storeClient } from "@/lib/betterstore";
+import { CheckoutSession } from "@betterstore/sdk";
 import React, { memo, useEffect, useState } from "react";
+import Appearance, { AppearanceConfig } from "./appearance";
 import CheckoutForm from "./checkout-form";
-import { CheckoutFormData } from "./checkout-schema";
-import CheckoutSummary from "./summary";
-
-type BetterStoreClient = () => {
-  retrieveCheckout: InstanceType<typeof BetterStore>["checkout"]["retrieve"];
-  updateCheckout: InstanceType<typeof BetterStore>["checkout"]["update"];
-  getShippingRates: InstanceType<
-    typeof BetterStore
-  >["checkout"]["getShippingRates"];
-};
+import CheckoutSummary from "./steps/summary";
 
 interface CheckoutEmbedProps {
   checkoutId: string;
-  cancelUrl: string;
-  successUrl: string;
-  client: BetterStoreClient;
+  config: {
+    clientSecret: string;
+    cancelUrl: string;
+    successUrl: string;
+    appearance?: AppearanceConfig;
+    locale?: Locale;
+  };
 }
 
-function CheckoutEmbed({
-  checkoutId,
-  cancelUrl,
-  successUrl,
-  client,
-}: CheckoutEmbedProps) {
-  const [checkout, setCheckout] = useState<any>(null);
+function CheckoutEmbed({ checkoutId, config }: CheckoutEmbedProps) {
+  const { cancelUrl, successUrl, appearance, locale, clientSecret } = config;
+
+  React.useMemo(() => createI18nInstance(locale), []);
+
+  const [checkout, setCheckout] = useState<CheckoutSession | null>(null);
   const [loading, setLoading] = useState(true);
 
   useEffect(() => {
@@ -33,12 +30,14 @@ function CheckoutEmbed({
 
     async function fetchCheckout() {
       try {
-        const checkout = await client().retrieveCheckout(checkoutId);
-        console.log("checkout", checkout);
+        const newCheckout = await storeClient.retrieveCheckout(
+          clientSecret,
+          checkoutId
+        );
 
         if (mounted) {
           // Only update state if component is still mounted
-          setCheckout(checkout);
+          setCheckout(newCheckout);
           setLoading(false);
         }
       } catch (error) {
@@ -56,38 +55,50 @@ function CheckoutEmbed({
     };
   }, [checkoutId]); // Only re-run if checkoutId changes
 
-  const handleComplete = (formData: CheckoutFormData) => {
-    console.log("Checkout complete:", formData);
-    console.log("Success URL:", successUrl);
-    // Here you would typically send the completed form data to your API
+  const onSuccess = () => {
+    if (successUrl) {
+      window.location.href = successUrl;
+    }
+  };
+
+  const onError = () => {
+    if (cancelUrl) {
+      window.location.href = cancelUrl;
+    }
   };
 
   if (!checkout && !loading) {
-    return <div>Checkout not found</div>;
+    throw new Error("Checkout not found");
   }
 
   return (
-    <div className="grid md:grid-cols-2 gap-4">
-      <div>
+    <div className="checkout-embed mx-auto max-w-[1200px] min-h-screen overflow-x-hidden py-8 md:py-12 grid md:grid-cols-7 ">
+      <Appearance appearance={appearance} />
+      <div className="md:col-span-4 px-4 md:px-8">
         {loading ? (
-          <div className="text-white">Loading...</div>
+          <div>Loading...</div>
         ) : (
           <CheckoutForm
+            currency={checkout?.currency ?? ""}
+            customer={checkout?.customer}
             cancelUrl={cancelUrl}
             checkoutId={checkoutId}
-            onComplete={handleComplete}
+            clientSecret={clientSecret}
+            onSuccess={onSuccess}
+            onError={onError}
           />
         )}
       </div>
-      <div>
+      <div className="md:col-span-3 px-4 md:px-8 order-first md:order-last">
         {loading ? (
           <div>Loading...</div>
         ) : (
           <CheckoutSummary
-            currency={checkout.currency}
-            lineItems={checkout.lineItems}
+            currency={checkout?.currency ?? ""}
+            lineItems={checkout?.lineItems ?? []}
             shipping={checkout?.shipping}
             tax={checkout?.tax}
+            cancelUrl={cancelUrl}
           />
         )}
       </div>

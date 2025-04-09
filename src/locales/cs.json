@@ -1,0 +1,52 @@
+{
+  "CheckoutEmbed": {
+    "CustomerForm": {
+      "address": {
+        "address": "Adresa",
+        "addressPlaceholder": "Zadejte svou adresu",
+        "button": "Uložit adresu",
+        "city": "Město",
+        "cityPlaceholder": "San Francisco",
+        "country": "Země",
+        "countryPlaceholder": "Vstoupit do své země",
+        "description": "Níže vyplňte údaje o vaší adrese.",
+        "line1": "Adresa ulice",
+        "line1Placeholder": "123 Hlavní ulice",
+        "line2": "Byt, apartmá, jednotka atd. (Volitelné)",
+        "line2Placeholder": "APT 4B, Suite 123, atd.",
+        "state": "Stát (volitelné)",
+        "statePlaceholder": "Kalifornie",
+        "title": "Zadejte svou adresu",
+        "zipCode": "PSČ",
+        "zipCodePlaceholder": "12345"
+      },
+      "button": "Uložit a pokračovat",
+      "email": "E-mail",
+      "emailPlaceholder": "Zadejte svůj e -mail",
+      "firstName": "Křestní jméno",
+      "firstNamePlaceholder": "Zadejte své křestní jméno",
+      "lastName": "Příjmení",
+      "lastNamePlaceholder": "Zadejte své příjmení",
+      "phone": "Telefon",
+      "phonePlaceholder": "Zadejte své telefonní číslo",
+      "title": "Údaje o doručení"
+    },
+    "Summary": {
+      "calculatedAtNextStep": "Vypočítáno v dalším kroku",
+      "edit": "Upravit",
+      "shipping": "Přeprava",
+      "subtotal": "Subtotál",
+      "tax": "Daň",
+      "title": "Shrnutí",
+      "total": "Celkový"
+    },
+    "loading": "Načítání ..."
+  },
+  "Errors": {
+    "invalid_email": "Zadejte platnou e -mailovou adresu",
+    "invalid_phone": "Zadejte platné telefonní číslo",
+    "invalid_zipCode": "Zadejte platný PSČ",
+    "required_error": "Toto pole je nutné",
+    "unknown_error": "Došlo k neznámé chybě"
+  }
+}
