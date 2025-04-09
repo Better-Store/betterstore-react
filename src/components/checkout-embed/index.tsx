@@ -4,7 +4,9 @@ import { CheckoutSession } from "@betterstore/sdk";
 import React, { memo, useEffect, useState } from "react";
 import Appearance, { AppearanceConfig } from "./appearance";
 import CheckoutForm from "./checkout-form";
+import CheckoutFormLoading from "./checkout-form-loading";
 import CheckoutSummary from "./steps/summary";
+import CheckoutSummaryLoading from "./steps/summary/loading";
 
 interface CheckoutEmbedProps {
   checkoutId: string;
@@ -76,7 +78,7 @@ function CheckoutEmbed({ checkoutId, config }: CheckoutEmbedProps) {
       <Appearance appearance={appearance} />
       <div className="md:col-span-4 px-4 md:px-8">
         {loading ? (
-          <div>Loading...</div>
+          <CheckoutFormLoading />
         ) : (
           <CheckoutForm
             currency={checkout?.currency ?? ""}
@@ -91,7 +93,7 @@ function CheckoutEmbed({ checkoutId, config }: CheckoutEmbedProps) {
       </div>
       <div className="md:col-span-3 px-4 md:px-8 order-first md:order-last">
         {loading ? (
-          <div>Loading...</div>
+          <CheckoutSummaryLoading />
         ) : (
           <CheckoutSummary
             currency={checkout?.currency ?? ""}

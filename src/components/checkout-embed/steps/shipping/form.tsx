@@ -1,6 +1,7 @@
 import SubmitButton from "@/components/compounds/form/submit-button";
 import { Button } from "@/components/ui/button";
 import { Form, FormMessage } from "@/components/ui/form";
+import { Skeleton } from "@/components/ui/skeleton";
 import { ShippingRate } from "@betterstore/sdk";
 import { zodResolver } from "@hookform/resolvers/zod";
 import clsx from "clsx";
@@ -76,6 +77,10 @@ export default function ShippingMethodForm({
 
       <Form {...form}>
         <form onSubmit={form.handleSubmit(onSubmit)} className="space-y-4">
+          {shippingRates.length === 0 &&
+            Array.from({ length: 3 }).map((_, index) => (
+              <ShippingRateLoading key={index} />
+            ))}
           {shippingRates.map((rate) => {
             const rateId = rate.objectId;
             const intPrice = Math.ceil(Number(rate.amount));
@@ -130,6 +135,22 @@ export default function ShippingMethodForm({
           </div>
         </form>
       </Form>
+    </div>
+  );
+}
+
+function ShippingRateLoading() {
+  return (
+    <div
+      className={clsx(
+        "p-4 cursor-pointer grid gap-[10px] rounded-md border bg-background"
+      )}
+    >
+      <div className="flex items-center justify-between w-full">
+        <Skeleton className="w-12 h-5" />
+        <Skeleton className="w-16 h-5" />
+      </div>
+      <Skeleton className="w-40 h-3.5" />
     </div>
   );
 }

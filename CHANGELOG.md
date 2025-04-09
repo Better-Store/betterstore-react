@@ -1,5 +1,11 @@
 # @betterstore/sdk
 
+## 0.2.12
+
+### Patch Changes
+
+- types fix, loading skeleton added
+
 ## 0.2.11
 
 ### Patch Changes
