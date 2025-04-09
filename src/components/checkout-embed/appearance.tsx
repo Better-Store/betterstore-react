@@ -1,5 +1,3 @@
-"use client";
-
 import { useEffect } from "react";
 
 export type Themes = "dark" | "light";

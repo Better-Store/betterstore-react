@@ -1,7 +1,23 @@
 import commonjs from "@rollup/plugin-commonjs";
+import json from "@rollup/plugin-json";
 import resolve from "@rollup/plugin-node-resolve";
 import typescript from "@rollup/plugin-typescript";
+import { dirname, resolve as pathResolve } from "path";
 import postcss from "rollup-plugin-postcss";
+import { fileURLToPath } from "url";
+
+const __dirname = dirname(fileURLToPath(import.meta.url));
+
+// Custom plugin to handle "use client" directives
+const removeUseClientDirective = {
+  name: "remove-use-client-directive",
+  transform(code) {
+    return {
+      code: code.replace(/^"use client";\n?/gm, ""),
+      map: null,
+    };
+  },
+};
 
 export default {
   input: "src/index.ts",
@@ -16,9 +32,19 @@ export default {
     },
   ],
   plugins: [
-    resolve(),
+    removeUseClientDirective,
+    resolve({
+      extensions: [".js", ".jsx", ".ts", ".tsx", ".json"],
+      alias: {
+        "@": pathResolve(__dirname, "src"),
+      },
+    }),
     commonjs(),
     typescript(),
+    json({
+      include: "**/*.json",
+      preferConst: true,
+    }),
     postcss({
       config: {
         path: "./postcss.config.cjs",
@@ -42,6 +68,11 @@ export default {
     "@radix-ui/react-popper",
     "@radix-ui/react-portal",
     "@radix-ui/react-focus-scope",
+    "@radix-ui/react-dialog",
+    "@radix-ui/react-dropdown-menu",
+    "@radix-ui/react-popover",
+    "@radix-ui/react-separator",
+    "@radix-ui/react-slot",
 
     "react",
     "react-dom",
@@ -57,6 +88,9 @@ export default {
     "lucide-react",
     "react-hook-form",
     "@hookform/resolvers",
+    "motion",
+    "country-data-list",
+    "cmdk",
 
     "i18next",
     "i18next-browser-languagedetector",
