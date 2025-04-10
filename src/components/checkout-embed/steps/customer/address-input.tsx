@@ -29,40 +29,43 @@ export default function AddressInput() {
   const { t } = useTranslation();
   const form = useFormContext();
   const [open, setOpen] = useState(false);
-
-  async function handleSave() {
-    const isValid = form.formState.isValid;
-
-    if (!isValid) {
-      form.trigger("address");
-      return;
-    }
-
-    const newAddress = form.getValues("address");
-    form.setValue("address", newAddress);
-    setOpen(false);
-  }
+  const [isValidating, setIsValidating] = useState(false);
 
   const currentValue = form.watch("address");
 
-  const validateAddress = useCallback(async () => {
-    const isAddressInvalid = form.getFieldState("address").invalid;
+  const handleSave = useCallback(async () => {
+    if (isValidating) return;
 
-    if (isAddressInvalid) {
-      form.setError("address", {
-        message: "invalid_address",
-        type: "custom",
-      });
-    } else {
-      form.clearErrors("address");
+    setIsValidating(true);
+    try {
+      const isValid = await form.trigger("address");
+
+      if (!isValid) {
+        return;
+      }
+
+      const newAddress = form.getValues("address");
+      form.setValue("address", newAddress, { shouldValidate: true });
+      setOpen(false);
+    } finally {
+      setIsValidating(false);
     }
-  }, [form]);
+  }, [form, isValidating]);
 
   useEffect(() => {
     if (open) {
-      validateAddress();
+      const isAddressInvalid = form.getFieldState("address").invalid;
+
+      if (isAddressInvalid) {
+        form.setError("address", {
+          message: "invalid_address",
+          type: "custom",
+        });
+      } else {
+        form.clearErrors("address");
+      }
     }
-  }, [form.formState.errors.address, open, validateAddress]);
+  }, [open, form]);
 
   return (
     <div className="w-full md:col-span-2">
@@ -79,7 +82,6 @@ export default function AddressInput() {
                   </FormLabel>
                   <FormControl>
                     <Input
-                      // {...props}
                       placeholder={t(
                         "CheckoutEmbed.CustomerForm.address.addressPlaceholder"
                       )}
@@ -175,7 +177,7 @@ export default function AddressInput() {
           </div>
 
           <DialogFooter>
-            <Button onClick={handleSave} type="button">
+            <Button onClick={handleSave} type="button" disabled={isValidating}>
               {t("CheckoutEmbed.CustomerForm.address.button")}
             </Button>
           </DialogFooter>
