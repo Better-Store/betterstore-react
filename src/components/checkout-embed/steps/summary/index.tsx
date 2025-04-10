@@ -31,7 +31,7 @@ export default function CheckoutSummary({
       <div className="flex justify-between items-center">
         <h2>{t("CheckoutEmbed.Summary.title")}</h2>
 
-        <Button variant="link" asChild>
+        <Button variant="link" size="link" asChild>
           <a href={cancelUrl}>{t("CheckoutEmbed.Summary.edit")}</a>
         </Button>
       </div>

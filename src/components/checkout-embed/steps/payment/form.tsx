@@ -55,7 +55,7 @@ export default function PaymentForm({
             </span>{" "}
             <span className="text-muted-foreground">{contactEmail}</span>
           </p>
-          <Button variant="link" onClick={onDoubleBack}>
+          <Button variant="link" size="link" onClick={onDoubleBack}>
             {t("CheckoutEmbed.Shipping.change")}
           </Button>
         </div>
@@ -67,7 +67,7 @@ export default function PaymentForm({
             </span>{" "}
             <span className="text-muted-foreground">{shippingAddress}</span>
           </p>
-          <Button variant="link" onClick={onDoubleBack}>
+          <Button variant="link" size="link" onClick={onDoubleBack}>
             {t("CheckoutEmbed.Shipping.change")}
           </Button>
         </div>
@@ -81,7 +81,7 @@ export default function PaymentForm({
               {shippingProvider} · {shippingPrice}
             </span>
           </p>
-          <Button variant="link" onClick={onBack}>
+          <Button variant="link" size="link" onClick={onBack}>
             {t("CheckoutEmbed.Shipping.change")}
           </Button>
         </div>

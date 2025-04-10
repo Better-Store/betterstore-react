@@ -57,7 +57,7 @@ export default function ShippingMethodForm({
             </span>{" "}
             <span className="text-muted-foreground">{contactEmail}</span>
           </p>
-          <Button variant="link" onClick={onBack}>
+          <Button variant="link" size="link" onClick={onBack}>
             {t("CheckoutEmbed.Shipping.change")}
           </Button>
         </div>
@@ -69,7 +69,7 @@ export default function ShippingMethodForm({
             </span>{" "}
             <span className="text-muted-foreground">{shippingAddress}</span>
           </p>
-          <Button variant="link" onClick={onBack}>
+          <Button variant="link" size="link" onClick={onBack}>
             {t("CheckoutEmbed.Shipping.change")}
           </Button>
         </div>
