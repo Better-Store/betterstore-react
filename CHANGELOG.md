@@ -1,5 +1,11 @@
 # @betterstore/sdk
 
+## 0.2.20
+
+### Patch Changes
+
+- adding important
+
 ## 0.2.19
 
 ### Patch Changes
