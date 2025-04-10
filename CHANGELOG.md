@@ -1,5 +1,11 @@
 # @betterstore/sdk
 
+## 0.2.26
+
+### Patch Changes
+
+- adding radix to external deps
+
 ## 0.2.25
 
 ### Patch Changes
