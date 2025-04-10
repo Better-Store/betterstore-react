@@ -45,7 +45,7 @@ export default function AddressInput() {
       }
 
       const newAddress = form.getValues("address");
-      form.setValue("address", newAddress, { shouldValidate: true });
+      form.setValue("address", newAddress, { shouldValidate: false });
       setOpen(false);
     } finally {
       setIsValidating(false);
@@ -53,17 +53,16 @@ export default function AddressInput() {
   }, [form, isValidating]);
 
   useEffect(() => {
-    if (open) {
-      const isAddressInvalid = form.getFieldState("address").invalid;
+    if (!open) return;
 
-      if (isAddressInvalid) {
-        form.setError("address", {
-          message: "invalid_address",
-          type: "custom",
-        });
-      } else {
-        form.clearErrors("address");
-      }
+    const isAddressInvalid = form.getFieldState("address").invalid;
+    if (isAddressInvalid) {
+      form.setError("address", {
+        message: "invalid_address",
+        type: "custom",
+      });
+    } else {
+      form.clearErrors("address");
     }
   }, [open, form]);
 
@@ -98,89 +97,95 @@ export default function AddressInput() {
             />
           </div>
         </DialogTrigger>
-        <DialogContent className="sm:max-w-[500px]">
-          <DialogHeader>
-            <DialogTitle>
-              {t("CheckoutEmbed.CustomerForm.address.title")}
-            </DialogTitle>
-            <DialogDescription>
-              {t("CheckoutEmbed.CustomerForm.address.description")}
-            </DialogDescription>
-          </DialogHeader>
+        <DialogContent className="sm:max-w-[500px] fixed top-[50%] left-[50%] translate-x-[-50%] translate-y-[-50%]">
+          <div className="relative">
+            <DialogHeader>
+              <DialogTitle>
+                {t("CheckoutEmbed.CustomerForm.address.title")}
+              </DialogTitle>
+              <DialogDescription>
+                {t("CheckoutEmbed.CustomerForm.address.description")}
+              </DialogDescription>
+            </DialogHeader>
 
-          <div className="grid grid-cols-2 gap-4">
-            <InputGroup
-              className="col-span-2"
-              name="address.line1"
-              label={t("CheckoutEmbed.CustomerForm.address.line1")}
-              placeholder={t(
-                "CheckoutEmbed.CustomerForm.address.line1Placeholder"
-              )}
-              autoComplete="address-line1"
-            />
-            <InputGroup
-              className="col-span-2"
-              name="address.line2"
-              label={t("CheckoutEmbed.CustomerForm.address.line2")}
-              placeholder={t(
-                "CheckoutEmbed.CustomerForm.address.line2Placeholder"
-              )}
-              autoComplete="address-line2"
-            />
+            <div className="grid grid-cols-2 gap-4">
+              <InputGroup
+                className="col-span-2"
+                name="address.line1"
+                label={t("CheckoutEmbed.CustomerForm.address.line1")}
+                placeholder={t(
+                  "CheckoutEmbed.CustomerForm.address.line1Placeholder"
+                )}
+                autoComplete="address-line1"
+              />
+              <InputGroup
+                className="col-span-2"
+                name="address.line2"
+                label={t("CheckoutEmbed.CustomerForm.address.line2")}
+                placeholder={t(
+                  "CheckoutEmbed.CustomerForm.address.line2Placeholder"
+                )}
+                autoComplete="address-line2"
+              />
 
-            <InputGroup
-              name="address.city"
-              label={t("CheckoutEmbed.CustomerForm.address.city")}
-              placeholder={t(
-                "CheckoutEmbed.CustomerForm.address.cityPlaceholder"
-              )}
-              autoComplete="address-level2"
-            />
-            <InputGroup
-              name="address.state"
-              label={t("CheckoutEmbed.CustomerForm.address.state")}
-              placeholder={t(
-                "CheckoutEmbed.CustomerForm.address.statePlaceholder"
-              )}
-              autoComplete="address-level1"
-            />
+              <InputGroup
+                name="address.city"
+                label={t("CheckoutEmbed.CustomerForm.address.city")}
+                placeholder={t(
+                  "CheckoutEmbed.CustomerForm.address.cityPlaceholder"
+                )}
+                autoComplete="address-level2"
+              />
+              <InputGroup
+                name="address.state"
+                label={t("CheckoutEmbed.CustomerForm.address.state")}
+                placeholder={t(
+                  "CheckoutEmbed.CustomerForm.address.statePlaceholder"
+                )}
+                autoComplete="address-level1"
+              />
 
-            <InputGroup
-              name="address.zipCode"
-              label={t("CheckoutEmbed.CustomerForm.address.zipCode")}
-              placeholder={t(
-                "CheckoutEmbed.CustomerForm.address.zipCodePlaceholder"
-              )}
-              autoComplete="postal-code"
-            />
-            <FormField
-              control={form.control}
-              name="address.country"
-              render={({ field }) => (
-                <FormItem>
-                  <FormLabel>
-                    {t("CheckoutEmbed.CustomerForm.address.country")}
-                  </FormLabel>
-                  <CountryDropdown
-                    placeholder={t(
-                      "CheckoutEmbed.CustomerForm.address.countryPlaceholder"
-                    )}
-                    defaultValue={field.value}
-                    onChange={(country) => {
-                      field.onChange(country.name);
-                    }}
-                  />
-                  <FormMessage />
-                </FormItem>
-              )}
-            />
+              <InputGroup
+                name="address.zipCode"
+                label={t("CheckoutEmbed.CustomerForm.address.zipCode")}
+                placeholder={t(
+                  "CheckoutEmbed.CustomerForm.address.zipCodePlaceholder"
+                )}
+                autoComplete="postal-code"
+              />
+              <FormField
+                control={form.control}
+                name="address.country"
+                render={({ field }) => (
+                  <FormItem>
+                    <FormLabel>
+                      {t("CheckoutEmbed.CustomerForm.address.country")}
+                    </FormLabel>
+                    <CountryDropdown
+                      placeholder={t(
+                        "CheckoutEmbed.CustomerForm.address.countryPlaceholder"
+                      )}
+                      defaultValue={field.value}
+                      onChange={(country) => {
+                        field.onChange(country.name);
+                      }}
+                    />
+                    <FormMessage />
+                  </FormItem>
+                )}
+              />
+            </div>
+
+            <DialogFooter>
+              <Button
+                onClick={handleSave}
+                type="button"
+                disabled={isValidating}
+              >
+                {t("CheckoutEmbed.CustomerForm.address.button")}
+              </Button>
+            </DialogFooter>
           </div>
-
-          <DialogFooter>
-            <Button onClick={handleSave} type="button" disabled={isValidating}>
-              {t("CheckoutEmbed.CustomerForm.address.button")}
-            </Button>
-          </DialogFooter>
         </DialogContent>
       </Dialog>
     </div>

@@ -93,6 +93,7 @@ export default {
     "react-hook-form",
     "@hookform/resolvers",
     "motion",
+    "@betterstore/sdk",
     // "country-data-list",
     // "cmdk",
 

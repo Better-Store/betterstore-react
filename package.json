@@ -1,6 +1,6 @@
 {
   "name": "@betterstore/react",
-  "version": "0.2.24",
+  "version": "0.2.25",
   "description": "E-commerce for Developers",
   "private": false,
   "publishConfig": {
@@ -11,7 +11,7 @@
   "types": "dist/index.d.ts",
   "type": "module",
   "scripts": {
-    "dev": "BETTERSTORE_DEV_PROXY=true vite",
+    "dev": "vite",
     "prep": "changeset && changeset version && git add .",
     "build": "rollup -c",
     "lint": "tsc",
@@ -29,7 +29,7 @@
   "author": "Better Store",
   "license": "MIT",
   "devDependencies": {
-    "@betterstore/sdk": "^0.3.22",
+    "@betterstore/sdk": "^0.3.23",
     "@changesets/cli": "^2.28.1",
     "@rollup/plugin-commonjs": "^28.0.3",
     "@rollup/plugin-json": "^6.1.0",
