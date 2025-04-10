@@ -1,5 +1,11 @@
 # @betterstore/sdk
 
+## 0.2.18
+
+### Patch Changes
+
+- rullup config changed, attempt to fix bugs
+
 ## 0.2.17
 
 ### Patch Changes
