@@ -56,11 +56,13 @@ export default function AddressInput() {
     } else {
       form.clearErrors("address");
     }
-  }, [form, open]);
+  }, [form]);
 
   useEffect(() => {
-    validateAddress();
-  }, [form.formState.errors.address, open]);
+    if (open) {
+      validateAddress();
+    }
+  }, [form.formState.errors.address, open, validateAddress]);
 
   return (
     <div className="w-full md:col-span-2">
