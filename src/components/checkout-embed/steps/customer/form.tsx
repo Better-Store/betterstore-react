@@ -1,3 +1,5 @@
+"use client";
+
 import InputGroup from "@/components/compounds/form/input-group";
 import SubmitButton from "@/components/compounds/form/submit-button";
 import { Form } from "@/components/ui/form";

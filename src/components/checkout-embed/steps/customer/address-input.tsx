@@ -1,3 +1,5 @@
+"use client";
+
 import { CountryDropdown } from "@/components/compounds/form/country-dropdown";
 import InputGroup from "@/components/compounds/form/input-group";
 import { Button } from "@/components/ui/button";

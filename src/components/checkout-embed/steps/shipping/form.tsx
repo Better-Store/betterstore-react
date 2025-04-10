@@ -1,3 +1,5 @@
+"use client";
+
 import SubmitButton from "@/components/compounds/form/submit-button";
 import { Button } from "@/components/ui/button";
 import { Form, FormMessage } from "@/components/ui/form";
