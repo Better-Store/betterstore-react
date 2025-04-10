@@ -53,7 +53,9 @@ export default function AddressInput() {
   }, [form, isValidating]);
 
   useEffect(() => {
-    if (!open) return;
+    if (open) return;
+
+    console.log("Validation Func Rerun");
 
     const isAddressInvalid = form.getFieldState("address").invalid;
     if (isAddressInvalid) {
@@ -64,7 +66,9 @@ export default function AddressInput() {
     } else {
       form.clearErrors("address");
     }
-  }, [open, form]);
+  }, [open]);
+
+  console.log("Address Input Rerendered");
 
   return (
     <div className="w-full md:col-span-2">
