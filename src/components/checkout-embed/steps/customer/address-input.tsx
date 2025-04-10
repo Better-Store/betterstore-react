@@ -41,6 +41,10 @@ export default function AddressInput() {
       const isValid = await form.trigger("address");
 
       if (!isValid) {
+        form.setError("address", {
+          message: "invalid_address",
+          type: "custom",
+        });
         return;
       }
 
@@ -55,8 +59,6 @@ export default function AddressInput() {
   useEffect(() => {
     if (open) return;
 
-    console.log("Validation Func Rerun");
-
     const isAddressInvalid = form.getFieldState("address").invalid;
     if (isAddressInvalid) {
       form.setError("address", {
@@ -67,8 +69,6 @@ export default function AddressInput() {
       form.clearErrors("address");
     }
   }, [open]);
-
-  console.log("Address Input Rerendered");
 
   return (
     <div className="w-full md:col-span-2">
@@ -101,7 +101,7 @@ export default function AddressInput() {
             />
           </div>
         </DialogTrigger>
-        <DialogContent className="sm:max-w-[500px] fixed top-[50%] left-[50%] translate-x-[-50%] translate-y-[-50%]">
+        <DialogContent className="sm:max-w-[500px] !fixed !inset-0 !m-auto !transform-none">
           <div className="relative">
             <DialogHeader>
               <DialogTitle>
