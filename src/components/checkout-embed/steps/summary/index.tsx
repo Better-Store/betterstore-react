@@ -1,7 +1,9 @@
 import { Button } from "@/components/ui/button";
 import { storeHelpers } from "@/lib/betterstore";
 import { CheckoutSession } from "@betterstore/sdk";
-import React from "react";
+import clsx from "clsx";
+import { ChevronDown } from "lucide-react";
+import React, { useState } from "react";
 import { useTranslation } from "react-i18next";
 
 export default function CheckoutSummary({
@@ -19,6 +21,7 @@ export default function CheckoutSummary({
   exchangeRate: number;
   cancelUrl: string;
 }) {
+  const [isOpen, setIsOpen] = useState(false);
   const { t } = useTranslation();
   const subtotal = lineItems.reduce((acc, item) => {
     return acc + (item.product?.priceInCents ?? 0) * item.quantity;
@@ -29,16 +32,34 @@ export default function CheckoutSummary({
   return (
     <div className="grid gap-5">
       <div className="flex justify-between items-center">
-        <h2>{t("CheckoutEmbed.Summary.title")}</h2>
+        <div
+          onClick={() => setIsOpen(!isOpen)}
+          className="flex items-center gap-2 cursor-pointer"
+        >
+          <h2>{t("CheckoutEmbed.Summary.title")}</h2>
+          <ChevronDown
+            className={clsx("size-5 transition-transform", {
+              "rotate-180": isOpen,
+            })}
+          />
+        </div>
 
-        <Button variant="link" size="link" asChild>
+        <p className="font-bold text-lg tracking-tight md:hidden">
+          {storeHelpers.formatPrice(total, currency, exchangeRate)}
+        </p>
+        <Button className="max-sm:hidden" variant="link" size="link" asChild>
           <a href={cancelUrl}>{t("CheckoutEmbed.Summary.edit")}</a>
         </Button>
       </div>
 
       <hr />
 
-      <div className="grid gap-3">
+      <div
+        className={clsx("gap-3 order-4 md:order-none", {
+          "hidden md:grid": !isOpen,
+          grid: isOpen,
+        })}
+      >
         <div className="flex justify-between">
           <p>{t("CheckoutEmbed.Summary.subtotal")}</p>
           <p>{storeHelpers.formatPrice(subtotal, currency, exchangeRate)}</p>
@@ -66,44 +87,56 @@ export default function CheckoutSummary({
         </div>
       </div>
 
-      <hr />
+      <hr
+        className={clsx("order-5 md:order-none", {
+          "hidden md:block": !isOpen,
+          block: isOpen,
+        })}
+      />
 
-      {lineItems.map((item, index) => (
-        <div key={index} className="flex items-center mb-6">
-          <div className="relative">
-            <div className="w-16 h-16 bg-secondary rounded-lg overflow-hidden relative">
-              {item.product?.images[0] && (
-                <img
-                  src={item.product.images[0] || "/placeholder.svg"}
-                  alt={item.product?.title || ""}
-                  className="object-cover w-full h-full"
-                  sizes="64px"
-                />
-              )}
+      <div
+        className={clsx("gap-5 order-3 md:order-none", {
+          "hidden md:grid": !isOpen,
+          grid: isOpen,
+        })}
+      >
+        {lineItems.map((item, index) => (
+          <div key={index} className="flex items-center">
+            <div className="relative">
+              <div className="w-16 h-16 bg-secondary rounded-lg overflow-hidden relative">
+                {item.product?.images[0] && (
+                  <img
+                    src={item.product.images[0] || "/placeholder.svg"}
+                    alt={item.product?.title || ""}
+                    className="object-cover w-full h-full"
+                    sizes="64px"
+                  />
+                )}
+              </div>
+              <div className="absolute -top-2 -right-2 w-6 h-6 bg-primary rounded-full flex items-center text-background justify-center text-sm">
+                {item.quantity}
+              </div>
             </div>
-            <div className="absolute -top-2 -right-2 w-6 h-6 bg-primary rounded-full flex items-center text-background justify-center text-sm">
-              {item.quantity}
+
+            <div className="ml-4 flex-1">
+              <h3 className="text-lg font-medium">{item.product?.title}</h3>
+              <p className="text-muted-foreground text-sm">
+                {item.variantOptions.map((option) => option.name).join(" / ")}
+              </p>
+            </div>
+
+            <div className="text-right">
+              <p className="text-lg font-medium">
+                {storeHelpers.formatPrice(
+                  item.product?.priceInCents ?? 0,
+                  currency,
+                  exchangeRate
+                )}
+              </p>
             </div>
           </div>
-
-          <div className="ml-4 flex-1">
-            <h3 className="text-lg font-medium">{item.product?.title}</h3>
-            <p className="text-muted-foreground text-sm">
-              {item.variantOptions.map((option) => option.name).join(" / ")}
-            </p>
-          </div>
-
-          <div className="text-right">
-            <p className="text-lg font-medium">
-              {storeHelpers.formatPrice(
-                item.product?.priceInCents ?? 0,
-                currency,
-                exchangeRate
-              )}
-            </p>
-          </div>
-        </div>
-      ))}
+        ))}
+      </div>
     </div>
   );
 }

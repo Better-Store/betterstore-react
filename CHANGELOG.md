@@ -1,5 +1,11 @@
 # @betterstore/sdk
 
+## 0.2.35
+
+### Patch Changes
+
+- mobile responsivity
+
 ## 0.2.34
 
 ### Patch Changes

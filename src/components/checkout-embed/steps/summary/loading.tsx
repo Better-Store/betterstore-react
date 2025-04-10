@@ -1,5 +1,6 @@
 import { Button } from "@/components/ui/button";
 import { Skeleton } from "@/components/ui/skeleton";
+import { ChevronDown } from "lucide-react";
 import React from "react";
 import { useTranslation } from "react-i18next";
 
@@ -9,16 +10,20 @@ export default function CheckoutSummaryLoading() {
   return (
     <div className="grid gap-5">
       <div className="flex justify-between items-center">
-        <h2>{t("CheckoutEmbed.Summary.title")}</h2>
+        <div className="flex items-center gap-2 cursor-pointer">
+          <h2>{t("CheckoutEmbed.Summary.title")}</h2>
+          <ChevronDown className="size-5 transition-transform" />
+        </div>
 
-        <Button variant="link" asChild>
+        <Skeleton className="w-20 h-[20px] md:hidden" />
+        <Button className="max-sm:hidden" variant="link" size="link" asChild>
           <a>{t("CheckoutEmbed.Summary.edit")}</a>
         </Button>
       </div>
 
       <hr />
 
-      <div className="grid gap-3">
+      <div className="hidden md:grid gap-3">
         <div className="flex justify-between">
           <p>{t("CheckoutEmbed.Summary.subtotal")}</p>
           <Skeleton className="w-20 h-[18px]" />
@@ -35,10 +40,10 @@ export default function CheckoutSummaryLoading() {
         </div>
       </div>
 
-      <hr />
+      <hr className="hidden md:block" />
 
       {Array.from({ length: 2 }).map((_, index) => (
-        <div key={index} className="flex items-center mb-6">
+        <div key={index} className="hidden md:flex items-center mb-6">
           <Skeleton className="rounded-lg size-16" />
 
           <div className="ml-4 grid gap-2 flex-1">
