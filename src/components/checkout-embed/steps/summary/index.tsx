@@ -1,4 +1,5 @@
 import { Button } from "@/components/ui/button";
+import { storeHelpers } from "@/lib/betterstore";
 import { CheckoutSession } from "@betterstore/sdk";
 import React from "react";
 import { useTranslation } from "react-i18next";
@@ -25,10 +26,6 @@ export default function CheckoutSummary({
 
   const total = subtotal + (tax ?? 0) + (shipping ?? 0);
 
-  const formatPrice = (cents: number) => {
-    return `${((cents / 100) * exchangeRate).toFixed(2)} ${currency}`;
-  };
-
   return (
     <div className="grid gap-5">
       <div className="flex justify-between items-center">
@@ -44,14 +41,14 @@ export default function CheckoutSummary({
       <div className="grid gap-3">
         <div className="flex justify-between">
           <p>{t("CheckoutEmbed.Summary.subtotal")}</p>
-          <p>{formatPrice(subtotal)}</p>
+          <p>{storeHelpers.formatPrice(subtotal, currency, exchangeRate)}</p>
         </div>
 
         <div className="flex justify-between">
           <p>{t("CheckoutEmbed.Summary.shipping")}</p>
           <p>
             {!!shipping
-              ? formatPrice(shipping)
+              ? storeHelpers.formatPrice(shipping, currency, exchangeRate)
               : t("CheckoutEmbed.Summary.calculatedAtNextStep")}
           </p>
         </div>
@@ -59,13 +56,13 @@ export default function CheckoutSummary({
         {!!tax && (
           <div className="flex justify-between">
             <p>{t("CheckoutEmbed.Summary.tax")}</p>
-            <p>{formatPrice(tax)}</p>
+            <p>{storeHelpers.formatPrice(tax, currency, exchangeRate)}</p>
           </div>
         )}
 
         <div className="flex font-bold justify-between  items-center">
           <p>{t("CheckoutEmbed.Summary.total")}</p>
-          <p>{formatPrice(total)}</p>
+          <p>{storeHelpers.formatPrice(total, currency, exchangeRate)}</p>
         </div>
       </div>
 
@@ -98,7 +95,11 @@ export default function CheckoutSummary({
 
           <div className="text-right">
             <p className="text-lg font-medium">
-              {formatPrice(item.product?.priceInCents ?? 0)}
+              {storeHelpers.formatPrice(
+                item.product?.priceInCents ?? 0,
+                currency,
+                exchangeRate
+              )}
             </p>
           </div>
         </div>

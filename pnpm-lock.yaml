@@ -109,8 +109,8 @@ importers:
         version: 5.0.3(@types/react@18.3.18)(react@18.3.1)
     devDependencies:
       '@betterstore/sdk':
-        specifier: ^0.3.16
-        version: 0.3.16
+        specifier: ^0.3.21
+        version: 0.3.21
       '@changesets/cli':
         specifier: ^2.28.1
         version: 2.28.1
@@ -278,8 +278,8 @@ packages:
     resolution: {integrity: sha512-Y3IR1cRnOxOCDvMmNiym7XpXQ93iGDDPHx+Zj+NM+rg0fBaShfQLkg+hKPaZCEvg5N/LeCo4+Rj/i3FuJsIQaw==}
     engines: {node: '>=6.9.0'}
 
-  '@betterstore/sdk@0.3.16':
-    resolution: {integrity: sha512-q7EDUAqaq3f6mPgQId2Q0aCJlVWgZpfaCa6GUiqhPIcNJIHD7r5vvWlE52isr/ei8MWPMHfWKuRQHEXnQ0mcXg==}
+  '@betterstore/sdk@0.3.21':
+    resolution: {integrity: sha512-oin6Ss3lEaDXw+4KSX6ylSjLWuUCxDAX3GWsj527Dzza07yGkzk4VSjhsAJwmSjQi5Z003F9uZBC97AE0dEcUA==}
 
   '@changesets/apply-release-plan@7.0.10':
     resolution: {integrity: sha512-wNyeIJ3yDsVspYvHnEz1xQDq18D9ifed3lI+wxRQRK4pArUcuHgCTrHv0QRnnwjhVCQACxZ+CBih3wgOct6UXw==}
@@ -4123,7 +4123,7 @@ snapshots:
       '@babel/helper-string-parser': 7.25.9
       '@babel/helper-validator-identifier': 7.25.9
 
-  '@betterstore/sdk@0.3.16':
+  '@betterstore/sdk@0.3.21':
     dependencies:
       axios: 1.8.2
       shippo: 2.15.0(zod@3.24.2)
