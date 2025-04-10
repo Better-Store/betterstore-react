@@ -1,7 +1,7 @@
 import SubmitButton from "@/components/compounds/form/submit-button";
 import PaymentElement from "@/components/payment-element";
 import { Button } from "@/components/ui/button";
-import { StripeElementsOptions } from "@stripe/stripe-js";
+import { StripeElementLocale, StripeElementsOptions } from "@stripe/stripe-js";
 import { ChevronLeft } from "lucide-react";
 import React from "react";
 import { useTranslation } from "react-i18next";
@@ -22,6 +22,7 @@ interface PaymentFormProps {
   shippingPrice: string;
   checkoutAppearance?: AppearanceConfig;
   fonts?: StripeElementsOptions["fonts"];
+  locale?: StripeElementLocale;
 }
 
 export default function PaymentForm({
@@ -36,6 +37,7 @@ export default function PaymentForm({
   shippingPrice,
   checkoutAppearance,
   fonts,
+  locale,
 }: PaymentFormProps) {
   const { t } = useTranslation();
 
@@ -95,6 +97,7 @@ export default function PaymentForm({
               checkoutAppearance,
               fonts
             )}
+            locale={locale}
             paymentSecret={paymentSecret}
             onSuccess={onSuccess}
             onError={onError}

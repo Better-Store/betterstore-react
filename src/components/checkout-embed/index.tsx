@@ -83,6 +83,11 @@ function CheckoutEmbed({ checkoutId, config }: CheckoutEmbedProps) {
     throw new Error("Checkout not found");
   }
 
+  const setShippingCost = (cost: number) => {
+    if (!checkout) return;
+    setCheckout({ ...checkout, shipping: cost });
+  };
+
   return (
     <div className="checkout-embed mx-auto max-w-[1200px] min-h-screen overflow-x-hidden py-8 md:py-12 grid md:grid-cols-7 ">
       <Appearance appearance={appearance} />
@@ -91,6 +96,8 @@ function CheckoutEmbed({ checkoutId, config }: CheckoutEmbedProps) {
           <CheckoutFormLoading />
         ) : (
           <CheckoutForm
+            locale={locale}
+            setShippingCost={setShippingCost}
             storeClient={storeClient}
             fonts={config.fonts}
             checkoutAppearance={appearance}

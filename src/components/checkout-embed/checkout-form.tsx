@@ -3,7 +3,7 @@ import {
   createStoreClient,
   ShippingRate,
 } from "@betterstore/sdk";
-import { StripeElementsOptions } from "@stripe/stripe-js";
+import { StripeElementLocale, StripeElementsOptions } from "@stripe/stripe-js";
 import { AnimatePresence, motion, MotionProps } from "motion/react";
 import React, { useCallback, useEffect, useState } from "react";
 import { AppearanceConfig } from "./appearance";
@@ -31,6 +31,8 @@ interface CheckoutFormProps {
   currency: string;
   checkoutAppearance?: AppearanceConfig;
   fonts?: StripeElementsOptions["fonts"];
+  locale?: StripeElementLocale;
+  setShippingCost: (cost: number) => void;
 }
 
 const motionSettings = {
@@ -51,6 +53,8 @@ export default function CheckoutForm({
   currency,
   checkoutAppearance,
   fonts,
+  locale,
+  setShippingCost,
 }: CheckoutFormProps) {
   const { formData, setFormData, step, setStep } = useFormStore(checkoutId)();
   const [paymentSecret, setPaymentSecret] = useState<string | null>(null);
@@ -187,6 +191,7 @@ export default function CheckoutForm({
       checkoutId
     );
     setPaymentSecret(paymentSecret);
+    setShippingCost(data.amount * 100);
 
     setStep("payment");
   };
@@ -258,6 +263,7 @@ export default function CheckoutForm({
             className="absolute w-full"
           >
             <PaymentForm
+              locale={locale}
               fonts={fonts}
               checkoutAppearance={checkoutAppearance}
               paymentSecret={paymentSecret}
