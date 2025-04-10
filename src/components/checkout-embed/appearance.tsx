@@ -45,10 +45,10 @@ const getVariablesFromAppearanceConfig = (appearance?: AppearanceConfig) => {
   const colors = getColorVariablesFromAppearanceConfig(appearance);
   const definedAppearance = {
     ...colors,
-    "--font-sans":
+    "--bs-font-sans":
       appearance?.font ??
       '-apple-system, BlinkMacSystemFont, "Helvetica", "Gill Sans", "Inter", sans-serif',
-    "--radius": appearance?.borderRadius
+    "--bs-radius": appearance?.borderRadius
       ? `${appearance.borderRadius}rem`
       : "0.625rem",
   };
@@ -91,81 +91,83 @@ const getColorVariablesFromAppearanceConfig = (
   };
 
   const colors = {
-    "--background": appearance?.colors?.background ?? fallbackColors.background,
-    "--foreground": appearance?.colors?.foreground ?? fallbackColors.foreground,
+    "--bs-background":
+      appearance?.colors?.background ?? fallbackColors.background,
+    "--bs-foreground":
+      appearance?.colors?.foreground ?? fallbackColors.foreground,
 
     // Card (reusing background/foreground)
-    "--card": appearance?.colors?.background ?? fallbackColors.card,
-    "--card-foreground":
+    "--bs-card": appearance?.colors?.background ?? fallbackColors.card,
+    "--bs-card-foreground":
       appearance?.colors?.foreground ?? fallbackColors.cardForeground,
 
     // Popover (reusing background/foreground)
-    "--popover": appearance?.colors?.background ?? fallbackColors.background,
-    "--popover-foreground":
+    "--bs-popover": appearance?.colors?.background ?? fallbackColors.background,
+    "--bs-popover-foreground":
       appearance?.colors?.foreground ?? fallbackColors.foreground,
 
     // Primary
-    "--primary": appearance?.colors?.primary ?? fallbackColors.primary,
-    "--primary-foreground":
+    "--bs-primary": appearance?.colors?.primary ?? fallbackColors.primary,
+    "--bs-primary-foreground":
       appearance?.colors?.primaryForeground ?? fallbackColors.primaryForeground,
 
     // Secondary
-    "--secondary": appearance?.colors?.secondary ?? fallbackColors.secondary,
-    "--secondary-foreground":
+    "--bs-secondary": appearance?.colors?.secondary ?? fallbackColors.secondary,
+    "--bs-secondary-foreground":
       appearance?.colors?.secondaryForeground ??
       fallbackColors.secondaryForeground,
 
     // Muted
-    "--muted": appearance?.colors?.muted ?? fallbackColors.muted,
-    "--muted-foreground":
+    "--bs-muted": appearance?.colors?.muted ?? fallbackColors.muted,
+    "--bs-muted-foreground":
       appearance?.colors?.mutedForeground ?? fallbackColors.mutedForeground,
 
     // Accent
-    "--accent": appearance?.colors?.accent ?? fallbackColors.accent,
-    "--accent-foreground":
+    "--bs-accent": appearance?.colors?.accent ?? fallbackColors.accent,
+    "--bs-accent-foreground":
       appearance?.colors?.accentForeground ?? fallbackColors.accentForeground,
 
     // Destructive
-    "--destructive":
+    "--bs-destructive":
       appearance?.colors?.destructive ?? fallbackColors.destructive,
-    "--destructive-foreground": fallbackColors.destructiveForeground,
+    "--bs-destructive-foreground": fallbackColors.destructiveForeground,
 
     // Border and Input
-    "--border": appearance?.colors?.border ?? fallbackColors.border,
-    "--input": appearance?.colors?.border ?? fallbackColors.border,
-    "--ring": appearance?.colors?.ring ?? fallbackColors.ring,
+    "--bs-border": appearance?.colors?.border ?? fallbackColors.border,
+    "--bs-input": appearance?.colors?.border ?? fallbackColors.border,
+    "--bs-ring": appearance?.colors?.ring ?? fallbackColors.ring,
 
     // Chart colors (keeping original values)
-    "--chart-1": isDark
+    "--bs-chart-1": isDark
       ? "oklch(0.488 0.243 264.376)"
       : "oklch(0.646 0.222 41.116)",
-    "--chart-2": isDark
+    "--bs-chart-2": isDark
       ? "oklch(0.696 0.17 162.48)"
       : "oklch(0.6 0.118 184.704)",
-    "--chart-3": isDark
+    "--bs-chart-3": isDark
       ? "oklch(0.769 0.188 70.08)"
       : "oklch(0.398 0.07 227.392)",
-    "--chart-4": isDark
+    "--bs-chart-4": isDark
       ? "oklch(0.627 0.265 303.9)"
       : "oklch(0.828 0.189 84.429)",
-    "--chart-5": isDark
+    "--bs-chart-5": isDark
       ? "oklch(0.645 0.246 16.439)"
       : "oklch(0.769 0.188 70.08)",
 
     // Sidebar
-    "--sidebar": appearance?.colors?.background ?? fallbackColors.sidebar,
-    "--sidebar-foreground":
+    "--bs-sidebar": appearance?.colors?.background ?? fallbackColors.sidebar,
+    "--bs-sidebar-foreground":
       appearance?.colors?.foreground ?? fallbackColors.sidebarForeground,
-    "--sidebar-primary":
+    "--bs-sidebar-primary":
       appearance?.colors?.primary ?? fallbackColors.sidebarPrimary,
-    "--sidebar-primary-foreground":
+    "--bs-sidebar-primary-foreground":
       appearance?.colors?.primaryForeground ??
       fallbackColors.sidebarPrimaryForeground,
-    "--sidebar-accent": appearance?.colors?.accent ?? fallbackColors.accent,
-    "--sidebar-accent-foreground":
+    "--bs-sidebar-accent": appearance?.colors?.accent ?? fallbackColors.accent,
+    "--bs-sidebar-accent-foreground":
       appearance?.colors?.accentForeground ?? fallbackColors.accentForeground,
-    "--sidebar-border": appearance?.colors?.border ?? fallbackColors.border,
-    "--sidebar-ring": appearance?.colors?.ring ?? fallbackColors.ring,
+    "--bs-sidebar-border": appearance?.colors?.border ?? fallbackColors.border,
+    "--bs-sidebar-ring": appearance?.colors?.ring ?? fallbackColors.ring,
   };
 
   return colors;
@@ -180,24 +182,24 @@ export const convertCheckoutAppearanceToStripeAppearance = (
     rules: {
       ".Input": {
         padding: "12px",
-        border: `1px solid ${currentVariables["--border"]}`,
-        backgroundColor: currentVariables["--background"],
+        border: `1px solid ${currentVariables["--bs-border"]}`,
+        backgroundColor: currentVariables["--bs-background"],
         fontSize: "14px",
         outline: "none",
       },
       ".Input:focus": {
-        backgroundColor: currentVariables["--secondary"],
+        backgroundColor: currentVariables["--bs-secondary"],
       },
       ".Input::placeholder": {
         fontSize: "14px",
-        color: currentVariables["--muted-foreground"],
+        color: currentVariables["--bs-muted-foreground"],
       },
       ".Label": {
         marginBottom: "8px",
         fontSize: "14px",
         fontWeight: "500",
       },
-      ".Input:disabled, .Input--invalid:disabled": {
+      ".Input:disabled, .Input--bs-invalid:disabled": {
         cursor: "not-allowed",
       },
       // ".Block": {
@@ -207,32 +209,32 @@ export const convertCheckoutAppearanceToStripeAppearance = (
       // },
       ".Tab": {
         padding: "10px 12px 8px 12px",
-        border: `1px solid ${currentVariables["--border"]}`,
-        backgroundColor: currentVariables["--background"],
+        border: `1px solid ${currentVariables["--bs-border"]}`,
+        backgroundColor: currentVariables["--bs-background"],
       },
       ".Tab:hover": {
-        backgroundColor: currentVariables["--secondary"],
+        backgroundColor: currentVariables["--bs-secondary"],
       },
-      ".Tab--selected, .Tab--selected:focus, .Tab--selected:hover": {
-        border: `1px solid ${currentVariables["--border"]}`,
-        backgroundColor: currentVariables["--secondary"],
-        color: currentVariables["--foreground"],
+      ".Tab--bs-selected, .Tab--bs-selected:focus, .Tab--bs-selected:hover": {
+        border: `1px solid ${currentVariables["--bs-border"]}`,
+        backgroundColor: currentVariables["--bs-secondary"],
+        color: currentVariables["--bs-foreground"],
       },
     },
     variables: {
       focusOutline: "none",
       focusBoxShadow: "none",
 
-      fontFamily: currentVariables["--font-sans"],
-      borderRadius: currentVariables["--radius"],
-      // colorSuccess: currentVariables["--success"],
-      // colorWarning: currentVariables["--warning"],
-      colorDanger: currentVariables["--destructive"],
-      colorBackground: currentVariables["--background"],
-      colorPrimary: currentVariables["--primary"],
-      colorText: currentVariables["--foreground"],
-      colorTextSecondary: currentVariables["--secondary-foreground"],
-      colorTextPlaceholder: currentVariables["--muted-foreground"],
+      fontFamily: currentVariables["--bs-font-sans"],
+      borderRadius: currentVariables["--bs-radius"],
+      // colorSuccess: currentVariables["--bs-success"],
+      // colorWarning: currentVariables["--bs-warning"],
+      colorDanger: currentVariables["--bs-destructive"],
+      colorBackground: currentVariables["--bs-background"],
+      colorPrimary: currentVariables["--bs-primary"],
+      colorText: currentVariables["--bs-foreground"],
+      colorTextSecondary: currentVariables["--bs-secondary-foreground"],
+      colorTextPlaceholder: currentVariables["--bs-muted-foreground"],
     },
   };
 
