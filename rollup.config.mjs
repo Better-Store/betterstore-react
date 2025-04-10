@@ -79,6 +79,7 @@ export default {
       },
       browser: true,
       preferBuiltins: false,
+      dedupe: ["react", "react-dom"],
     }),
     commonjs({
       include: /node_modules/,
@@ -121,6 +122,20 @@ export default {
         "trace_events",
         "wasi",
       ],
+      namedExports: {
+        "@radix-ui/react-dialog": [
+          "Dialog",
+          "DialogContent",
+          "DialogTrigger",
+          "DialogClose",
+          "DialogOverlay",
+          "DialogPortal",
+          "DialogTitle",
+          "DialogDescription",
+          "DialogHeader",
+          "DialogFooter",
+        ],
+      },
     }),
     typescript(),
     json({
