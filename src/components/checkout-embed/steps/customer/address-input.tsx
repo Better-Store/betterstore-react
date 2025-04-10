@@ -101,95 +101,89 @@ export default function AddressInput() {
             />
           </div>
         </DialogTrigger>
-        <DialogContent className="sm:max-w-[500px]">
-          <div className="relative">
-            <DialogHeader>
-              <DialogTitle>
-                {t("CheckoutEmbed.CustomerForm.address.title")}
-              </DialogTitle>
-              <DialogDescription>
-                {t("CheckoutEmbed.CustomerForm.address.description")}
-              </DialogDescription>
-            </DialogHeader>
+        <DialogContent className="sm:max-w-[500px] transform-none!">
+          <DialogHeader>
+            <DialogTitle>
+              {t("CheckoutEmbed.CustomerForm.address.title")}
+            </DialogTitle>
+            <DialogDescription>
+              {t("CheckoutEmbed.CustomerForm.address.description")}
+            </DialogDescription>
+          </DialogHeader>
 
-            <div className="grid grid-cols-2 gap-4">
-              <InputGroup
-                className="col-span-2"
-                name="address.line1"
-                label={t("CheckoutEmbed.CustomerForm.address.line1")}
-                placeholder={t(
-                  "CheckoutEmbed.CustomerForm.address.line1Placeholder"
-                )}
-                autoComplete="address-line1"
-              />
-              <InputGroup
-                className="col-span-2"
-                name="address.line2"
-                label={t("CheckoutEmbed.CustomerForm.address.line2")}
-                placeholder={t(
-                  "CheckoutEmbed.CustomerForm.address.line2Placeholder"
-                )}
-                autoComplete="address-line2"
-              />
+          <div className="grid grid-cols-2 gap-4">
+            <InputGroup
+              className="col-span-2"
+              name="address.line1"
+              label={t("CheckoutEmbed.CustomerForm.address.line1")}
+              placeholder={t(
+                "CheckoutEmbed.CustomerForm.address.line1Placeholder"
+              )}
+              autoComplete="address-line1"
+            />
+            <InputGroup
+              className="col-span-2"
+              name="address.line2"
+              label={t("CheckoutEmbed.CustomerForm.address.line2")}
+              placeholder={t(
+                "CheckoutEmbed.CustomerForm.address.line2Placeholder"
+              )}
+              autoComplete="address-line2"
+            />
 
-              <InputGroup
-                name="address.city"
-                label={t("CheckoutEmbed.CustomerForm.address.city")}
-                placeholder={t(
-                  "CheckoutEmbed.CustomerForm.address.cityPlaceholder"
-                )}
-                autoComplete="address-level2"
-              />
-              <InputGroup
-                name="address.state"
-                label={t("CheckoutEmbed.CustomerForm.address.state")}
-                placeholder={t(
-                  "CheckoutEmbed.CustomerForm.address.statePlaceholder"
-                )}
-                autoComplete="address-level1"
-              />
+            <InputGroup
+              name="address.city"
+              label={t("CheckoutEmbed.CustomerForm.address.city")}
+              placeholder={t(
+                "CheckoutEmbed.CustomerForm.address.cityPlaceholder"
+              )}
+              autoComplete="address-level2"
+            />
+            <InputGroup
+              name="address.state"
+              label={t("CheckoutEmbed.CustomerForm.address.state")}
+              placeholder={t(
+                "CheckoutEmbed.CustomerForm.address.statePlaceholder"
+              )}
+              autoComplete="address-level1"
+            />
 
-              <InputGroup
-                name="address.zipCode"
-                label={t("CheckoutEmbed.CustomerForm.address.zipCode")}
-                placeholder={t(
-                  "CheckoutEmbed.CustomerForm.address.zipCodePlaceholder"
-                )}
-                autoComplete="postal-code"
-              />
-              <FormField
-                control={form.control}
-                name="address.country"
-                render={({ field }) => (
-                  <FormItem>
-                    <FormLabel>
-                      {t("CheckoutEmbed.CustomerForm.address.country")}
-                    </FormLabel>
-                    <CountryDropdown
-                      placeholder={t(
-                        "CheckoutEmbed.CustomerForm.address.countryPlaceholder"
-                      )}
-                      defaultValue={field.value}
-                      onChange={(country) => {
-                        field.onChange(country.name);
-                      }}
-                    />
-                    <FormMessage />
-                  </FormItem>
-                )}
-              />
-            </div>
-
-            <DialogFooter>
-              <Button
-                onClick={handleSave}
-                type="button"
-                disabled={isValidating}
-              >
-                {t("CheckoutEmbed.CustomerForm.address.button")}
-              </Button>
-            </DialogFooter>
+            <InputGroup
+              name="address.zipCode"
+              label={t("CheckoutEmbed.CustomerForm.address.zipCode")}
+              placeholder={t(
+                "CheckoutEmbed.CustomerForm.address.zipCodePlaceholder"
+              )}
+              autoComplete="postal-code"
+            />
+            <FormField
+              control={form.control}
+              name="address.country"
+              render={({ field }) => (
+                <FormItem>
+                  <FormLabel>
+                    {t("CheckoutEmbed.CustomerForm.address.country")}
+                  </FormLabel>
+                  <CountryDropdown
+                    placeholder={t(
+                      "CheckoutEmbed.CustomerForm.address.countryPlaceholder"
+                    )}
+                    defaultValue={field.value}
+                    onChange={(country) => {
+                      field.onChange(country.name);
+                    }}
+                  />
+                  <FormMessage />
+                </FormItem>
+              )}
+            />
           </div>
+
+          <DialogFooter>
+            <Button onClick={handleSave} type="button" disabled={isValidating}>
+              {t("CheckoutEmbed.CustomerForm.address.button")}
+            </Button>
+          </DialogFooter>
         </DialogContent>
       </Dialog>
     </div>
