@@ -1,6 +1,5 @@
 import { default as createI18nInstance, Locale } from "@/i18n";
-import { storeClient } from "@/lib/betterstore";
-import { CheckoutSession } from "@betterstore/sdk";
+import { CheckoutSession, createStoreClient } from "@betterstore/sdk";
 import { StripeElementsOptions } from "@stripe/stripe-js";
 import React, { memo, useEffect, useState } from "react";
 import Appearance, { AppearanceConfig } from "./appearance";
@@ -18,11 +17,20 @@ interface CheckoutEmbedProps {
     appearance?: AppearanceConfig;
     fonts?: StripeElementsOptions["fonts"];
     locale?: Locale;
+    clientProxy?: string;
   };
 }
 
 function CheckoutEmbed({ checkoutId, config }: CheckoutEmbedProps) {
-  const { cancelUrl, successUrl, appearance, locale, clientSecret } = config;
+  const {
+    cancelUrl,
+    successUrl,
+    appearance,
+    locale,
+    clientSecret,
+    clientProxy,
+  } = config;
+  const storeClient = createStoreClient({ proxy: clientProxy });
 
   React.useMemo(() => createI18nInstance(locale), []);
 
