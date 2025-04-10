@@ -92,7 +92,8 @@ export default function PaymentForm({
           <PaymentElement
             fonts={fonts}
             checkoutAppearance={convertCheckoutAppearanceToStripeAppearance(
-              checkoutAppearance
+              checkoutAppearance,
+              fonts
             )}
             paymentSecret={paymentSecret}
             onSuccess={onSuccess}

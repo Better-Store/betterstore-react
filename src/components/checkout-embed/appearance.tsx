@@ -1,5 +1,9 @@
-import { Appearance as StripeAppearance } from "@stripe/stripe-js";
+import {
+  Appearance as StripeAppearance,
+  StripeElementsOptions,
+} from "@stripe/stripe-js";
 import { useEffect } from "react";
+import { appearance as stripeAppearance } from "../payment-element/appearance";
 
 export type Themes = "dark" | "light";
 export type AppearanceConfig = {
@@ -174,7 +178,8 @@ const getColorVariablesFromAppearanceConfig = (
 };
 
 export const convertCheckoutAppearanceToStripeAppearance = (
-  appearance?: AppearanceConfig
+  appearance?: AppearanceConfig,
+  fonts?: StripeElementsOptions["fonts"]
 ): StripeAppearance => {
   const currentVariables = getVariablesFromAppearanceConfig(appearance);
   const newAppearance: StripeAppearance = {
@@ -225,7 +230,9 @@ export const convertCheckoutAppearanceToStripeAppearance = (
       focusOutline: "none",
       focusBoxShadow: "none",
 
-      fontFamily: currentVariables["--bs-font-sans"],
+      fontFamily: fonts
+        ? currentVariables["--bs-font-sans"]
+        : stripeAppearance.variables.fontFamily,
       borderRadius: currentVariables["--bs-radius"],
       // colorSuccess: currentVariables["--bs-success"],
       // colorWarning: currentVariables["--bs-warning"],
