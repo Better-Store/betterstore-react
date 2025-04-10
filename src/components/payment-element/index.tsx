@@ -16,12 +16,14 @@ const stripePromise = loadStripe(publicStripeKey);
 function PaymentElement({
   paymentSecret,
   checkoutAppearance,
+  fonts,
   onSuccess,
   onError,
   children,
 }: {
   paymentSecret: string;
   checkoutAppearance?: Appearance;
+  fonts?: StripeElementsOptions["fonts"];
   onSuccess?: () => void;
   onError?: () => void;
   children: React.ReactNode;
@@ -30,6 +32,7 @@ function PaymentElement({
     locale: "en" as StripeElementLocale,
     appearance: checkoutAppearance,
     clientSecret: paymentSecret as string,
+    fonts: fonts,
   } satisfies StripeElementsOptions;
 
   return (

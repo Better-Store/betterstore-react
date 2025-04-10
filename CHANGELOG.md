@@ -1,5 +1,11 @@
 # @betterstore/sdk
 
+## 0.2.15
+
+### Patch Changes
+
+- fonts config added to stripe
+
 ## 0.2.14
 
 ### Patch Changes

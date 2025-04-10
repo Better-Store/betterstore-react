@@ -1,6 +1,7 @@
 import { default as createI18nInstance, Locale } from "@/i18n";
 import { storeClient } from "@/lib/betterstore";
 import { CheckoutSession } from "@betterstore/sdk";
+import { StripeElementsOptions } from "@stripe/stripe-js";
 import React, { memo, useEffect, useState } from "react";
 import Appearance, { AppearanceConfig } from "./appearance";
 import CheckoutForm from "./checkout-form";
@@ -15,6 +16,7 @@ interface CheckoutEmbedProps {
     cancelUrl: string;
     successUrl: string;
     appearance?: AppearanceConfig;
+    fonts?: StripeElementsOptions["fonts"];
     locale?: Locale;
   };
 }
@@ -81,6 +83,7 @@ function CheckoutEmbed({ checkoutId, config }: CheckoutEmbedProps) {
           <CheckoutFormLoading />
         ) : (
           <CheckoutForm
+            fonts={config.fonts}
             checkoutAppearance={appearance}
             currency={checkout?.currency ?? ""}
             customer={checkout?.customer}

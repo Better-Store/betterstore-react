@@ -1,5 +1,6 @@
 import { storeClient } from "@/lib/betterstore";
 import { CheckoutSession, ShippingRate } from "@betterstore/sdk";
+import { StripeElementsOptions } from "@stripe/stripe-js";
 import { AnimatePresence, motion, MotionProps } from "motion/react";
 import React, { useCallback, useEffect, useState } from "react";
 import { AppearanceConfig } from "./appearance";
@@ -15,6 +16,7 @@ import CustomerForm from "./steps/customer/form";
 import PaymentForm from "./steps/payment/form";
 import ShippingMethodForm from "./steps/shipping/form";
 import { useFormStore } from "./useFormStore";
+
 interface CheckoutFormProps {
   checkoutId: string;
   onSuccess: () => void;
@@ -24,6 +26,7 @@ interface CheckoutFormProps {
   customer?: CheckoutSession["customer"];
   currency: string;
   checkoutAppearance?: AppearanceConfig;
+  fonts?: StripeElementsOptions["fonts"];
 }
 
 const motionSettings = {
@@ -42,6 +45,7 @@ export default function CheckoutForm({
   customer,
   currency,
   checkoutAppearance,
+  fonts,
 }: CheckoutFormProps) {
   const { formData, setFormData, step, setStep } = useFormStore(checkoutId)();
   const [paymentSecret, setPaymentSecret] = useState<string | null>(null);
@@ -249,6 +253,7 @@ export default function CheckoutForm({
             className="absolute w-full"
           >
             <PaymentForm
+              fonts={fonts}
               checkoutAppearance={checkoutAppearance}
               paymentSecret={paymentSecret}
               onSuccess={onSuccess}
