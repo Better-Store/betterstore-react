@@ -1,5 +1,8 @@
-import { storeClient } from "@/lib/betterstore";
-import { CheckoutSession, ShippingRate } from "@betterstore/sdk";
+import {
+  CheckoutSession,
+  createStoreClient,
+  ShippingRate,
+} from "@betterstore/sdk";
 import { StripeElementsOptions } from "@stripe/stripe-js";
 import { AnimatePresence, motion, MotionProps } from "motion/react";
 import React, { useCallback, useEffect, useState } from "react";
@@ -18,6 +21,7 @@ import ShippingMethodForm from "./steps/shipping/form";
 import { useFormStore } from "./useFormStore";
 
 interface CheckoutFormProps {
+  storeClient: ReturnType<typeof createStoreClient>;
   checkoutId: string;
   onSuccess: () => void;
   onError: () => void;
@@ -37,6 +41,7 @@ const motionSettings = {
 } satisfies MotionProps;
 
 export default function CheckoutForm({
+  storeClient,
   checkoutId,
   onSuccess,
   onError,

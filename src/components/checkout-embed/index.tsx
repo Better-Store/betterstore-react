@@ -91,6 +91,7 @@ function CheckoutEmbed({ checkoutId, config }: CheckoutEmbedProps) {
           <CheckoutFormLoading />
         ) : (
           <CheckoutForm
+            storeClient={storeClient}
             fonts={config.fonts}
             checkoutAppearance={appearance}
             currency={checkout?.currency ?? ""}
