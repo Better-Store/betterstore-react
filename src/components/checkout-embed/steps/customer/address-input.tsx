@@ -101,7 +101,7 @@ export default function AddressInput() {
             />
           </div>
         </DialogTrigger>
-        <DialogContent className="sm:max-w-[500px] !fixed !inset-0 !m-auto !transform-none">
+        <DialogContent className="sm:max-w-[500px]">
           <div className="relative">
             <DialogHeader>
               <DialogTitle>
