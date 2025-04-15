@@ -38,7 +38,7 @@ export default function CheckoutSummary({
         >
           <h2>{t("CheckoutEmbed.Summary.title")}</h2>
           <ChevronDown
-            className={clsx("size-5 transition-transform", {
+            className={clsx("size-5 md:hidden transition-transform", {
               "rotate-180": isOpen,
             })}
           />

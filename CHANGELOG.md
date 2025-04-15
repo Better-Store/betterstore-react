@@ -1,5 +1,11 @@
 # @betterstore/sdk
 
+## 0.2.36
+
+### Patch Changes
+
+- publishable secret updated
+
 ## 0.2.35
 
 ### Patch Changes
