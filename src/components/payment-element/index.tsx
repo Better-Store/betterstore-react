@@ -21,6 +21,7 @@ function PaymentElement({
   onSuccess,
   onError,
   children,
+  setSubmitting,
 }: {
   paymentSecret: string;
   checkoutAppearance?: Appearance;
@@ -29,6 +30,7 @@ function PaymentElement({
   onSuccess?: () => void;
   onError?: () => void;
   children: React.ReactNode;
+  setSubmitting?: (isSubmitting: boolean) => void;
 }) {
   const options = {
     locale: locale ?? "en",
@@ -43,6 +45,7 @@ function PaymentElement({
         onSuccess={onSuccess}
         onError={onError}
         children={children}
+        setSubmitting={setSubmitting}
       />
     </Elements>
   );

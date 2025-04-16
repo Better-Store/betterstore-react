@@ -1,5 +1,11 @@
 # @betterstore/sdk
 
+## 0.2.37
+
+### Patch Changes
+
+- bug fixes, loading state, scrollbar bug fix
+
 ## 0.2.36
 
 ### Patch Changes

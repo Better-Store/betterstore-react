@@ -3,7 +3,7 @@ import PaymentElement from "@/components/payment-element";
 import { Button } from "@/components/ui/button";
 import { StripeElementLocale, StripeElementsOptions } from "@stripe/stripe-js";
 import { ChevronLeft } from "lucide-react";
-import React from "react";
+import React, { useState } from "react";
 import { useTranslation } from "react-i18next";
 import {
   AppearanceConfig,
@@ -39,6 +39,7 @@ export default function PaymentForm({
   fonts,
   locale,
 }: PaymentFormProps) {
+  const [isSubmitting, setIsSubmitting] = useState(false);
   const { t } = useTranslation();
 
   return (
@@ -101,13 +102,14 @@ export default function PaymentForm({
             paymentSecret={paymentSecret}
             onSuccess={onSuccess}
             onError={onError}
+            setSubmitting={setIsSubmitting}
           >
             <div className="flex justify-between items-center pt-8">
               <Button type="button" variant="ghost" onClick={onBack}>
                 <ChevronLeft />
                 {t("CheckoutEmbed.Payment.back")}
               </Button>
-              <SubmitButton isValid={true} isSubmitting={false}>
+              <SubmitButton isValid={true} isSubmitting={isSubmitting}>
                 {t("CheckoutEmbed.Payment.button")}
               </SubmitButton>
             </div>

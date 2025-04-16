@@ -10,10 +10,12 @@ const CheckoutForm = ({
   onSuccess,
   onError,
   children,
+  setSubmitting,
 }: {
   onSuccess?: () => void;
   onError?: () => void;
   children: React.ReactNode;
+  setSubmitting?: (isSubmitting: boolean) => void;
 }) => {
   const stripe = useStripe();
   const elements = useElements();
@@ -29,6 +31,7 @@ const CheckoutForm = ({
       return;
     }
 
+    setSubmitting?.(true);
     setIsSubmitting(true);
 
     const response = await stripe.confirmPayment({
@@ -39,15 +42,18 @@ const CheckoutForm = ({
     if (response.error) {
       setErrorMessage(response.error.message || "Something went wrong.");
       setIsSubmitting(false);
+      setSubmitting?.(false);
       onError?.();
     } else {
       setErrorMessage(undefined);
       setIsSubmitting(false);
+      setSubmitting?.(false);
       onSuccess?.();
     }
 
     setErrorMessage(undefined);
     setIsSubmitting(false);
+    setSubmitting?.(false);
   };
 
   return (
