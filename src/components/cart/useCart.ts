@@ -1,24 +1,6 @@
+import { Product, LineItem as SDKLineItem } from "@betterstore/sdk";
 import { create } from "zustand";
 import { persist } from "zustand/middleware";
-
-type Product =
-  | {
-      id: string;
-      title: string;
-      description?: string;
-      images: string[];
-      priceInCents: number;
-    }
-  | string;
-
-interface LineItem {
-  id: string;
-  productId: string;
-  product?: Product;
-  quantity: number;
-  variantOptions: { name: string; value: string }[];
-  metadata?: string;
-}
 
 type LineItemOptionalParams = {
   quantity?: number;
@@ -27,10 +9,14 @@ type LineItemOptionalParams = {
   metadata?: string;
 };
 
+interface LineItem extends Omit<SDKLineItem, "product"> {
+  id: string;
+}
+
 interface Cart {
   lineItems: LineItem[];
   addItem: (
-    product: Product,
+    product: Omit<Product, "productVariants">,
     additionalParams?: LineItemOptionalParams
   ) => void;
   removeItem: (id: string) => void;
@@ -56,10 +42,10 @@ export const useCart = create<Cart>()(
 
       addItem: (product, additionalParams) =>
         set((state) => {
-          const productId = typeof product === "string" ? product : product?.id;
+          const productId = product.id;
           const formattedNewItem = {
             productId: productId,
-            product: typeof product !== "string" ? product : undefined,
+            product: product,
             quantity: additionalParams?.quantity ?? 1,
             variantOptions: additionalParams?.variantOptions ?? [],
             metadata: additionalParams?.metadata,

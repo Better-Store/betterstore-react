@@ -92,6 +92,7 @@ export default function ShippingMethodForm({
               <ShippingRateLoading key={index} />
             ))}
           {shippingRates.map((rate) => {
+            const pickupPointDisplayName = form.watch("pickupPointDisplayName");
             const rateId = rate.provider + rate.name;
             const intPrice = Math.ceil(Number(rate.price));
             const displayPrice = storeHelpers.formatPrice(
@@ -109,8 +110,12 @@ export default function ShippingMethodForm({
               <ShippingOptionWrapper
                 rate={rate}
                 key={rateId}
-                onPickupPointSelected={(pickupPointId: string) => {
+                onPickupPointSelected={(
+                  pickupPointId: string,
+                  pickupPointName: string
+                ) => {
                   form.setValue("pickupPointId", pickupPointId);
+                  form.setValue("pickupPointDisplayName", pickupPointName);
                 }}
                 locale={locale}
                 countryCode={countryCode}
@@ -127,6 +132,9 @@ export default function ShippingMethodForm({
                     form.setValue("provider", rate.provider);
                     form.setValue("name", rate.name);
                     form.setValue("price", intPrice);
+                    if (rate.provider !== "zasilkovna") {
+                      form.setValue("pickupPointDisplayName", "");
+                    }
                   }}
                 >
                   <div className="flex items-center justify-between w-full">
@@ -143,6 +151,17 @@ export default function ShippingMethodForm({
                       : t("CheckoutEmbed.Shipping.days")}
                   </p>
                 )} */}
+                  {pickupPointDisplayName && (
+                    <>
+                      <hr className="my-2" />
+                      <p className="text-sm text-muted-foreground">
+                        {t("CheckoutEmbed.Shipping.description.shippedTo")}{" "}
+                        <span className="text-foreground">
+                          {pickupPointDisplayName}
+                        </span>
+                      </p>
+                    </>
+                  )}
                 </div>
               </ShippingOptionWrapper>
             );

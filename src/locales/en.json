@@ -54,7 +54,8 @@
       "days": "days",
       "description": {
         "other": "Your package will be delivered by a courier.",
-        "zasilkovna": "Your package will be delivered to a pickup point."
+        "zasilkovna": "Your package will be delivered to a pickup point.",
+        "shippedTo": "Shipped to:"
       }
     },
     "Payment": {

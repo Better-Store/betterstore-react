@@ -11,7 +11,10 @@ export default function ShippingOptionWrapper({
 }: {
   rate: ShippingRate;
   children: React.ReactNode;
-  onPickupPointSelected?: (pickupPointId: string) => void;
+  onPickupPointSelected?: (
+    pickupPointId: string,
+    pickupPointName: string
+  ) => void;
   locale?: string;
   countryCode?: string;
 }) {

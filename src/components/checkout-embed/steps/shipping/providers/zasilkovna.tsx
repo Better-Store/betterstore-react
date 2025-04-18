@@ -14,7 +14,10 @@ export default function ZasilkovnaShippingOption({
   apiKey,
 }: {
   children: React.ReactNode;
-  onPickupPointSelected?: (pickupPointId: string) => void;
+  onPickupPointSelected?: (
+    pickupPointId: string,
+    pickupPointName: string
+  ) => void;
   locale?: string;
   countryCode?: string;
   apiKey?: string;
@@ -33,7 +36,6 @@ export default function ZasilkovnaShippingOption({
       script.async = true;
       script.onload = () => {
         setWidgetLoaded(true);
-        console.log("loaded");
       };
       script.onerror = () =>
         console.error("Failed to load Packeta Widget script.");
@@ -54,8 +56,10 @@ export default function ZasilkovnaShippingOption({
 
       window.Packeta.Widget.pick(
         apiKey,
-        (point: { id: string }) => {
-          onPickupPointSelected?.(point.id);
+        (point?: { id: string; name: string }) => {
+          if (point) {
+            onPickupPointSelected?.(point.id, point.name);
+          }
         },
         options
       );

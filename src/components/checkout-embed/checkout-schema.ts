@@ -29,6 +29,7 @@ export const shippingMethodSchema = z.object({
   price: z.number().min(1, "required_error"),
   name: z.string().min(1, "required_error"),
   pickupPointId: z.string().optional(),
+  pickupPointDisplayName: z.string().optional(),
 });
 
 // Combined checkout schema
