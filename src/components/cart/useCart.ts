@@ -4,7 +4,6 @@ import { persist } from "zustand/middleware";
 
 type LineItemOptionalParams = {
   quantity?: number;
-  productId: string;
   variantOptions?: { name: string; value: string }[];
   metadata?: string;
 };
@@ -25,7 +24,9 @@ interface Cart {
   clearCart: () => void;
 }
 
-const generateLineItemId = (item: LineItemOptionalParams): string => {
+const generateLineItemId = (
+  item: LineItemOptionalParams & { productId: string }
+): string => {
   return btoa(
     JSON.stringify({
       productId: item.productId,
