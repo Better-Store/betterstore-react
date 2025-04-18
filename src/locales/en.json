@@ -51,7 +51,11 @@
       "shipping": "Shipping:",
       "estimatedDeliveryDate": "Estimated delivery date: ",
       "day": "day",
-      "days": "days"
+      "days": "days",
+      "description": {
+        "other": "Your package will be delivered by a courier.",
+        "zasilkovna": "Your package will be delivered to a pickup point."
+      }
     },
     "Payment": {
       "title": "Payment",

@@ -108,6 +108,7 @@ function CheckoutEmbed({ checkoutId, config }: CheckoutEmbedProps) {
             clientSecret={clientSecret}
             onSuccess={onSuccess}
             onError={onError}
+            exchangeRate={checkout?.exchangeRate ?? 1}
           />
         )}
       </div>

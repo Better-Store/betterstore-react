@@ -57,7 +57,11 @@
       "estimatedDeliveryDate": "Odhadované datum dodání:",
       "shipTo": "Ship to:",
       "shipping": "Doprava:",
-      "title": "Přeprava"
+      "title": "Přeprava",
+      "description": {
+        "other": "Váš balíček bude doručen kurýrem.",
+        "zasilkovna": "Váš balíček bude doručen do bodu vyzvednutí."
+      }
     }
   },
   "Errors": {

@@ -1,5 +1,11 @@
 # @betterstore/sdk
 
+## 0.2.38
+
+### Patch Changes
+
+- zasilkovna added
+
 ## 0.2.37
 
 ### Patch Changes

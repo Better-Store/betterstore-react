@@ -16,6 +16,7 @@ export const customerSchema = z.object({
     state: z.string().optional(),
     zipCode: z.string().min(5, "invalid_zipCode"),
     country: z.string().min(1, "required_error"),
+    countryCode: z.string().min(1, "required_error"),
   }),
   saveInfo: z.boolean().optional(),
   phone: z.string().regex(phoneRegex, "invalid_phone"),
@@ -24,9 +25,10 @@ export const customerSchema = z.object({
 // Shipping method schema
 export const shippingMethodSchema = z.object({
   rateId: z.string().min(1, "required_error"),
-  name: z.string().min(1, "required_error"),
   provider: z.string().min(1, "required_error"),
-  amount: z.number().min(1, "required_error"),
+  price: z.number().min(1, "required_error"),
+  name: z.string().min(1, "required_error"),
+  pickupPointId: z.string().optional(),
 });
 
 // Combined checkout schema

@@ -2,6 +2,7 @@ import SubmitButton from "@/components/compounds/form/submit-button";
 import { Button } from "@/components/ui/button";
 import { Form, FormMessage } from "@/components/ui/form";
 import { Skeleton } from "@/components/ui/skeleton";
+import { storeHelpers } from "@/lib/betterstore";
 import { ShippingRate } from "@betterstore/sdk";
 import { zodResolver } from "@hookform/resolvers/zod";
 import clsx from "clsx";
@@ -13,6 +14,7 @@ import {
   type ShippingMethodFormData,
   shippingMethodSchema,
 } from "../../checkout-schema";
+import ShippingOptionWrapper from "./shipping-option-wrapper";
 
 interface ShippingMethodFormProps {
   shippingRates: ShippingRate[];
@@ -21,6 +23,10 @@ interface ShippingMethodFormProps {
   onBack: () => void;
   contactEmail: string;
   shippingAddress: string;
+  currency: string;
+  exchangeRate: number;
+  locale?: string;
+  countryCode?: string;
 }
 
 export default function ShippingMethodForm({
@@ -30,6 +36,10 @@ export default function ShippingMethodForm({
   onBack,
   contactEmail,
   shippingAddress,
+  currency,
+  exchangeRate,
+  locale,
+  countryCode,
 }: ShippingMethodFormProps) {
   const { t } = useTranslation();
 
@@ -37,9 +47,9 @@ export default function ShippingMethodForm({
     resolver: zodResolver(shippingMethodSchema),
     defaultValues: initialData || {
       rateId: "",
-      name: "",
       provider: "",
-      amount: 0,
+      price: 0,
+      pickupPointId: "",
     },
   });
 
@@ -82,31 +92,49 @@ export default function ShippingMethodForm({
               <ShippingRateLoading key={index} />
             ))}
           {shippingRates.map((rate) => {
-            const rateId = rate.objectId;
-            const intPrice = Math.ceil(Number(rate.amount));
-            const price = intPrice + " " + rate.currency;
+            const rateId = rate.provider + rate.name;
+            const intPrice = Math.ceil(Number(rate.price));
+            const displayPrice = storeHelpers.formatPrice(
+              intPrice,
+              currency,
+              exchangeRate
+            );
+
+            const description =
+              rate.provider === "zasilkovna"
+                ? t("CheckoutEmbed.Shipping.description.zasilkovna")
+                : t("CheckoutEmbed.Shipping.description.other");
 
             return (
-              <div
-                className={clsx(
-                  "p-4 cursor-pointer rounded-md border bg-background",
-                  {
-                    "bg-muted border-primary": currentRateId === rateId,
-                  }
-                )}
-                onClick={() => {
-                  form.setValue("rateId", rateId);
-                  form.setValue("provider", rate.provider);
-                  form.setValue("name", rate.shipment);
-                  form.setValue("amount", intPrice);
-                }}
+              <ShippingOptionWrapper
+                rate={rate}
                 key={rateId}
+                onPickupPointSelected={(pickupPointId: string) => {
+                  form.setValue("pickupPointId", pickupPointId);
+                }}
+                locale={locale}
+                countryCode={countryCode}
               >
-                <div className="flex items-center justify-between w-full">
-                  <p>{rate.provider}</p>
-                  <p>{price}</p>
-                </div>
-                {rate.estimatedDays && (
+                <div
+                  className={clsx(
+                    "p-4 cursor-pointer rounded-md border bg-background",
+                    {
+                      "bg-muted border-primary": currentRateId === rateId,
+                    }
+                  )}
+                  onClick={() => {
+                    form.setValue("rateId", rateId);
+                    form.setValue("provider", rate.provider);
+                    form.setValue("name", rate.name);
+                    form.setValue("price", intPrice);
+                  }}
+                >
+                  <div className="flex items-center justify-between w-full">
+                    <p>{rate.name}</p>
+                    <p>{displayPrice}</p>
+                  </div>
+                  <p className="text-sm text-muted-foreground">{description}</p>
+                  {/* {rate.estimatedDays && (
                   <p className="text-sm text-muted-foreground">
                     {t("CheckoutEmbed.Shipping.estimatedDeliveryDate")}{" "}
                     {rate.estimatedDays}{" "}
@@ -114,8 +142,9 @@ export default function ShippingMethodForm({
                       ? t("CheckoutEmbed.Shipping.day")
                       : t("CheckoutEmbed.Shipping.days")}
                   </p>
-                )}
-              </div>
+                )} */}
+                </div>
+              </ShippingOptionWrapper>
             );
           })}
 

@@ -1,3 +1,4 @@
+import { storeHelpers } from "@/lib/betterstore";
 import {
   CheckoutSession,
   createStoreClient,
@@ -33,6 +34,7 @@ interface CheckoutFormProps {
   fonts?: StripeElementsOptions["fonts"];
   locale?: StripeElementLocale;
   setShippingCost: (cost: number) => void;
+  exchangeRate: number;
 }
 
 const motionSettings = {
@@ -55,6 +57,7 @@ export default function CheckoutForm({
   fonts,
   locale,
   setShippingCost,
+  exchangeRate,
 }: CheckoutFormProps) {
   const { formData, setFormData, step, setStep } = useFormStore(checkoutId)();
   const [paymentSecret, setPaymentSecret] = useState<string | null>(null);
@@ -98,6 +101,7 @@ export default function CheckoutForm({
             city: customer.address?.city ?? "",
             zipCode: customer.address?.zipCode ?? "",
             country: customer.address?.country ?? "",
+            countryCode: customer.address?.countryCode ?? "",
           },
         },
       });
@@ -113,6 +117,7 @@ export default function CheckoutForm({
         clientSecret,
         checkoutId
       );
+      console.log(shippingRates);
       setShippingRates(shippingRates);
     };
 
@@ -121,6 +126,11 @@ export default function CheckoutForm({
 
   // Handle address form submission
   const handleCustomerSubmit = async (data: CustomerFormData) => {
+    setFormData({
+      ...formData,
+      customer: data,
+    });
+
     let newCustomerId = formData.customerId;
 
     if (!newCustomerId) {
@@ -179,11 +189,10 @@ export default function CheckoutForm({
     setFormData(newFormData);
 
     await storeClient.updateCheckout(clientSecret, checkoutId, {
-      shipping: data.amount * 100,
-      shippingInfo: {
-        rateId: data.rateId,
-        name: data.name,
+      shipping: data.price,
+      shipmentInfo: {
         provider: data.provider,
+        pickupPointId: data.pickupPointId,
       },
     });
     const paymentSecret = await storeClient.generateCheckoutsPaymentSecret(
@@ -191,7 +200,7 @@ export default function CheckoutForm({
       checkoutId
     );
     setPaymentSecret(paymentSecret);
-    setShippingCost(data.amount * 100);
+    setShippingCost(data.price);
 
     setStep("payment");
   };
@@ -252,6 +261,10 @@ export default function CheckoutForm({
               onBack={handleBack}
               contactEmail={formData.customer.email}
               shippingAddress={formatAddress(formData.customer.address)}
+              currency={currency}
+              exchangeRate={exchangeRate}
+              locale={locale}
+              countryCode={formData.customer.address.countryCode}
             />
           </motion.div>
         )}
@@ -274,9 +287,11 @@ export default function CheckoutForm({
               contactEmail={formData.customer.email}
               shippingAddress={formatAddress(formData.customer.address)}
               shippingProvider={formData.shipping.provider}
-              shippingPrice={
-                formData.shipping.amount.toString() + " " + currency
-              }
+              shippingPrice={storeHelpers.formatPrice(
+                formData.shipping.price,
+                currency,
+                exchangeRate
+              )}
             />
           </motion.div>
         )}

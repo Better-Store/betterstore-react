@@ -171,6 +171,7 @@ export default function AddressInput() {
                     defaultValue={field.value}
                     onChange={(country) => {
                       field.onChange(country.name);
+                      form.setValue("address.countryCode", country.alpha2);
                     }}
                   />
                   <FormMessage />

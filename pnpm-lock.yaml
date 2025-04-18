@@ -109,8 +109,8 @@ importers:
         version: 5.0.3(@types/react@18.3.18)(react@18.3.1)
     devDependencies:
       '@betterstore/sdk':
-        specifier: ^0.3.23
-        version: 0.3.23
+        specifier: ^0.3.31
+        version: 0.3.31
       '@changesets/cli':
         specifier: ^2.28.1
         version: 2.28.1
@@ -278,8 +278,8 @@ packages:
     resolution: {integrity: sha512-Y3IR1cRnOxOCDvMmNiym7XpXQ93iGDDPHx+Zj+NM+rg0fBaShfQLkg+hKPaZCEvg5N/LeCo4+Rj/i3FuJsIQaw==}
     engines: {node: '>=6.9.0'}
 
-  '@betterstore/sdk@0.3.23':
-    resolution: {integrity: sha512-lRs9fOMUJtefkZIJZQpbXuVC1D/MKsDScXllG/Sdwc56mHvioCAlUf8OeKpyHzSAScd4RRgu2bOO/88KxKGYQw==}
+  '@betterstore/sdk@0.3.31':
+    resolution: {integrity: sha512-0nypPrtbydrwnY80pO1rECeDJQ3pVehNO8Df19+qNuZ/dTFq0NFdHzDPFYB9xbWMpWh8obFdi7BZ3i4LVWtpbg==}
 
   '@changesets/apply-release-plan@7.0.10':
     resolution: {integrity: sha512-wNyeIJ3yDsVspYvHnEz1xQDq18D9ifed3lI+wxRQRK4pArUcuHgCTrHv0QRnnwjhVCQACxZ+CBih3wgOct6UXw==}
@@ -3503,11 +3503,6 @@ packages:
     resolution: {integrity: sha512-7++dFhtcx3353uBaq8DDR4NuxBetBzC7ZQOhmTQInHEd6bSrXdiEyzCvG07Z44UYdLShWUyXt5M/yhz8ekcb1A==}
     engines: {node: '>=8'}
 
-  shippo@2.15.0:
-    resolution: {integrity: sha512-ND6QT3xSW8tMCkNNGqIbtpuuGR/CqPBa7dyYuHmT1F554LoqA9K24R2iVLC/yXO5LTT2xskbkY/IKUg2RazVFg==}
-    peerDependencies:
-      zod: '>= 3'
-
   side-channel-list@1.0.0:
     resolution: {integrity: sha512-FCLHtRD/gnpCiCHEiJLOwdmFP+wzCmDEkc9y7NsYxeF4u7Btsn1ZuwgwJGxImImHicJArLP4R0yX4c2KCrMrTA==}
     engines: {node: '>= 0.4'}
@@ -4123,10 +4118,9 @@ snapshots:
       '@babel/helper-string-parser': 7.25.9
       '@babel/helper-validator-identifier': 7.25.9
 
-  '@betterstore/sdk@0.3.23':
+  '@betterstore/sdk@0.3.31':
     dependencies:
       axios: 1.8.2
-      shippo: 2.15.0(zod@3.24.2)
       zod: 3.24.2
     transitivePeerDependencies:
       - debug
@@ -7375,10 +7369,6 @@ snapshots:
       shebang-regex: 3.0.0
 
   shebang-regex@3.0.0: {}
-
-  shippo@2.15.0(zod@3.24.2):
-    dependencies:
-      zod: 3.24.2
 
   side-channel-list@1.0.0:
     dependencies:
