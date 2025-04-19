@@ -14,6 +14,7 @@ import {
   type ShippingMethodFormData,
   shippingMethodSchema,
 } from "../../checkout-schema";
+import { FormStore } from "../../useFormStore";
 import ShippingOptionWrapper from "./shipping-option-wrapper";
 
 interface ShippingMethodFormProps {
@@ -27,6 +28,8 @@ interface ShippingMethodFormProps {
   exchangeRate: number;
   locale?: string;
   countryCode?: string;
+  setFormData: FormStore["setFormData"];
+  formData: FormStore["formData"];
 }
 
 export default function ShippingMethodForm({
@@ -40,6 +43,8 @@ export default function ShippingMethodForm({
   exchangeRate,
   locale,
   countryCode,
+  setFormData,
+  formData,
 }: ShippingMethodFormProps) {
   const { t } = useTranslation();
 
@@ -116,6 +121,17 @@ export default function ShippingMethodForm({
                 ) => {
                   form.setValue("pickupPointId", pickupPointId);
                   form.setValue("pickupPointDisplayName", pickupPointName);
+                  setFormData({
+                    ...formData,
+                    shipping: {
+                      rateId,
+                      provider: rate.provider,
+                      price: intPrice,
+                      name: rate.name,
+                      pickupPointId,
+                      pickupPointDisplayName,
+                    },
+                  });
                 }}
                 locale={locale}
                 countryCode={countryCode}
@@ -128,13 +144,34 @@ export default function ShippingMethodForm({
                     }
                   )}
                   onClick={() => {
+                    const newFormData = {
+                      rateId,
+                      provider: rate.provider,
+                      price: intPrice,
+                      name: rate.name,
+                      pickupPointId:
+                        rate.provider === "zasilkovna"
+                          ? form.watch("pickupPointId")
+                          : "",
+                      pickupPointDisplayName:
+                        rate.provider === "zasilkovna"
+                          ? form.watch("pickupPointDisplayName")
+                          : "",
+                    };
+
                     form.setValue("rateId", rateId);
                     form.setValue("provider", rate.provider);
                     form.setValue("name", rate.name);
                     form.setValue("price", intPrice);
                     if (rate.provider !== "zasilkovna") {
                       form.setValue("pickupPointDisplayName", "");
+                      form.setValue("pickupPointId", "");
                     }
+
+                    setFormData({
+                      ...formData,
+                      shipping: newFormData,
+                    });
                   }}
                 >
                   <div className="flex items-center justify-between w-full">

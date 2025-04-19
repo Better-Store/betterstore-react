@@ -59,7 +59,7 @@ export default function CheckoutForm({
   setShippingCost,
   exchangeRate,
 }: CheckoutFormProps) {
-  const { formData, setFormData, step, setStep } = useFormStore(checkoutId)();
+  const { formData, setFormData, step, setStep } = useFormStore();
   const [paymentSecret, setPaymentSecret] = useState<string | null>(null);
   const [shippingRates, setShippingRates] = useState<ShippingRate[]>([]);
 
@@ -113,16 +113,20 @@ export default function CheckoutForm({
     if (shippingRates.length > 0) return;
 
     const getShippingRates = async () => {
-      const shippingRates = await storeClient.getCheckoutShippingRates(
-        clientSecret,
-        checkoutId
-      );
-      console.log(shippingRates);
-      setShippingRates(shippingRates);
+      try {
+        const shippingRates = await storeClient.getCheckoutShippingRates(
+          clientSecret,
+          checkoutId
+        );
+        setShippingRates(shippingRates);
+      } catch (error) {
+        console.error("Failed to load shipping rates:", error);
+        setShippingRates([]);
+      }
     };
 
     getShippingRates();
-  }, [step, shippingRates]);
+  }, [step, clientSecret, checkoutId]);
 
   // Handle address form submission
   const handleCustomerSubmit = async (data: CustomerFormData) => {
@@ -168,7 +172,6 @@ export default function CheckoutForm({
       clientSecret,
       checkoutId
     );
-
     setShippingRates(shippingRates);
 
     setFormData({
@@ -255,6 +258,8 @@ export default function CheckoutForm({
             className="absolute w-full"
           >
             <ShippingMethodForm
+              setFormData={setFormData}
+              formData={formData}
               shippingRates={shippingRates}
               initialData={formData.shipping}
               onSubmit={handleShippingSubmit}

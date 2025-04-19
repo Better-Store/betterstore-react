@@ -5,6 +5,7 @@ import clsx from "clsx";
 import { ChevronDown } from "lucide-react";
 import React, { useState } from "react";
 import { useTranslation } from "react-i18next";
+import { useFormStore } from "../../useFormStore";
 
 export default function CheckoutSummary({
   lineItems,
@@ -21,13 +22,15 @@ export default function CheckoutSummary({
   exchangeRate: number;
   cancelUrl: string;
 }) {
+  const { formData } = useFormStore();
   const [isOpen, setIsOpen] = useState(false);
   const { t } = useTranslation();
   const subtotal = lineItems.reduce((acc, item) => {
     return acc + (item.product?.priceInCents ?? 0) * item.quantity;
   }, 0);
 
-  const total = subtotal + (tax ?? 0) + (shipping ?? 0);
+  const shippingPrice = shipping ?? formData.shipping?.price;
+  const total = subtotal + (tax ?? 0) + (shippingPrice ?? 0);
 
   return (
     <div className="grid gap-5">
@@ -68,8 +71,8 @@ export default function CheckoutSummary({
         <div className="flex justify-between">
           <p>{t("CheckoutEmbed.Summary.shipping")}</p>
           <p>
-            {!!shipping
-              ? storeHelpers.formatPrice(shipping, currency, exchangeRate)
+            {!!shippingPrice
+              ? storeHelpers.formatPrice(shippingPrice, currency, exchangeRate)
               : t("CheckoutEmbed.Summary.calculatedAtNextStep")}
           </p>
         </div>

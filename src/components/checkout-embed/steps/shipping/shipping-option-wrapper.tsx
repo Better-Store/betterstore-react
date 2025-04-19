@@ -31,5 +31,5 @@ export default function ShippingOptionWrapper({
     );
   }
 
-  return;
+  return <>{children}</>;
 }
