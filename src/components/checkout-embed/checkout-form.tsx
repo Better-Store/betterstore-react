@@ -192,8 +192,7 @@ export default function CheckoutForm({
     setFormData(newFormData);
 
     await storeClient.updateCheckout(clientSecret, checkoutId, {
-      shipping: data.price,
-      shipmentInfo: {
+      shipmentData: {
         provider: data.provider,
         pickupPointId: data.pickupPointId,
       },
