@@ -1,6 +1,6 @@
 import { Button } from "@/components/ui/button";
 import { storeHelpers } from "@/lib/betterstore";
-import { CheckoutSession } from "@betterstore/sdk";
+import { LineItem } from "@betterstore/sdk";
 import clsx from "clsx";
 import { ChevronDown } from "lucide-react";
 import React, { useState } from "react";
@@ -15,7 +15,7 @@ export default function CheckoutSummary({
   cancelUrl,
   exchangeRate,
 }: {
-  lineItems: CheckoutSession["lineItems"];
+  lineItems: LineItem[];
   shipping?: number;
   tax?: number;
   currency: string;
@@ -26,7 +26,12 @@ export default function CheckoutSummary({
   const [isOpen, setIsOpen] = useState(false);
   const { t } = useTranslation();
   const subtotal = lineItems.reduce((acc, item) => {
-    return acc + (item.product?.priceInCents ?? 0) * item.quantity;
+    const variant = item.product?.productVariants.find(
+      (variant) => variant.variantOptions === item.variantOptions
+    );
+    const productItem = variant || item.product;
+
+    return acc + (productItem?.priceInCents ?? 0) * item.quantity;
   }, 0);
 
   const shippingPrice = shipping ?? formData.shipping?.price;
@@ -103,42 +108,57 @@ export default function CheckoutSummary({
           grid: isOpen,
         })}
       >
-        {lineItems.map((item, index) => (
-          <div key={index} className="flex items-center">
-            <div className="relative">
-              <div className="w-16 h-16 bg-secondary rounded-lg overflow-hidden relative">
-                {item.product?.images[0] && (
-                  <img
-                    src={item.product.images[0] || "/placeholder.svg"}
-                    alt={item.product?.title || ""}
-                    className="object-cover w-full h-full"
-                    sizes="64px"
-                  />
-                )}
-              </div>
-              <div className="absolute -top-2 -right-2 w-6 h-6 bg-primary rounded-full flex items-center text-background justify-center text-sm">
-                {item.quantity}
-              </div>
-            </div>
+        {lineItems.map((item, index) => {
+          const variant = item.product?.productVariants.find(
+            (variant) => variant.variantOptions === item.variantOptions
+          );
+          const productItem = variant || item.product;
 
-            <div className="ml-4 flex-1">
-              <h3 className="text-lg font-medium">{item.product?.title}</h3>
-              <p className="text-muted-foreground text-sm">
-                {item.variantOptions.map((option) => option.name).join(" / ")}
-              </p>
-            </div>
+          return (
+            <div key={index} className="flex items-center">
+              <div className="relative">
+                <div className="w-16 h-16 bg-secondary rounded-lg overflow-hidden relative">
+                  {productItem?.images[0] && (
+                    <img
+                      src={
+                        productItem.images[0] ||
+                        item?.product?.images[0] ||
+                        "/placeholder.svg"
+                      }
+                      alt={item.product?.title || ""}
+                      className="object-cover w-full h-full"
+                      sizes="64px"
+                    />
+                  )}
+                </div>
+                <div className="absolute -top-2 -right-2 w-6 h-6 bg-primary rounded-full flex items-center text-background justify-center text-sm">
+                  {item.quantity}
+                </div>
+              </div>
 
-            <div className="text-right">
-              <p className="text-lg font-medium">
-                {storeHelpers.formatPrice(
-                  item.product?.priceInCents ?? 0,
-                  currency,
-                  exchangeRate
-                )}
-              </p>
+              <div className="ml-4 flex-1">
+                <h3 className="text-lg font-medium">{item.product?.title}</h3>
+                <p className="text-muted-foreground text-sm">
+                  {item.variantOptions.map((option) => (
+                    <span key={option.name}>
+                      {option.name}: {option.value}
+                    </span>
+                  ))}
+                </p>
+              </div>
+
+              <div className="text-right">
+                <p className="text-lg font-medium">
+                  {storeHelpers.formatPrice(
+                    productItem?.priceInCents ?? 0,
+                    currency,
+                    exchangeRate
+                  )}
+                </p>
+              </div>
             </div>
-          </div>
-        ))}
+          );
+        })}
       </div>
     </div>
   );
