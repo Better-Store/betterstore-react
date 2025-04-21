@@ -9,7 +9,7 @@ import React, { memo } from "react";
 import CheckoutForm from "./checkout-form";
 
 const publicStripeKey =
-  "pk_test_51RCjhw2cgbkVT71muwgBSw1tP06YVR4l4P9zI8wP2ipmze9VnTmTwxESVVePmU6QV8TL6bxG7f10oXQRnKC3F3KT00EsvlPAoS";
+  "pk_live_51QvliXK5wvEuxX36GWLFgMtUrG2cGIjpW0eXoqVzjEr8S0PdGzAp4ydQa6ssxVW9u0zaLajod93YZnQIU5C8cgqp00Bb64X60b";
 
 const stripePromise = loadStripe(publicStripeKey);
 
