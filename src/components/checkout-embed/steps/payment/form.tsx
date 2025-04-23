@@ -18,7 +18,7 @@ interface PaymentFormProps {
   onDoubleBack: () => void;
   contactEmail: string;
   shippingAddress: string;
-  shippingProvider: string;
+  shippingName: string;
   shippingPrice: string;
   checkoutAppearance?: AppearanceConfig;
   fonts?: StripeElementsOptions["fonts"];
@@ -33,7 +33,7 @@ export default function PaymentForm({
   onDoubleBack,
   contactEmail,
   shippingAddress,
-  shippingProvider,
+  shippingName,
   shippingPrice,
   checkoutAppearance,
   fonts,
@@ -66,7 +66,7 @@ export default function PaymentForm({
         <div className="flex items-center justify-between text-sm">
           <p>
             <span className="font-medium">
-              {t("CheckoutEmbed.Shipping.shipTo")}
+              {t("CheckoutEmbed.Shipping.address")}
             </span>{" "}
             <span className="text-muted-foreground">{shippingAddress}</span>
           </p>
@@ -81,7 +81,7 @@ export default function PaymentForm({
               {t("CheckoutEmbed.Shipping.shipping")}
             </span>{" "}
             <span className="text-muted-foreground">
-              {shippingProvider} · {shippingPrice}
+              {shippingName} · {shippingPrice}
             </span>
           </p>
           <Button variant="link" size="link" onClick={onBack}>

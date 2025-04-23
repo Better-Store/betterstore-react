@@ -44,7 +44,7 @@
     "Shipping": {
       "title": "Shipping",
       "change": "Change",
-      "shipTo": "Ship to:",
+      "address": "Address:",
       "contact": "Contact:",
       "button": "Continue to checkout",
       "back": "Back to information",

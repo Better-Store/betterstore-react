@@ -87,6 +87,8 @@ export default function CheckoutForm({
 
   useEffect(() => {
     if (customer && !formData.customer?.email) {
+      const step = customer.id ? "shipping" : "customer";
+
       setFormData({
         ...formData,
         customerId: customer.id,
@@ -105,6 +107,7 @@ export default function CheckoutForm({
           },
         },
       });
+      setStep(step);
     }
   }, [customer]);
 
@@ -290,7 +293,7 @@ export default function CheckoutForm({
               onDoubleBack={handleDoubleBack}
               contactEmail={formData.customer.email}
               shippingAddress={formatAddress(formData.customer.address)}
-              shippingProvider={formData.shipping.provider}
+              shippingName={formData.shipping.name}
               shippingPrice={storeHelpers.formatPrice(
                 formData.shipping.price,
                 currency,

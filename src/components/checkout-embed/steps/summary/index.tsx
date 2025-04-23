@@ -26,9 +26,17 @@ export default function CheckoutSummary({
   const [isOpen, setIsOpen] = useState(false);
   const { t } = useTranslation();
   const subtotal = lineItems.reduce((acc, item) => {
-    const variant = item.product?.productVariants.find(
-      (variant) => variant.variantOptions === item.variantOptions
-    );
+    const variant = item.product?.productVariants.find((variant) => {
+      if (!variant.variantOptions || !item.variantOptions) return false;
+      if (variant.variantOptions.length !== item.variantOptions.length)
+        return false;
+
+      return variant.variantOptions.every((vOpt) =>
+        item.variantOptions.some(
+          (iOpt) => vOpt.name === iOpt.name && vOpt.value === iOpt.value
+        )
+      );
+    });
     const productItem = variant || item.product;
 
     return acc + (productItem?.priceInCents ?? 0) * item.quantity;
@@ -109,9 +117,17 @@ export default function CheckoutSummary({
         })}
       >
         {lineItems.map((item, index) => {
-          const variant = item.product?.productVariants.find(
-            (variant) => variant.variantOptions === item.variantOptions
-          );
+          const variant = item.product?.productVariants.find((variant) => {
+            if (!variant.variantOptions || !item.variantOptions) return false;
+            if (variant.variantOptions.length !== item.variantOptions.length)
+              return false;
+
+            return variant.variantOptions.every((vOpt) =>
+              item.variantOptions.some(
+                (iOpt) => vOpt.name === iOpt.name && vOpt.value === iOpt.value
+              )
+            );
+          });
           const productItem = variant || item.product;
 
           return (

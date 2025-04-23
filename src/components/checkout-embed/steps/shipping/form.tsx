@@ -80,7 +80,7 @@ export default function ShippingMethodForm({
         <div className="flex items-center justify-between text-sm">
           <p>
             <span className="font-medium">
-              {t("CheckoutEmbed.Shipping.shipTo")}
+              {t("CheckoutEmbed.Shipping.address")}
             </span>{" "}
             <span className="text-muted-foreground">{shippingAddress}</span>
           </p>
