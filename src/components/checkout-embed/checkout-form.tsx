@@ -239,7 +239,7 @@ export default function CheckoutForm({
       shipmentData: {
         provider: data.provider,
         pickupPointId: data.pickupPointId,
-        name: data.pickupPointDisplayName,
+        name: data.name,
       },
     });
     const { paymentSecret, publicKey } =
