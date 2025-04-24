@@ -12,7 +12,7 @@ export default function CheckoutSummary({
   shipping,
   tax,
   currency,
-  cancelUrl,
+  onCancel,
   exchangeRate,
 }: {
   lineItems: LineItem[];
@@ -20,7 +20,7 @@ export default function CheckoutSummary({
   tax?: number;
   currency: string;
   exchangeRate: number;
-  cancelUrl: string;
+  onCancel: () => void;
 }) {
   const { formData } = useFormStore();
   const [isOpen, setIsOpen] = useState(false);
@@ -63,8 +63,13 @@ export default function CheckoutSummary({
         <p className="font-bold text-lg tracking-tight md:hidden">
           {storeHelpers.formatPrice(total, currency, exchangeRate)}
         </p>
-        <Button className="max-sm:hidden" variant="link" size="link" asChild>
-          <a href={cancelUrl}>{t("CheckoutEmbed.Summary.edit")}</a>
+        <Button
+          className="max-sm:hidden"
+          variant="link"
+          size="link"
+          onClick={onCancel}
+        >
+          {t("CheckoutEmbed.Summary.edit")}
         </Button>
       </div>
 

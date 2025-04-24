@@ -7,6 +7,7 @@ import CheckoutForm from "./checkout-form";
 import CheckoutFormLoading from "./checkout-form-loading";
 import CheckoutSummary from "./steps/summary";
 import CheckoutSummaryLoading from "./steps/summary/loading";
+import { useFormStore } from "./useFormStore";
 
 interface CheckoutEmbedProps {
   checkoutId: string;
@@ -33,6 +34,8 @@ function CheckoutEmbed({ checkoutId, config }: CheckoutEmbedProps) {
   const storeClient = createStoreClient({ proxy: clientProxy });
 
   React.useMemo(() => createI18nInstance(locale), []);
+
+  const { formData, setFormData, step, setStep } = useFormStore();
 
   const [checkout, setCheckout] = useState<CheckoutSession | null>(null);
   const [loading, setLoading] = useState(true);
@@ -68,16 +71,22 @@ function CheckoutEmbed({ checkoutId, config }: CheckoutEmbedProps) {
   }, [checkoutId]); // Only re-run if checkoutId changes
 
   const onSuccess = () => {
+    setStep("customer");
+    setFormData({ customer: formData.customer });
     if (successUrl) {
       window.location.href = successUrl;
     }
   };
 
-  const onError = () => {
+  const onCancel = () => {
+    setStep("customer");
+    setFormData({ customer: formData.customer });
     if (cancelUrl) {
       window.location.href = cancelUrl;
     }
   };
+
+  const onError = () => {};
 
   if (!checkout && !loading) {
     throw new Error("Checkout not found");
@@ -121,7 +130,7 @@ function CheckoutEmbed({ checkoutId, config }: CheckoutEmbedProps) {
             lineItems={checkout?.lineItems ?? []}
             shipping={checkout?.shipping}
             tax={checkout?.tax}
-            cancelUrl={cancelUrl}
+            onCancel={onCancel}
             exchangeRate={checkout?.exchangeRate ?? 1}
           />
         )}
