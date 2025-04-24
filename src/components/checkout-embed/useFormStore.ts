@@ -9,6 +9,8 @@ export interface FormStore {
   setFormData: (formData: Partial<CheckoutFormData>) => void;
   step: CheckoutStep;
   setStep: (step: CheckoutStep) => void;
+  checkoutId: string;
+  setCheckoutId: (checkoutId: string) => void;
 }
 
 export const useFormStore = create<FormStore>()(
@@ -18,6 +20,8 @@ export const useFormStore = create<FormStore>()(
       setFormData: (formData) => set({ formData }),
       step: "customer",
       setStep: (step) => set({ step }),
+      checkoutId: "",
+      setCheckoutId: (checkoutId) => set({ checkoutId }),
     }),
     { name: `checkout` }
   )

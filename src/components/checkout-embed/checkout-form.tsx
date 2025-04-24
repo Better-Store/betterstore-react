@@ -59,7 +59,14 @@ export default function CheckoutForm({
   setShippingCost,
   exchangeRate,
 }: CheckoutFormProps) {
-  const { formData, setFormData, step, setStep } = useFormStore();
+  const {
+    formData,
+    setFormData,
+    step,
+    setStep,
+    checkoutId: storedCheckoutId,
+    setCheckoutId,
+  } = useFormStore();
   const [paymentSecret, setPaymentSecret] = useState<string | null>(null);
   const [publicKey, setPublicKey] = useState<string | null>(null);
   const [shippingRates, setShippingRates] = useState<ShippingRate[]>([]);
@@ -87,6 +94,39 @@ export default function CheckoutForm({
   }, [step]);
 
   useEffect(() => {
+    if (checkoutId !== storedCheckoutId) {
+      setStep("customer");
+      setCheckoutId(checkoutId);
+
+      if (customer) {
+        setFormData({
+          customerId: customer.id,
+          customer: {
+            firstName: customer.address?.name?.split(" ")[0] ?? "",
+            lastName: customer.address?.name?.split(" ")[1] ?? "",
+            phone: customer.address?.phone ?? "",
+            email: customer.email ?? "",
+            address: {
+              line1: customer.address?.line1 ?? "",
+              line2: customer.address?.line2 ?? "",
+              city: customer.address?.city ?? "",
+              zipCode: customer.address?.zipCode ?? "",
+              country: customer.address?.country ?? "",
+              countryCode: customer.address?.countryCode ?? "",
+            },
+          },
+        });
+      } else if (formData.customer?.email) {
+        setFormData({
+          customer: formData.customer,
+        });
+      } else {
+        setFormData({});
+      }
+
+      return;
+    }
+
     if (customer && !formData.customer?.email) {
       const step = customer.id ? "shipping" : "customer";
 
