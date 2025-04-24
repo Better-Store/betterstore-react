@@ -55,6 +55,7 @@ export default function ShippingMethodForm({
       provider: "",
       price: 0,
       pickupPointId: "",
+      pickupPointDisplayName: "",
     },
   });
 

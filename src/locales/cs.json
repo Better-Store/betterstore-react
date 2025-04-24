@@ -21,8 +21,8 @@
         "zipCodePlaceholder": "12345"
       },
       "button": "Uložit a pokračovat",
-      "email": "E-mail",
-      "emailPlaceholder": "Zadejte svůj e -mail",
+      "email": "Email",
+      "emailPlaceholder": "Zadejte svůj email",
       "firstName": "Křestní jméno",
       "firstNamePlaceholder": "Zadejte své křestní jméno",
       "lastName": "Příjmení",
@@ -34,11 +34,11 @@
     "Summary": {
       "calculatedAtNextStep": "Vypočítáno v dalším kroku",
       "edit": "Upravit",
-      "shipping": "Přeprava",
-      "subtotal": "Subtotál",
+      "shipping": "Doprava",
+      "subtotal": "Mezisoučet",
       "tax": "Daň",
       "title": "Shrnutí",
-      "total": "Celkový"
+      "total": "Celkem"
     },
     "loading": "Načítání ...",
     "Payment": {
