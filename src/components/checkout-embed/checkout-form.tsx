@@ -61,6 +61,7 @@ export default function CheckoutForm({
 }: CheckoutFormProps) {
   const { formData, setFormData, step, setStep } = useFormStore();
   const [paymentSecret, setPaymentSecret] = useState<string | null>(null);
+  const [publicKey, setPublicKey] = useState<string | null>(null);
   const [shippingRates, setShippingRates] = useState<ShippingRate[]>([]);
 
   const validateStep = useCallback(() => {
@@ -200,11 +201,14 @@ export default function CheckoutForm({
         pickupPointId: data.pickupPointId,
       },
     });
-    const paymentSecret = await storeClient.generateCheckoutsPaymentSecret(
-      clientSecret,
-      checkoutId
-    );
+    const { paymentSecret, publicKey } =
+      await storeClient.generateCheckoutsPaymentSecret(
+        clientSecret,
+        checkoutId
+      );
+
     setPaymentSecret(paymentSecret);
+    setPublicKey(publicKey);
     setShippingCost(data.price);
 
     setStep("payment");
@@ -225,11 +229,13 @@ export default function CheckoutForm({
 
   useEffect(() => {
     const asyncFunc = async () => {
-      const paymentSecret = await storeClient.generateCheckoutsPaymentSecret(
-        clientSecret,
-        checkoutId
-      );
+      const { paymentSecret, publicKey } =
+        await storeClient.generateCheckoutsPaymentSecret(
+          clientSecret,
+          checkoutId
+        );
       setPaymentSecret(paymentSecret);
+      setPublicKey(publicKey);
     };
 
     if (!paymentSecret && step === "payment") {
@@ -299,6 +305,7 @@ export default function CheckoutForm({
                 currency,
                 exchangeRate
               )}
+              publicKey={publicKey}
             />
           </motion.div>
         )}

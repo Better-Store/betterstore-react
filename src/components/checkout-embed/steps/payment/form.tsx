@@ -23,6 +23,7 @@ interface PaymentFormProps {
   checkoutAppearance?: AppearanceConfig;
   fonts?: StripeElementsOptions["fonts"];
   locale?: StripeElementLocale;
+  publicKey: string | null;
 }
 
 export default function PaymentForm({
@@ -38,6 +39,7 @@ export default function PaymentForm({
   checkoutAppearance,
   fonts,
   locale,
+  publicKey,
 }: PaymentFormProps) {
   const [isSubmitting, setIsSubmitting] = useState(false);
   const { t } = useTranslation();
@@ -103,6 +105,7 @@ export default function PaymentForm({
             onSuccess={onSuccess}
             onError={onError}
             setSubmitting={setIsSubmitting}
+            publicKey={publicKey}
           >
             <div className="flex justify-between items-center pt-8">
               <Button type="button" variant="ghost" onClick={onBack}>

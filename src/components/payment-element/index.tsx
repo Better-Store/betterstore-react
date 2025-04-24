@@ -8,13 +8,9 @@ import {
 import React, { memo } from "react";
 import CheckoutForm from "./checkout-form";
 
-const publicStripeKey =
-  "pk_live_51QvliXK5wvEuxX36GWLFgMtUrG2cGIjpW0eXoqVzjEr8S0PdGzAp4ydQa6ssxVW9u0zaLajod93YZnQIU5C8cgqp00Bb64X60b";
-
-const stripePromise = loadStripe(publicStripeKey);
-
 function PaymentElement({
   paymentSecret,
+  publicKey,
   checkoutAppearance,
   locale,
   fonts,
@@ -24,6 +20,7 @@ function PaymentElement({
   setSubmitting,
 }: {
   paymentSecret: string;
+  publicKey: string | null;
   checkoutAppearance?: Appearance;
   locale?: StripeElementLocale;
   fonts?: StripeElementsOptions["fonts"];
@@ -32,6 +29,8 @@ function PaymentElement({
   children: React.ReactNode;
   setSubmitting?: (isSubmitting: boolean) => void;
 }) {
+  const stripePromise = loadStripe(publicKey ?? "");
+
   const options = {
     locale: locale ?? "en",
     appearance: checkoutAppearance,
