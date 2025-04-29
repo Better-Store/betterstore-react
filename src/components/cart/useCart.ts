@@ -1,15 +1,24 @@
-import { Product, LineItem as SDKLineItem } from "@betterstore/sdk";
+import { Product, LineItemCreate as SDKLineItem } from "@betterstore/sdk";
 import { create } from "zustand";
 import { persist } from "zustand/middleware";
+
+type RecursiveRecord = {
+  [key: string]: any;
+};
 
 type LineItemOptionalParams = {
   quantity?: number;
   variantOptions?: { name: string; value: string }[];
-  metadata?: string;
+  metadata?: RecursiveRecord;
 };
 
-interface LineItem extends Omit<SDKLineItem, "product"> {
+interface LineItem
+  extends Pick<
+    SDKLineItem,
+    "metadata" | "quantity" | "variantOptions" | "product"
+  > {
   id: string;
+  productId: string;
 }
 
 interface Cart {
