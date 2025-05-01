@@ -15,10 +15,9 @@ type LineItemOptionalParams = {
 interface LineItem
   extends Pick<
     SDKLineItem,
-    "metadata" | "quantity" | "variantOptions" | "product"
+    "metadata" | "quantity" | "variantOptions" | "product" | "productId"
   > {
   id: string;
-  productId: string;
 }
 
 interface Cart {
