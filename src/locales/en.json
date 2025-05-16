@@ -7,7 +7,12 @@
       "subtotal": "Subtotal",
       "shipping": "Shipping",
       "calculatedAtNextStep": "Calculated at next step",
-      "tax": "Tax"
+      "tax": "Tax",
+      "discountCodePlaceholder": "Discount code or gift card",
+      "discountCodeApply": "Apply",
+      "discountCodeError": "You're already getting the best offer!",
+      "free": "Free",
+      "discountCodeSuccess": "Discount code applied successfully."
     },
     "CustomerForm": {
       "address": {

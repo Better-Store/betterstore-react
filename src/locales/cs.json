@@ -38,7 +38,12 @@
       "subtotal": "Mezisoučet",
       "tax": "Daň",
       "title": "Shrnutí",
-      "total": "Celkem"
+      "total": "Celkem",
+      "discountCodeApply": "Aplikovat",
+      "discountCodePlaceholder": "Slevový kód nebo dárková karta",
+      "discountCodeError": "Už dostáváte nejlepší nabídku!",
+      "free": "Zdarma",
+      "discountCodeSuccess": "Slevový kód byl úspěšně použit."
     },
     "loading": "Načítání ...",
     "Payment": {

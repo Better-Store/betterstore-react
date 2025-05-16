@@ -35,6 +35,7 @@ interface CheckoutFormProps {
   locale?: StripeElementLocale;
   setShippingCost: (cost: number) => void;
   exchangeRate: number;
+  setCheckout: (checkout: any) => void;
 }
 
 const motionSettings = {
@@ -58,6 +59,7 @@ export default function CheckoutForm({
   locale,
   setShippingCost,
   exchangeRate,
+  setCheckout,
 }: CheckoutFormProps) {
   const {
     formData,
@@ -242,15 +244,19 @@ export default function CheckoutForm({
         name: data.name,
       },
     });
-    const { paymentSecret, publicKey } =
-      await storeClient.generateCheckoutsPaymentSecret(
-        clientSecret,
-        checkoutId
-      );
+    const {
+      paymentSecret,
+      publicKey,
+      checkoutSession: newCheckout,
+    } = await storeClient.generateCheckoutPaymentSecret(
+      clientSecret,
+      checkoutId
+    );
 
     setPaymentSecret(paymentSecret);
     setPublicKey(publicKey);
     setShippingCost(data.price);
+    setCheckout(newCheckout);
 
     setStep("payment");
   };
@@ -270,13 +276,17 @@ export default function CheckoutForm({
 
   useEffect(() => {
     const asyncFunc = async () => {
-      const { paymentSecret, publicKey } =
-        await storeClient.generateCheckoutsPaymentSecret(
-          clientSecret,
-          checkoutId
-        );
+      const {
+        paymentSecret,
+        publicKey,
+        checkoutSession: newCheckout,
+      } = await storeClient.generateCheckoutPaymentSecret(
+        clientSecret,
+        checkoutId
+      );
       setPaymentSecret(paymentSecret);
       setPublicKey(publicKey);
+      setCheckout(newCheckout);
     };
 
     if (!paymentSecret && step === "payment") {

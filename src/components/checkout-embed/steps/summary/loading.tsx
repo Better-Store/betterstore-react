@@ -42,8 +42,15 @@ export default function CheckoutSummaryLoading() {
 
       <hr className="hidden md:block" />
 
+      <div>
+        <Skeleton className="w-24 h-5 mb-2" />
+        <Skeleton className="h-10 w-full mb-1" />
+      </div>
+
+      <hr className="hidden md:block" />
+
       {Array.from({ length: 2 }).map((_, index) => (
-        <div key={index} className="hidden md:flex items-center mb-6">
+        <div key={index} className="hidden md:flex items-center">
           <Skeleton className="rounded-lg size-16" />
 
           <div className="ml-4 grid gap-2 flex-1">

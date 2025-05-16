@@ -19,7 +19,7 @@ export default function CheckoutFormLoading() {
       <InputGroupLoading />
 
       <div className="flex md:col-span-2 justify-end pt-2">
-        <Skeleton className="w-32 h-9" />
+        <Skeleton className="w-32 h-10" />
       </div>
     </div>
   );
@@ -29,7 +29,7 @@ function InputGroupLoading({ className }: { className?: string }) {
   return (
     <div className={clsx("flex flex-col gap-2", className)}>
       <Skeleton className="w-10 h-3" />
-      <Skeleton className="w-full h-9" />
+      <Skeleton className="w-full h-10" />
     </div>
   );
 }
