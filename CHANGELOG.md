@@ -1,5 +1,11 @@
 # @betterstore/sdk
 
+## 0.3.5
+
+### Patch Changes
+
+- discounts added
+
 ## 0.3.4
 
 ### Patch Changes
