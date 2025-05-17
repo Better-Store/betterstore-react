@@ -73,7 +73,8 @@ export default function CheckoutSummary({
     []
   );
 
-  const canCombine = sharedCombinations.length > 0;
+  const canCombine =
+    appliedDiscounts.length === 0 || sharedCombinations.length > 0;
 
   return (
     <div className="grid gap-5">

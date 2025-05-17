@@ -280,10 +280,13 @@ export default function CheckoutForm({
         paymentSecret,
         publicKey,
         checkoutSession: newCheckout,
+        ...rest
       } = await storeClient.generateCheckoutPaymentSecret(
         clientSecret,
         checkoutId
       );
+      console.log("newCheckout", newCheckout);
+      console.log("rest", rest);
       setPaymentSecret(paymentSecret);
       setPublicKey(publicKey);
       setCheckout(newCheckout);
