@@ -286,7 +286,6 @@ export default function CheckoutForm({
         paymentSecret,
         publicKey,
         checkoutSession: newCheckout,
-        ...rest
       } = await storeClient.generateCheckoutPaymentSecret(
         clientSecret,
         checkoutId
