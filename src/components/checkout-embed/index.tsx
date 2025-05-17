@@ -75,7 +75,7 @@ function CheckoutEmbed({ checkoutId, config }: CheckoutEmbedProps) {
   }, [checkoutId]); // Only re-run if checkoutId changes
 
   const onSuccess = () => {
-    resetFormStore();
+    resetFormStore(formData);
 
     if (successUrl) {
       window.location.href = successUrl;
@@ -83,7 +83,7 @@ function CheckoutEmbed({ checkoutId, config }: CheckoutEmbedProps) {
   };
 
   const onCancel = () => {
-    resetFormStore();
+    resetFormStore(formData);
 
     if (cancelUrl) {
       window.location.href = cancelUrl;

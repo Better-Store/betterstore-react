@@ -27,7 +27,7 @@ export const useFormStore = create<FormStore>()(
   )
 );
 
-export const resetFormStore = () => {
+export const resetFormStore = (formData: Partial<CheckoutFormData>) => {
   const currentState = JSON.parse(localStorage.getItem("checkout") || "{}");
 
   localStorage.setItem(
@@ -37,7 +37,7 @@ export const resetFormStore = () => {
       state: {
         ...currentState.state,
         step: "customer",
-        formData: { customer: currentState.customer },
+        formData: { customer: formData.customer },
       },
     })
   );
