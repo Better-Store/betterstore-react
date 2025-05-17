@@ -3,7 +3,7 @@ import { storeHelpers } from "@/lib/betterstore";
 import { CheckoutSession, LineItem } from "@betterstore/sdk";
 import clsx from "clsx";
 import { ChevronDown, X } from "lucide-react";
-import React, { useEffect, useState } from "react";
+import React, { useState } from "react";
 import { useTranslation } from "react-i18next";
 import { useFormStore } from "../../useFormStore";
 import DiscountCode from "./discount-code";
@@ -40,10 +40,10 @@ export default function CheckoutSummary({
     return acc + (productItem?.priceInCents ?? 0) * item.quantity;
   }, 0);
 
-  const shippingPrice = shipping ?? formData.shipping?.price;
-  const total = subtotal + (tax ?? 0) + (shippingPrice ?? 0);
+  const shippingPrice = shipping ?? formData.shipping?.price ?? 0;
+  const total = subtotal + (tax ?? 0) + shippingPrice;
   const isShippingFree =
-    total > (shippingPrice ?? 0) &&
+    subtotal > shippingPrice &&
     appliedDiscounts.some(
       (discount) => discount.discount.type === "FREE_SHIPPING"
     );
@@ -52,11 +52,8 @@ export default function CheckoutSummary({
   );
   const totalWithDiscounts =
     total -
-    (filteredDiscounts.reduce((acc, { amount }) => acc + amount, 0) ?? 0);
-
-  useEffect(() => {
-    console.log(appliedDiscounts);
-  }, [appliedDiscounts]);
+    filteredDiscounts.reduce((acc, { amount }) => acc + amount, 0) -
+    (isShippingFree ? 0 : shippingPrice);
 
   return (
     <div className="grid gap-5">
