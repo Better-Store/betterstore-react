@@ -55,6 +55,26 @@ export default function CheckoutSummary({
     filteredDiscounts.reduce((acc, { amount }) => acc + amount, 0) -
     (isShippingFree ? 0 : shippingPrice);
 
+  const allowedCombinations = appliedDiscounts.map(
+    (discount) => discount.discount.allowedCombinations
+  );
+
+  // Find the intersection of all allowed combinations
+  const sharedCombinations = allowedCombinations.reduce(
+    (intersection, currentCombinations) => {
+      if (intersection.length === 0) return currentCombinations;
+      return intersection.filter((combination) =>
+        currentCombinations.some(
+          (currentCombination) =>
+            JSON.stringify(currentCombination) === JSON.stringify(combination)
+        )
+      );
+    },
+    []
+  );
+
+  const canCombine = sharedCombinations.length > 0;
+
   return (
     <div className="grid gap-5">
       <div className="flex justify-between items-center">
@@ -145,24 +165,28 @@ export default function CheckoutSummary({
         </div>
       </div>
 
-      <hr
-        className={clsx("order-7 md:order-none", {
-          "hidden md:block": !isOpen,
-          block: isOpen,
-        })}
-      />
+      {canCombine && (
+        <>
+          <hr
+            className={clsx("order-7 md:order-none", {
+              "hidden md:block": !isOpen,
+              block: isOpen,
+            })}
+          />
 
-      <div
-        className={clsx("gap-0 order-6 md:order-none", {
-          "hidden md:grid": !isOpen,
-          grid: isOpen,
-        })}
-      >
-        <DiscountCode
-          applyDiscountCode={applyDiscountCode}
-          revalidateDiscounts={revalidateDiscounts}
-        />
-      </div>
+          <div
+            className={clsx("gap-0 order-6 md:order-none", {
+              "hidden md:grid": !isOpen,
+              grid: isOpen,
+            })}
+          >
+            <DiscountCode
+              applyDiscountCode={applyDiscountCode}
+              revalidateDiscounts={revalidateDiscounts}
+            />
+          </div>
+        </>
+      )}
 
       <hr
         className={clsx("order-5 md:order-none", {
@@ -227,7 +251,7 @@ export default function CheckoutSummary({
                 <h3 className="text-lg font-medium">
                   {item.productData?.title}
                 </h3>
-                <p className="text-muted-foreground text-sm">
+                <p className="text-muted-foreground text-ellipsis line-clamp-1 md:max-w-[75%] text-sm">
                   {item.variantOptions.map((option) => (
                     <span key={option.name}>
                       {option.name}: {option.value}
