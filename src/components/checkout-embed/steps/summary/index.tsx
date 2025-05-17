@@ -252,11 +252,9 @@ export default function CheckoutSummary({
                   {item.productData?.title}
                 </h3>
                 <p className="text-muted-foreground text-ellipsis line-clamp-1 md:max-w-[75%] text-sm">
-                  {item.variantOptions.map((option) => (
-                    <span key={option.name}>
-                      {option.name}: {option.value}{" "}
-                    </span>
-                  ))}
+                  {item.variantOptions
+                    .map((option) => `${option.name}: ${option.value}`)
+                    .join(", ")}
                 </p>
               </div>
 
