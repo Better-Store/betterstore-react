@@ -75,16 +75,18 @@ function CheckoutEmbed({ checkoutId, config }: CheckoutEmbedProps) {
   }, [checkoutId]); // Only re-run if checkoutId changes
 
   const onSuccess = () => {
-    setStep("customer");
-    setFormData({ customer: formData.customer });
+    // Update store state directly without triggering UI updates
+    useFormStore.getState().setStep("customer");
+    useFormStore.getState().setFormData({ customer: formData.customer });
     if (successUrl) {
       window.location.href = successUrl;
     }
   };
 
   const onCancel = () => {
-    setStep("customer");
-    setFormData({ customer: formData.customer });
+    // Update store state directly without triggering UI updates
+    useFormStore.getState().setStep("customer");
+    useFormStore.getState().setFormData({ customer: formData.customer });
     if (cancelUrl) {
       window.location.href = cancelUrl;
     }
@@ -119,7 +121,6 @@ function CheckoutEmbed({ checkoutId, config }: CheckoutEmbedProps) {
   };
 
   const removeDiscount = async (id: string) => {
-    console.log("storeclient method", storeClient);
     const newCheckout = await storeClient.removeDiscount(
       clientSecret,
       checkoutId,
