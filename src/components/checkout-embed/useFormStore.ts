@@ -26,3 +26,19 @@ export const useFormStore = create<FormStore>()(
     { name: `checkout` }
   )
 );
+
+export const resetFormStore = () => {
+  const currentState = JSON.parse(localStorage.getItem("checkout") || "{}");
+
+  localStorage.setItem(
+    "checkout",
+    JSON.stringify({
+      ...currentState,
+      state: {
+        ...currentState.state,
+        step: "customer",
+        formData: { customer: currentState.customer },
+      },
+    })
+  );
+};

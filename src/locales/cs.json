@@ -66,7 +66,8 @@
       "title": "Přeprava",
       "description": {
         "other": "Váš balíček bude doručen kurýrem.",
-        "zasilkovna": "Váš balíček bude doručen do bodu vyzvednutí."
+        "zasilkovna": "Váš balíček bude doručen do bodu vyzvednutí.",
+        "shippedTo": "Doručeno do:"
       }
     }
   },

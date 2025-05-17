@@ -8,7 +8,7 @@ import CheckoutForm from "./checkout-form";
 import CheckoutFormLoading from "./checkout-form-loading";
 import CheckoutSummary from "./steps/summary";
 import CheckoutSummaryLoading from "./steps/summary/loading";
-import { useFormStore } from "./useFormStore";
+import { resetFormStore, useFormStore } from "./useFormStore";
 
 interface CheckoutEmbedProps {
   checkoutId: string;
@@ -75,18 +75,16 @@ function CheckoutEmbed({ checkoutId, config }: CheckoutEmbedProps) {
   }, [checkoutId]); // Only re-run if checkoutId changes
 
   const onSuccess = () => {
-    // Update store state directly without triggering UI updates
-    useFormStore.getState().setStep("customer");
-    useFormStore.getState().setFormData({ customer: formData.customer });
+    resetFormStore();
+
     if (successUrl) {
       window.location.href = successUrl;
     }
   };
 
   const onCancel = () => {
-    // Update store state directly without triggering UI updates
-    useFormStore.getState().setStep("customer");
-    useFormStore.getState().setFormData({ customer: formData.customer });
+    resetFormStore();
+
     if (cancelUrl) {
       window.location.href = cancelUrl;
     }
