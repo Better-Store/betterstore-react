@@ -36,6 +36,10 @@ interface CheckoutFormProps {
   setShippingCost: (cost: number) => void;
   exchangeRate: number;
   setCheckout: (checkout: any) => void;
+  setPaymentSecret: (paymentSecret: string) => void;
+  setPublicKey: (publicKey: string) => void;
+  paymentSecret: string | null;
+  publicKey: string | null;
 }
 
 const motionSettings = {
@@ -60,6 +64,10 @@ export default function CheckoutForm({
   setShippingCost,
   exchangeRate,
   setCheckout,
+  setPaymentSecret,
+  setPublicKey,
+  paymentSecret,
+  publicKey,
 }: CheckoutFormProps) {
   const {
     formData,
@@ -69,8 +77,6 @@ export default function CheckoutForm({
     checkoutId: storedCheckoutId,
     setCheckoutId,
   } = useFormStore();
-  const [paymentSecret, setPaymentSecret] = useState<string | null>(null);
-  const [publicKey, setPublicKey] = useState<string | null>(null);
   const [shippingRates, setShippingRates] = useState<ShippingRate[]>([]);
 
   const validateStep = useCallback(() => {
@@ -285,8 +291,6 @@ export default function CheckoutForm({
         clientSecret,
         checkoutId
       );
-      console.log("newCheckout", newCheckout);
-      console.log("rest", rest);
       setPaymentSecret(paymentSecret);
       setPublicKey(publicKey);
       setCheckout(newCheckout);

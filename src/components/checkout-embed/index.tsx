@@ -39,7 +39,10 @@ function CheckoutEmbed({ checkoutId, config }: CheckoutEmbedProps) {
 
   React.useMemo(() => createI18nInstance(locale), []);
 
-  const { formData, setFormData, setStep } = useFormStore();
+  const { formData, step } = useFormStore();
+
+  const [paymentSecret, setPaymentSecret] = useState<string | null>(null);
+  const [publicKey, setPublicKey] = useState<string | null>(null);
 
   const [checkout, setCheckout] = useState<CheckoutSession | null>(null);
   const [loading, setLoading] = useState(true);
@@ -111,11 +114,23 @@ function CheckoutEmbed({ checkoutId, config }: CheckoutEmbedProps) {
   };
 
   const revalidateDiscounts = async () => {
-    const newCheckout = await storeClient.revalidateDiscounts(
-      clientSecret,
-      checkoutId
-    );
-    setCheckout(newCheckout);
+    if (step === "payment") {
+      const { paymentSecret, publicKey, checkoutSession } =
+        await storeClient.generateCheckoutPaymentSecret(
+          clientSecret,
+          checkoutId
+        );
+      setPaymentSecret(paymentSecret);
+      setPublicKey(publicKey);
+      setCheckout(checkoutSession);
+    } else {
+      const newCheckout = await storeClient.revalidateDiscounts(
+        clientSecret,
+        checkoutId
+      );
+
+      setCheckout(newCheckout);
+    }
   };
 
   const removeDiscount = async (id: string) => {
@@ -124,7 +139,19 @@ function CheckoutEmbed({ checkoutId, config }: CheckoutEmbedProps) {
       checkoutId,
       id
     );
-    setCheckout(newCheckout);
+
+    if (step === "payment") {
+      const { paymentSecret, publicKey, checkoutSession } =
+        await storeClient.generateCheckoutPaymentSecret(
+          clientSecret,
+          checkoutId
+        );
+      setPaymentSecret(paymentSecret);
+      setPublicKey(publicKey);
+      setCheckout(checkoutSession);
+    } else {
+      setCheckout(newCheckout);
+    }
   };
 
   useEffect(() => {
@@ -158,6 +185,10 @@ function CheckoutEmbed({ checkoutId, config }: CheckoutEmbedProps) {
             onError={onError}
             exchangeRate={checkout?.exchangeRate ?? 1}
             setCheckout={setCheckout}
+            setPublicKey={setPublicKey}
+            publicKey={publicKey}
+            setPaymentSecret={setPaymentSecret}
+            paymentSecret={paymentSecret}
           />
         )}
       </div>
