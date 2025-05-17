@@ -6,14 +6,14 @@
         "addressPlaceholder": "Zadejte svou adresu",
         "button": "Uložit adresu",
         "city": "Město",
-        "cityPlaceholder": "San Francisco",
+        "cityPlaceholder": "Zadejte město",
         "country": "Země",
-        "countryPlaceholder": "Vstoupit do své země",
+        "countryPlaceholder": "Zadejte svou zemi",
         "description": "Níže vyplňte údaje o vaší adrese.",
         "line1": "Adresa ulice",
-        "line1Placeholder": "123 Hlavní ulice",
+        "line1Placeholder": "Zadejte ulici a číslo",
         "line2": "Byt, apartmá, jednotka atd. (Volitelné)",
-        "line2Placeholder": "APT 4B, Suite 123, atd.",
+        "line2Placeholder": "Byt 4B, Pokoj 123, atd.",
         "state": "Stát (volitelné)",
         "statePlaceholder": "Kalifornie",
         "title": "Zadejte svou adresu",
@@ -43,7 +43,8 @@
       "discountCodePlaceholder": "Slevový kód nebo dárková karta",
       "discountCodeError": "Už dostáváte nejlepší nabídku!",
       "free": "Zdarma",
-      "discountCodeSuccess": "Slevový kód byl úspěšně použit."
+      "discountCodeSuccess": "Slevový kód byl úspěšně použit.",
+      "discountCodeLabel": "Slevový kód"
     },
     "loading": "Načítání ...",
     "Payment": {

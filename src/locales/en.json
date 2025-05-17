@@ -12,7 +12,8 @@
       "discountCodeApply": "Apply",
       "discountCodeError": "You're already getting the best offer!",
       "free": "Free",
-      "discountCodeSuccess": "Discount code applied successfully."
+      "discountCodeSuccess": "Discount code applied successfully.",
+      "discountCodeLabel": "Discount Code"
     },
     "CustomerForm": {
       "address": {

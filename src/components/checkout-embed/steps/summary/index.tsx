@@ -53,7 +53,7 @@ export default function CheckoutSummary({
   const totalWithDiscounts =
     total -
     filteredDiscounts.reduce((acc, { amount }) => acc + amount, 0) -
-    (isShippingFree ? 0 : shippingPrice);
+    (isShippingFree ? shippingPrice : 0);
 
   const allowedCombinations = appliedDiscounts.map(
     (discount) => discount.discount.allowedCombinations

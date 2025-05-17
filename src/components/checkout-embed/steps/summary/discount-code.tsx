@@ -39,7 +39,9 @@ export default function DiscountCode({
 
   return (
     <form className="pb-1" onSubmit={handleSubmit}>
-      <Label className="text-sm font-medium mb-2">Discount Code</Label>
+      <Label className="text-sm font-medium mb-2">
+        {t("CheckoutEmbed.Summary.discountCodeLabel")}
+      </Label>
       <div className="flex items-center gap-2">
         <Input
           aria-invalid={!!error}
