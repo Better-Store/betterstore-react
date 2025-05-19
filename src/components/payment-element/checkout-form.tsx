@@ -50,10 +50,6 @@ const CheckoutForm = ({
       setSubmitting?.(false);
       onSuccess?.();
     }
-
-    setErrorMessage(undefined);
-    setIsSubmitting(false);
-    setSubmitting?.(false);
   };
 
   return (

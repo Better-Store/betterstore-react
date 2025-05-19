@@ -142,7 +142,7 @@ export default function CheckoutSummary({
         {filteredDiscounts.map(({ discount, amount, id }) => (
           <div
             key={discount.id}
-            className="flex not-last:-mb-0.5 justify-between text-muted-foreground"
+            className="flex justify-between text-muted-foreground"
           >
             <DiscountItem
               id={id}
