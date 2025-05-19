@@ -203,37 +203,54 @@ export default function CheckoutSummary({
         })}
       >
         {lineItems.map((item, index) => {
-          const productAppliedDiscounts = appliedDiscounts.filter(
-            ({ discount }) =>
-              discount.allowedProductIDs.includes(item.productData.productId)
-          );
-          const discount =
-            productAppliedDiscounts.length > 0
-              ? productAppliedDiscounts.reduce(
-                  (acc, curr) => {
-                    return curr.amount > acc.amount ? curr : acc;
-                  },
-                  productAppliedDiscounts[0] as NonNullable<
-                    (typeof productAppliedDiscounts)[0]
-                  >
-                )
-              : null;
-
-          const isDiscounted = !!discount;
-          const productItem =
+          const finalItem =
             item.productData?.selectedVariant || item.productData;
 
+          const productAppliedDiscounts = appliedDiscounts.filter((discount) =>
+            discount.allowedLineItems.some(
+              (allowedLineItem) =>
+                allowedLineItem.productId === item.productData.productId
+            )
+          );
+          const formattedProductAppliedDiscounts = productAppliedDiscounts.map(
+            (discount) => {
+              const elegibleLineItems = discount.allowedLineItems.find(
+                (allowedLineItem) =>
+                  allowedLineItem.productId === item.productData.productId
+              );
+              if (!elegibleLineItems) return 0;
+
+              const elegibleQuantity = elegibleLineItems.quantity;
+              const elegibleTotalAmount =
+                (finalItem?.priceInCents ?? 0) * elegibleQuantity;
+
+              if (discount.discount.valueType === "PERCENTAGE") {
+                const percentage = discount.discount.value / 100;
+                return elegibleTotalAmount * percentage;
+              }
+
+              return elegibleQuantity * discount.discount.value;
+            }
+          );
+          const totalDiscountAmount =
+            formattedProductAppliedDiscounts.length > 0
+              ? formattedProductAppliedDiscounts.reduce((acc, curr) => {
+                  return acc + curr;
+                }, 0)
+              : null;
+
+          const isDiscounted = !!totalDiscountAmount;
           const discountedPrice =
-            productItem.priceInCents - (discount?.amount ?? 0);
+            finalItem.priceInCents - (totalDiscountAmount ?? 0);
 
           return (
             <div key={index} className="flex items-center">
               <div className="relative">
                 <div className="w-16 h-16 bg-secondary rounded-lg overflow-hidden relative">
-                  {productItem?.images[0] && (
+                  {finalItem?.images[0] && (
                     <img
                       src={
-                        productItem.images[0] ||
+                        finalItem.images[0] ||
                         item?.productData?.images[0] ||
                         "/placeholder.svg"
                       }
@@ -264,7 +281,7 @@ export default function CheckoutSummary({
                   <div className="flex flex-col">
                     <p className="text-sm font-medium -mb-0.5 line-through text-muted-foreground">
                       {storeHelpers.formatPrice(
-                        productItem?.priceInCents ?? 0,
+                        finalItem?.priceInCents ?? 0,
                         currency,
                         exchangeRate
                       )}
@@ -282,7 +299,7 @@ export default function CheckoutSummary({
                 ) : (
                   <p className="text-lg font-medium">
                     {storeHelpers.formatPrice(
-                      productItem?.priceInCents ?? 0,
+                      finalItem?.priceInCents ?? 0,
                       currency,
                       exchangeRate
                     )}
