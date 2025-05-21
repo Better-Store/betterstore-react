@@ -227,6 +227,8 @@ export default function CheckoutSummary({
               if (discount.discount.valueType === "PERCENTAGE") {
                 const percentage = discount.discount.value / 100;
                 return elegibleTotalAmount * percentage;
+              } else if (discount.discount.valueType === "FREE") {
+                return elegibleTotalAmount;
               }
 
               return elegibleQuantity * discount.discount.value;
