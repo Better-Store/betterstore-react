@@ -25,7 +25,7 @@ export default function DiscountCode({
 
     try {
       await applyDiscountCode(discountCode);
-      await revalidateDiscounts();
+      // await revalidateDiscounts();
       setDiscountCode("");
 
       toast.success(t("CheckoutEmbed.Summary.discountCodeSuccess"));
