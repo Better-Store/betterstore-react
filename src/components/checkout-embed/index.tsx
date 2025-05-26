@@ -6,6 +6,7 @@ import { Toaster } from "../ui/sonner";
 import Appearance, { AppearanceConfig } from "./appearance";
 import CheckoutForm from "./checkout-form";
 import CheckoutFormLoading from "./checkout-form-loading";
+import "./globals.css";
 import CheckoutSummary from "./steps/summary";
 import CheckoutSummaryLoading from "./steps/summary/loading";
 import { resetFormStore, useFormStore } from "./useFormStore";
