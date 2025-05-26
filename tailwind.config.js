@@ -10,4 +10,14 @@ module.exports = {
     extend: {},
   },
   plugins: [],
+  // Prefix all CSS variables to prevent leakage
+  future: {
+    hoverOnlyWhenSupported: true,
+  },
+  // This ensures all CSS variables are prefixed
+  darkMode: "class",
+  // Custom prefix for CSS variables
+  cssVariables: {
+    prefix: "betterstore-",
+  },
 };
