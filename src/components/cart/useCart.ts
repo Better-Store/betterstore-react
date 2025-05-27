@@ -24,7 +24,7 @@ export interface CartLineItem
 export interface Cart {
   lineItems: CartLineItem[];
   addItem: (
-    product: Omit<Product, "productVariants"> & {
+    product: CartLineItem["product"] & {
       productVariants?: Product["productVariants"];
     },
     additionalParams?: LineItemOptionalParams
