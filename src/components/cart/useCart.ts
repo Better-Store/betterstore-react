@@ -1,4 +1,4 @@
-import { Product, LineItemCreate as SDKLineItem } from "@betterstore/sdk";
+import { Product, LineItemCreate as SDKLineItemCreate } from "@betterstore/sdk";
 import { create } from "zustand";
 import { persist } from "zustand/middleware";
 
@@ -14,16 +14,19 @@ type LineItemOptionalParams = {
 
 interface LineItem
   extends Pick<
-    SDKLineItem,
-    "metadata" | "quantity" | "variantOptions" | "product" | "productId"
+    SDKLineItemCreate,
+    "metadata" | "quantity" | "variantOptions" | "productId" | "product"
   > {
   id: string;
+  selectedVariant: Product["productVariants"][number] | null;
 }
 
-interface Cart {
+export interface Cart {
   lineItems: LineItem[];
   addItem: (
-    product: Omit<Product, "productVariants">,
+    product: Omit<Product, "productVariants"> & {
+      productVariants?: Product["productVariants"];
+    },
     additionalParams?: LineItemOptionalParams
   ) => void;
   removeItem: (id: string) => void;
@@ -52,10 +55,19 @@ export const useCart = create<Cart>()(
       addItem: (product, additionalParams) =>
         set((state) => {
           const productId = product.id;
+          const selectedVariant =
+            (product.productVariants ?? []).find((v) =>
+              v.variantOptions.every((vOpt) =>
+                additionalParams?.variantOptions?.some(
+                  (iOpt) => vOpt.name === iOpt.name && vOpt.value === iOpt.value
+                )
+              )
+            ) || null;
           const formattedNewItem = {
             productId: productId,
             product: product,
             quantity: additionalParams?.quantity ?? 1,
+            selectedVariant,
             variantOptions: additionalParams?.variantOptions ?? [],
             metadata: additionalParams?.metadata,
           };
