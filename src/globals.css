@@ -78,11 +78,7 @@
   --font-sans: var(--bs-font-sans), Helvetica, Arial, apple-system, sans-serif;
 }
 
-<<<<<<< HEAD
 @layer components {
-=======
-@layer base {
->>>>>>> 9abc72e5c3cdbefebceb3ef941f70f20909ea8f6
   * {
     @apply border-border outline-ring/50;
   }
