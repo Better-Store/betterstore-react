@@ -6,7 +6,10 @@ module.exports = {
     extend: {},
   },
   plugins: [],
+<<<<<<< HEAD
   corePlugins: {
     preflight: false,
   },
+=======
+>>>>>>> 9abc72e5c3cdbefebceb3ef941f70f20909ea8f6
 };
