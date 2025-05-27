@@ -1,8 +1,8 @@
+@import "tailwindcss" important;
+
 @plugin 'tailwindcss-animate';
 
 .checkout-embed {
-  @import "tailwindcss" important;
-
   :root {
     --bs-background: oklch(1 0 0);
     --bs-foreground: oklch(0.145 0 0);
@@ -84,6 +84,7 @@
     * {
       @apply border-border outline-ring/50;
     }
+
     .checkout-embed {
       @apply bg-background font-sans text-foreground;
     }
