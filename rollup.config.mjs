@@ -54,10 +54,9 @@ export default {
         path: "./postcss.config.cjs",
       },
       extract: false,
-      modules: false,
-      minimize: true,
+      modules: true,
+      minimize: false,
       inject: true,
-      use: ["sass"],
     }),
   ],
   external: [

@@ -39,76 +39,69 @@
 }
 
 @theme inline {
-  .checkout-embed {
-    --color-background: var(--bs-background);
-    --color-foreground: var(--bs-foreground);
-    --color-card: var(--bs-card);
-    --color-card-foreground: var(--bs-card-foreground);
-    --color-popover: var(--bs-popover);
-    --color-popover-foreground: var(--bs-popover-foreground);
-    --color-primary: var(--bs-primary);
-    --color-primary-foreground: var(--bs-primary-foreground);
-    --color-secondary: var(--bs-secondary);
-    --color-secondary-foreground: var(--bs-secondary-foreground);
-    --color-muted: var(--bs-muted);
-    --color-muted-foreground: var(--bs-muted-foreground);
-    --color-accent: var(--bs-accent);
-    --color-accent-foreground: var(--bs-accent-foreground);
-    --color-destructive: var(--bs-destructive);
-    --color-destructive-foreground: var(--bs-destructive-foreground);
-    --color-border: var(--bs-border);
-    --color-input: var(--bs-input);
-    --color-ring: var(--bs-ring);
-    --color-chart-1: var(--bs-chart-1);
-    --color-chart-2: var(--bs-chart-2);
-    --color-chart-3: var(--bs-chart-3);
-    --color-chart-4: var(--bs-chart-4);
-    --color-chart-5: var(--bs-chart-5);
-    --radius-sm: calc(var(--bs-radius) - 4px);
-    --radius-md: calc(var(--bs-radius) - 2px);
-    --radius-lg: var(--bs-radius);
-    --radius-xl: calc(var(--bs-radius) + 4px);
-    --color-sidebar: var(--bs-sidebar);
-    --color-sidebar-foreground: var(--bs-sidebar-foreground);
-    --color-sidebar-primary: var(--bs-sidebar-primary);
-    --color-sidebar-primary-foreground: var(--bs-sidebar-primary-foreground);
-    --color-sidebar-accent: var(--bs-sidebar-accent);
-    --color-sidebar-accent-foreground: var(--bs-sidebar-accent-foreground);
-    --color-sidebar-border: var(--bs-sidebar-border);
-    --color-sidebar-ring: var(--bs-sidebar-ring);
-    --font-sans:
-      var(--bs-font-sans), Helvetica, Arial, apple-system, sans-serif;
-  }
+  --color-background: var(--bs-background);
+  --color-foreground: var(--bs-foreground);
+  --color-card: var(--bs-card);
+  --color-card-foreground: var(--bs-card-foreground);
+  --color-popover: var(--bs-popover);
+  --color-popover-foreground: var(--bs-popover-foreground);
+  --color-primary: var(--bs-primary);
+  --color-primary-foreground: var(--bs-primary-foreground);
+  --color-secondary: var(--bs-secondary);
+  --color-secondary-foreground: var(--bs-secondary-foreground);
+  --color-muted: var(--bs-muted);
+  --color-muted-foreground: var(--bs-muted-foreground);
+  --color-accent: var(--bs-accent);
+  --color-accent-foreground: var(--bs-accent-foreground);
+  --color-destructive: var(--bs-destructive);
+  --color-destructive-foreground: var(--bs-destructive-foreground);
+  --color-border: var(--bs-border);
+  --color-input: var(--bs-input);
+  --color-ring: var(--bs-ring);
+  --color-chart-1: var(--bs-chart-1);
+  --color-chart-2: var(--bs-chart-2);
+  --color-chart-3: var(--bs-chart-3);
+  --color-chart-4: var(--bs-chart-4);
+  --color-chart-5: var(--bs-chart-5);
+  --radius-sm: calc(var(--bs-radius) - 4px);
+  --radius-md: calc(var(--bs-radius) - 2px);
+  --radius-lg: var(--bs-radius);
+  --radius-xl: calc(var(--bs-radius) + 4px);
+  --color-sidebar: var(--bs-sidebar);
+  --color-sidebar-foreground: var(--bs-sidebar-foreground);
+  --color-sidebar-primary: var(--bs-sidebar-primary);
+  --color-sidebar-primary-foreground: var(--bs-sidebar-primary-foreground);
+  --color-sidebar-accent: var(--bs-sidebar-accent);
+  --color-sidebar-accent-foreground: var(--bs-sidebar-accent-foreground);
+  --color-sidebar-border: var(--bs-sidebar-border);
+  --color-sidebar-ring: var(--bs-sidebar-ring);
+  --font-sans: var(--bs-font-sans), Helvetica, Arial, apple-system, sans-serif;
 }
 
 @layer base {
+  * {
+    @apply border-border outline-ring/50;
+  }
+
   .checkout-embed {
-    * {
-      @apply border-border outline-ring/50;
-    }
+    @apply bg-background font-sans text-foreground;
+  }
 
-    .checkout-embed {
-      @apply bg-background font-sans text-foreground;
-    }
+  h2 {
+    @apply text-2xl font-bold tracking-tight;
+  }
 
-    h2 {
-      @apply text-2xl font-bold tracking-tight;
-    }
-
-    p {
-      @apply tracking-tight!;
-    }
+  p {
+    @apply tracking-tight!;
   }
 }
 
 @layer utilities {
-  .checkout-embed {
-    .scrollbar-hidden {
-      scrollbar-width: none;
-    }
+  .scrollbar-hidden {
+    scrollbar-width: none;
+  }
 
-    .scrollbar-hidden::-webkit-scrollbar {
-      display: none;
-    }
+  .scrollbar-hidden::-webkit-scrollbar {
+    display: none;
   }
 }
