@@ -12,7 +12,7 @@ type LineItemOptionalParams = {
   metadata?: RecursiveRecord;
 };
 
-interface LineItem
+export interface CartLineItem
   extends Pick<
     SDKLineItemCreate,
     "metadata" | "quantity" | "variantOptions" | "productId" | "product"
@@ -22,9 +22,9 @@ interface LineItem
 }
 
 export interface Cart {
-  lineItems: LineItem[];
+  lineItems: CartLineItem[];
   addItem: (
-    product: Omit<Product, "productVariants"> & {
+    product: CartLineItem["product"] & {
       productVariants?: Product["productVariants"];
     },
     additionalParams?: LineItemOptionalParams

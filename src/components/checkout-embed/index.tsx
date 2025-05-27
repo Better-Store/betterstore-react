@@ -2,7 +2,6 @@ import { default as createI18nInstance, Locale } from "@/i18n";
 import { CheckoutSession, createStoreClient } from "@betterstore/sdk";
 import { StripeElementsOptions } from "@stripe/stripe-js";
 import React, { memo, useEffect, useState } from "react";
-import "../../globals.css";
 import { Toaster } from "../ui/sonner";
 import Appearance, { AppearanceConfig } from "./appearance";
 import CheckoutForm from "./checkout-form";
