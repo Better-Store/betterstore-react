@@ -6,6 +6,7 @@ import {
   StripeElementsOptions,
 } from "@stripe/stripe-js";
 import React, { memo } from "react";
+import { ShadowWrapper } from "../shadow-wrapper";
 import CheckoutForm from "./checkout-form";
 
 function PaymentElement({
@@ -39,14 +40,16 @@ function PaymentElement({
   } satisfies StripeElementsOptions;
 
   return (
-    <Elements stripe={stripePromise} options={options}>
-      <CheckoutForm
-        onSuccess={onSuccess}
-        onError={onError}
-        children={children}
-        setSubmitting={setSubmitting}
-      />
-    </Elements>
+    <ShadowWrapper>
+      <Elements stripe={stripePromise} options={options}>
+        <CheckoutForm
+          onSuccess={onSuccess}
+          onError={onError}
+          children={children}
+          setSubmitting={setSubmitting}
+        />
+      </Elements>
+    </ShadowWrapper>
   );
 }
 
