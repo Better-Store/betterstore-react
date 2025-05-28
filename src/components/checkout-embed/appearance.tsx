@@ -10,6 +10,7 @@ export type AppearanceConfig = {
   theme?: Themes;
   borderRadius?: number;
   font?: string;
+  fontSources?: StripeElementsOptions["fonts"];
   colors?: {
     background?: string;
     foreground?: string;
@@ -40,6 +41,31 @@ export default function Appearance({
         document.documentElement.style.setProperty(key, value);
       });
     }
+
+    // Load fonts if provided
+    if (appearance?.fontSources) {
+      appearance.fontSources.forEach((font) => {
+        if ("cssSrc" in font) {
+          // Handle CSS font source
+          const link = document.createElement("link");
+          link.rel = "stylesheet";
+          link.href = font.cssSrc;
+          document.head.appendChild(link);
+        } else if ("family" in font) {
+          // Handle custom font source
+          const style = document.createElement("style");
+          style.textContent = `
+            @font-face {
+              font-family: '${font.family}';
+              src: ${font.src};
+              font-weight: ${font.weight || "normal"};
+              font-style: ${font.style || "normal"};
+            }
+          `;
+          document.head.appendChild(style);
+        }
+      });
+    }
   }, [appearance]);
 
   return null;
@@ -49,10 +75,10 @@ const getVariablesFromAppearanceConfig = (appearance?: AppearanceConfig) => {
   const colors = getColorVariablesFromAppearanceConfig(appearance);
   const definedAppearance = {
     ...colors,
-    "--bs-font-sans":
+    "--font-sans":
       appearance?.font ??
       '-apple-system, BlinkMacSystemFont, "Helvetica", "Gill Sans", "Inter", sans-serif',
-    "--bs-radius": appearance?.borderRadius
+    "--radius": appearance?.borderRadius
       ? `${appearance.borderRadius}rem`
       : "0.625rem",
   };
@@ -95,83 +121,81 @@ const getColorVariablesFromAppearanceConfig = (
   };
 
   const colors = {
-    "--bs-background":
-      appearance?.colors?.background ?? fallbackColors.background,
-    "--bs-foreground":
-      appearance?.colors?.foreground ?? fallbackColors.foreground,
+    "--background": appearance?.colors?.background ?? fallbackColors.background,
+    "--foreground": appearance?.colors?.foreground ?? fallbackColors.foreground,
 
     // Card (reusing background/foreground)
-    "--bs-card": appearance?.colors?.background ?? fallbackColors.card,
-    "--bs-card-foreground":
+    "--card": appearance?.colors?.background ?? fallbackColors.card,
+    "--card-foreground":
       appearance?.colors?.foreground ?? fallbackColors.cardForeground,
 
     // Popover (reusing background/foreground)
-    "--bs-popover": appearance?.colors?.background ?? fallbackColors.background,
-    "--bs-popover-foreground":
+    "--popover": appearance?.colors?.background ?? fallbackColors.background,
+    "--popover-foreground":
       appearance?.colors?.foreground ?? fallbackColors.foreground,
 
     // Primary
-    "--bs-primary": appearance?.colors?.primary ?? fallbackColors.primary,
-    "--bs-primary-foreground":
+    "--primary": appearance?.colors?.primary ?? fallbackColors.primary,
+    "--primary-foreground":
       appearance?.colors?.primaryForeground ?? fallbackColors.primaryForeground,
 
     // Secondary
-    "--bs-secondary": appearance?.colors?.secondary ?? fallbackColors.secondary,
-    "--bs-secondary-foreground":
+    "--secondary": appearance?.colors?.secondary ?? fallbackColors.secondary,
+    "--secondary-foreground":
       appearance?.colors?.secondaryForeground ??
       fallbackColors.secondaryForeground,
 
     // Muted
-    "--bs-muted": appearance?.colors?.muted ?? fallbackColors.muted,
-    "--bs-muted-foreground":
+    "--muted": appearance?.colors?.muted ?? fallbackColors.muted,
+    "--muted-foreground":
       appearance?.colors?.mutedForeground ?? fallbackColors.mutedForeground,
 
     // Accent
-    "--bs-accent": appearance?.colors?.accent ?? fallbackColors.accent,
-    "--bs-accent-foreground":
+    "--accent": appearance?.colors?.accent ?? fallbackColors.accent,
+    "--accent-foreground":
       appearance?.colors?.accentForeground ?? fallbackColors.accentForeground,
 
     // Destructive
-    "--bs-destructive":
+    "--destructive":
       appearance?.colors?.destructive ?? fallbackColors.destructive,
-    "--bs-destructive-foreground": fallbackColors.destructiveForeground,
+    "--destructive-foreground": fallbackColors.destructiveForeground,
 
     // Border and Input
-    "--bs-border": appearance?.colors?.border ?? fallbackColors.border,
-    "--bs-input": appearance?.colors?.border ?? fallbackColors.border,
-    "--bs-ring": appearance?.colors?.ring ?? fallbackColors.ring,
+    "--border": appearance?.colors?.border ?? fallbackColors.border,
+    "--input": appearance?.colors?.border ?? fallbackColors.border,
+    "--ring": appearance?.colors?.ring ?? fallbackColors.ring,
 
     // Chart colors (keeping original values)
-    "--bs-chart-1": isDark
+    "--chart-1": isDark
       ? "oklch(0.488 0.243 264.376)"
       : "oklch(0.646 0.222 41.116)",
-    "--bs-chart-2": isDark
+    "--chart-2": isDark
       ? "oklch(0.696 0.17 162.48)"
       : "oklch(0.6 0.118 184.704)",
-    "--bs-chart-3": isDark
+    "--chart-3": isDark
       ? "oklch(0.769 0.188 70.08)"
       : "oklch(0.398 0.07 227.392)",
-    "--bs-chart-4": isDark
+    "--chart-4": isDark
       ? "oklch(0.627 0.265 303.9)"
       : "oklch(0.828 0.189 84.429)",
-    "--bs-chart-5": isDark
+    "--chart-5": isDark
       ? "oklch(0.645 0.246 16.439)"
       : "oklch(0.769 0.188 70.08)",
 
     // Sidebar
-    "--bs-sidebar": appearance?.colors?.background ?? fallbackColors.sidebar,
-    "--bs-sidebar-foreground":
+    "--sidebar": appearance?.colors?.background ?? fallbackColors.sidebar,
+    "--sidebar-foreground":
       appearance?.colors?.foreground ?? fallbackColors.sidebarForeground,
-    "--bs-sidebar-primary":
+    "--sidebar-primary":
       appearance?.colors?.primary ?? fallbackColors.sidebarPrimary,
-    "--bs-sidebar-primary-foreground":
+    "--sidebar-primary-foreground":
       appearance?.colors?.primaryForeground ??
       fallbackColors.sidebarPrimaryForeground,
-    "--bs-sidebar-accent": appearance?.colors?.accent ?? fallbackColors.accent,
-    "--bs-sidebar-accent-foreground":
+    "--sidebar-accent": appearance?.colors?.accent ?? fallbackColors.accent,
+    "--sidebar-accent-foreground":
       appearance?.colors?.accentForeground ?? fallbackColors.accentForeground,
-    "--bs-sidebar-border": appearance?.colors?.border ?? fallbackColors.border,
-    "--bs-sidebar-ring": appearance?.colors?.ring ?? fallbackColors.ring,
+    "--sidebar-border": appearance?.colors?.border ?? fallbackColors.border,
+    "--sidebar-ring": appearance?.colors?.ring ?? fallbackColors.ring,
   };
 
   return colors;
@@ -187,24 +211,24 @@ export const convertCheckoutAppearanceToStripeAppearance = (
     rules: {
       ".Input": {
         padding: "12px",
-        border: `1px solid ${currentVariables["--bs-border"]}`,
-        backgroundColor: currentVariables["--bs-background"],
+        border: `1px solid ${currentVariables["--border"]}`,
+        backgroundColor: currentVariables["--background"],
         fontSize: "14px",
         outline: "none",
       },
       ".Input:focus": {
-        backgroundColor: currentVariables["--bs-secondary"],
+        backgroundColor: currentVariables["--secondary"],
       },
       ".Input::placeholder": {
         fontSize: "14px",
-        color: currentVariables["--bs-muted-foreground"],
+        color: currentVariables["--muted-foreground"],
       },
       ".Label": {
         marginBottom: "8px",
         fontSize: "14px",
         fontWeight: "500",
       },
-      ".Input:disabled, .Input--bs-invalid:disabled": {
+      ".Input:disabled, .Input--invalid:disabled": {
         cursor: "not-allowed",
       },
       // ".Block": {
@@ -214,16 +238,16 @@ export const convertCheckoutAppearanceToStripeAppearance = (
       // },
       ".Tab": {
         padding: "10px 12px 8px 12px",
-        border: `1px solid ${currentVariables["--bs-border"]}`,
-        backgroundColor: currentVariables["--bs-background"],
+        border: `1px solid ${currentVariables["--border"]}`,
+        backgroundColor: currentVariables["--background"],
       },
       ".Tab:hover": {
-        backgroundColor: currentVariables["--bs-secondary"],
+        backgroundColor: currentVariables["--secondary"],
       },
-      ".Tab--bs-selected, .Tab--bs-selected:focus, .Tab--bs-selected:hover": {
-        border: `1px solid ${currentVariables["--bs-border"]}`,
-        backgroundColor: currentVariables["--bs-secondary"],
-        color: currentVariables["--bs-foreground"],
+      ".Tab--selected, .Tab--selected:focus, .Tab--selected:hover": {
+        border: `1px solid ${currentVariables["--border"]}`,
+        backgroundColor: currentVariables["--secondary"],
+        color: currentVariables["--foreground"],
       },
     },
     variables: {
@@ -231,17 +255,17 @@ export const convertCheckoutAppearanceToStripeAppearance = (
       focusBoxShadow: "none",
 
       fontFamily: fonts
-        ? currentVariables["--bs-font-sans"]
+        ? currentVariables["--font-sans"]
         : stripeAppearance.variables.fontFamily,
-      borderRadius: currentVariables["--bs-radius"],
-      // colorSuccess: currentVariables["--bs-success"],
-      // colorWarning: currentVariables["--bs-warning"],
-      colorDanger: currentVariables["--bs-destructive"],
-      colorBackground: currentVariables["--bs-background"],
-      colorPrimary: currentVariables["--bs-primary"],
-      colorText: currentVariables["--bs-foreground"],
-      colorTextSecondary: currentVariables["--bs-secondary-foreground"],
-      colorTextPlaceholder: currentVariables["--bs-muted-foreground"],
+      borderRadius: currentVariables["--radius"],
+      // colorSuccess: currentVariables["--success"],
+      // colorWarning: currentVariables["--warning"],
+      colorDanger: currentVariables["--destructive"],
+      colorBackground: currentVariables["--background"],
+      colorPrimary: currentVariables["--primary"],
+      colorText: currentVariables["--foreground"],
+      colorTextSecondary: currentVariables["--secondary-foreground"],
+      colorTextPlaceholder: currentVariables["--muted-foreground"],
     },
   };
 
