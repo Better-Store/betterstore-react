@@ -6,11 +6,11 @@ import { useEffect } from "react";
 import { appearance as stripeAppearance } from "../payment-element/appearance";
 
 export type Themes = "dark" | "light";
+export type Fonts = StripeElementsOptions["fonts"];
 export type AppearanceConfig = {
   theme?: Themes;
   borderRadius?: number;
   font?: string;
-  fontSources?: StripeElementsOptions["fonts"];
   colors?: {
     background?: string;
     foreground?: string;
@@ -30,8 +30,10 @@ export type AppearanceConfig = {
 
 export default function Appearance({
   appearance,
+  fonts,
 }: {
   appearance?: AppearanceConfig;
+  fonts?: Fonts;
 }) {
   useEffect(() => {
     const variables = getVariablesFromAppearanceConfig(appearance);
@@ -43,8 +45,8 @@ export default function Appearance({
     }
 
     // Load fonts if provided
-    if (appearance?.fontSources) {
-      appearance.fontSources.forEach((font) => {
+    if (fonts) {
+      fonts.forEach((font) => {
         if ("cssSrc" in font) {
           // Handle CSS font source
           const link = document.createElement("link");
@@ -203,7 +205,7 @@ const getColorVariablesFromAppearanceConfig = (
 
 export const convertCheckoutAppearanceToStripeAppearance = (
   appearance?: AppearanceConfig,
-  fonts?: StripeElementsOptions["fonts"]
+  fonts?: Fonts
 ): StripeAppearance => {
   const currentVariables = getVariablesFromAppearanceConfig(appearance);
   const newAppearance: StripeAppearance = {

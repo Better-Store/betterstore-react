@@ -6,6 +6,7 @@ import {
   StripeElementsOptions,
 } from "@stripe/stripe-js";
 import React, { memo } from "react";
+import { Fonts } from "../checkout-embed/appearance";
 import CheckoutForm from "./checkout-form";
 
 function PaymentElement({
@@ -23,7 +24,7 @@ function PaymentElement({
   publicKey: string | null;
   checkoutAppearance?: Appearance;
   locale?: StripeElementLocale;
-  fonts?: StripeElementsOptions["fonts"];
+  fonts?: Fonts;
   onSuccess?: () => void;
   onError?: () => void;
   children: React.ReactNode;

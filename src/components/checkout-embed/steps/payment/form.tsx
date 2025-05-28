@@ -1,13 +1,14 @@
 import SubmitButton from "@/components/compounds/form/submit-button";
 import PaymentElement from "@/components/payment-element";
 import { Button } from "@/components/ui/button";
-import { StripeElementLocale, StripeElementsOptions } from "@stripe/stripe-js";
+import { StripeElementLocale } from "@stripe/stripe-js";
 import { ChevronLeft } from "lucide-react";
 import React, { useEffect, useState } from "react";
 import { useTranslation } from "react-i18next";
 import {
   AppearanceConfig,
   convertCheckoutAppearanceToStripeAppearance,
+  Fonts,
 } from "../../appearance";
 
 interface PaymentFormProps {
@@ -21,7 +22,7 @@ interface PaymentFormProps {
   shippingName: string;
   shippingPrice: string;
   checkoutAppearance?: AppearanceConfig;
-  fonts?: StripeElementsOptions["fonts"];
+  fonts?: Fonts;
   locale?: StripeElementLocale;
   publicKey: string | null;
 }

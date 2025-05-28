@@ -4,10 +4,10 @@ import {
   createStoreClient,
   ShippingRate,
 } from "@betterstore/sdk";
-import { StripeElementLocale, StripeElementsOptions } from "@stripe/stripe-js";
+import { StripeElementLocale } from "@stripe/stripe-js";
 import { AnimatePresence, motion, MotionProps } from "motion/react";
 import React, { useCallback, useEffect, useState } from "react";
-import { AppearanceConfig } from "./appearance";
+import { AppearanceConfig, Fonts } from "./appearance";
 import {
   customerSchema,
   shippingMethodSchema,
@@ -31,7 +31,7 @@ interface CheckoutFormProps {
   customer?: CheckoutSession["customer"];
   currency: string;
   checkoutAppearance?: AppearanceConfig;
-  fonts?: StripeElementsOptions["fonts"];
+  fonts?: Fonts;
   locale?: StripeElementLocale;
   setShippingCost: (cost: number) => void;
   exchangeRate: number;

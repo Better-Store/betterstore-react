@@ -1,10 +1,9 @@
 import { default as createI18nInstance, Locale } from "@/i18n";
 import { CheckoutSession, createStoreClient } from "@betterstore/sdk";
-import { StripeElementsOptions } from "@stripe/stripe-js";
 import React, { memo, useEffect, useState } from "react";
 import { IframeWrapper } from "../iframe-wrapper";
 import { Toaster } from "../ui/sonner";
-import Appearance, { AppearanceConfig } from "./appearance";
+import Appearance, { AppearanceConfig, Fonts } from "./appearance";
 import CheckoutForm from "./checkout-form";
 import CheckoutFormLoading from "./checkout-form-loading";
 import CheckoutSummary from "./steps/summary";
@@ -18,7 +17,7 @@ interface CheckoutEmbedProps {
     cancelUrl: string;
     successUrl: string;
     appearance?: AppearanceConfig;
-    fonts?: StripeElementsOptions["fonts"];
+    fonts?: Fonts;
     locale?: Locale;
     clientProxy?: string;
   };
@@ -166,7 +165,7 @@ function CheckoutEmbedComponent({ checkoutId, config }: CheckoutEmbedProps) {
   return (
     <IframeWrapper>
       <div className="checkout-embed scrollbar-hidden mx-auto max-w-[1200px] min-h-screen overflow-x-hidden gap-6 md:gap-0 py-4 md:py-12 flex flex-col md:grid md:grid-cols-7 ">
-        <Appearance appearance={appearance} />
+        <Appearance appearance={appearance} fonts={config.fonts} />
 
         <div className="md:col-span-4 px-4 md:px-8">
           {loading ? (
