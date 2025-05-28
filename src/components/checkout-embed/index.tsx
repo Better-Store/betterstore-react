@@ -2,6 +2,7 @@ import { default as createI18nInstance, Locale } from "@/i18n";
 import { CheckoutSession, createStoreClient } from "@betterstore/sdk";
 import { StripeElementsOptions } from "@stripe/stripe-js";
 import React, { memo, useEffect, useState } from "react";
+import { IframeWrapper } from "../iframe-wrapper";
 import { Toaster } from "../ui/sonner";
 import Appearance, { AppearanceConfig } from "./appearance";
 import CheckoutForm from "./checkout-form";
@@ -23,7 +24,7 @@ interface CheckoutEmbedProps {
   };
 }
 
-function CheckoutEmbed({ checkoutId, config }: CheckoutEmbedProps) {
+function CheckoutEmbedComponent({ checkoutId, config }: CheckoutEmbedProps) {
   const {
     cancelUrl,
     successUrl,
@@ -163,56 +164,60 @@ function CheckoutEmbed({ checkoutId, config }: CheckoutEmbedProps) {
   }, []);
 
   return (
-    <div className="checkout-embed scrollbar-hidden mx-auto max-w-[1200px] min-h-screen overflow-x-hidden gap-6 md:gap-0 py-4 md:py-12 flex flex-col md:grid md:grid-cols-7 ">
-      <Appearance appearance={appearance} />
+    <IframeWrapper>
+      <div className="checkout-embed scrollbar-hidden mx-auto max-w-[1200px] min-h-screen overflow-x-hidden gap-6 md:gap-0 py-4 md:py-12 flex flex-col md:grid md:grid-cols-7 ">
+        <Appearance appearance={appearance} />
 
-      <div className="md:col-span-4 px-4 md:px-8">
-        {loading ? (
-          <CheckoutFormLoading />
-        ) : (
-          <CheckoutForm
-            locale={locale}
-            setShippingCost={setShippingCost}
-            storeClient={storeClient}
-            fonts={config.fonts}
-            checkoutAppearance={appearance}
-            currency={checkout?.currency ?? ""}
-            customer={checkout?.customer}
-            cancelUrl={cancelUrl}
-            checkoutId={checkoutId}
-            clientSecret={clientSecret}
-            onSuccess={onSuccess}
-            onError={onError}
-            exchangeRate={checkout?.exchangeRate ?? 1}
-            setCheckout={setCheckout}
-            setPublicKey={setPublicKey}
-            publicKey={publicKey}
-            setPaymentSecret={setPaymentSecret}
-            paymentSecret={paymentSecret}
-          />
-        )}
+        <div className="md:col-span-4 px-4 md:px-8">
+          {loading ? (
+            <CheckoutFormLoading />
+          ) : (
+            <CheckoutForm
+              locale={locale}
+              setShippingCost={setShippingCost}
+              storeClient={storeClient}
+              fonts={config.fonts}
+              checkoutAppearance={appearance}
+              currency={checkout?.currency ?? ""}
+              customer={checkout?.customer}
+              cancelUrl={cancelUrl}
+              checkoutId={checkoutId}
+              clientSecret={clientSecret}
+              onSuccess={onSuccess}
+              onError={onError}
+              exchangeRate={checkout?.exchangeRate ?? 1}
+              setCheckout={setCheckout}
+              setPublicKey={setPublicKey}
+              publicKey={publicKey}
+              setPaymentSecret={setPaymentSecret}
+              paymentSecret={paymentSecret}
+            />
+          )}
+        </div>
+        <div className="md:col-span-3 px-4 md:px-8 order-first md:order-last">
+          <Toaster />
+          {loading ? (
+            <CheckoutSummaryLoading />
+          ) : (
+            <CheckoutSummary
+              currency={checkout?.currency ?? ""}
+              lineItems={checkout?.lineItems ?? []}
+              shipping={checkout?.shipping}
+              tax={checkout?.tax}
+              onCancel={onCancel}
+              exchangeRate={checkout?.exchangeRate ?? 1}
+              applyDiscountCode={applyDiscountCode}
+              appliedDiscounts={checkout?.appliedDiscounts ?? []}
+              revalidateDiscounts={revalidateDiscounts}
+              removeDiscount={removeDiscount}
+            />
+          )}
+        </div>
       </div>
-      <div className="md:col-span-3 px-4 md:px-8 order-first md:order-last">
-        <Toaster />
-        {loading ? (
-          <CheckoutSummaryLoading />
-        ) : (
-          <CheckoutSummary
-            currency={checkout?.currency ?? ""}
-            lineItems={checkout?.lineItems ?? []}
-            shipping={checkout?.shipping}
-            tax={checkout?.tax}
-            onCancel={onCancel}
-            exchangeRate={checkout?.exchangeRate ?? 1}
-            applyDiscountCode={applyDiscountCode}
-            appliedDiscounts={checkout?.appliedDiscounts ?? []}
-            revalidateDiscounts={revalidateDiscounts}
-            removeDiscount={removeDiscount}
-          />
-        )}
-      </div>
-    </div>
+    </IframeWrapper>
   );
 }
 
-export default memo(CheckoutEmbed);
+const CheckoutEmbed = memo(CheckoutEmbedComponent);
+
+export { CheckoutEmbed };

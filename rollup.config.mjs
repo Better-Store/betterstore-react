@@ -56,7 +56,7 @@ export default {
       extract: false,
       modules: false,
       minimize: false,
-      inject: true,
+      inject: false,
     }),
   ],
   external: [
