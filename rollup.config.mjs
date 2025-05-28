@@ -54,7 +54,7 @@ export default {
         path: "./postcss.config.cjs",
       },
       extract: false,
-      modules: true,
+      modules: false,
       minimize: false,
       inject: true,
     }),
