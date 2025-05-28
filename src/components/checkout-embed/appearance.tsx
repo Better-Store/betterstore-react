@@ -31,47 +31,64 @@ export type AppearanceConfig = {
 export default function Appearance({
   appearance,
   fonts,
+  iframeRef,
 }: {
   appearance?: AppearanceConfig;
   fonts?: Fonts;
+  iframeRef?: React.RefObject<HTMLIFrameElement>;
 }) {
   useEffect(() => {
-    const variables = getVariablesFromAppearanceConfig(appearance);
-    const iframe = document.querySelector("iframe");
-    const iframeDoc =
-      iframe?.contentDocument || iframe?.contentWindow?.document;
+    if (!iframeRef?.current) return;
 
-    if (variables && iframeDoc) {
-      Object.entries(variables).forEach(([key, value]) => {
-        iframeDoc.documentElement.style.setProperty(key, value);
-      });
-    }
+    try {
+      const variables = getVariablesFromAppearanceConfig(appearance);
+      const iframeDoc =
+        iframeRef.current.contentDocument ||
+        iframeRef.current.contentWindow?.document;
 
-    // Load fonts if provided
-    if (fonts && iframeDoc) {
-      fonts.forEach((font) => {
-        if ("cssSrc" in font) {
-          // Handle CSS font source
-          const link = iframeDoc.createElement("link");
-          link.rel = "stylesheet";
-          link.href = font.cssSrc;
-          iframeDoc.head.appendChild(link);
-        } else if ("family" in font) {
-          // Handle custom font source
-          const style = iframeDoc.createElement("style");
-          style.textContent = `
-            @font-face {
-              font-family: '${font.family}';
-              src: ${font.src};
-              font-weight: ${font.weight || "normal"};
-              font-style: ${font.style || "normal"};
+      if (!iframeDoc) {
+        console.warn("Unable to access iframe document");
+        return;
+      }
+
+      if (variables) {
+        Object.entries(variables).forEach(([key, value]) => {
+          iframeDoc.documentElement.style.setProperty(key, value);
+        });
+      }
+
+      // Load fonts if provided
+      if (fonts) {
+        fonts.forEach((font) => {
+          try {
+            if ("cssSrc" in font) {
+              // Handle CSS font source
+              const link = iframeDoc.createElement("link");
+              link.rel = "stylesheet";
+              link.href = font.cssSrc;
+              iframeDoc.head.appendChild(link);
+            } else if ("family" in font) {
+              // Handle custom font source
+              const style = iframeDoc.createElement("style");
+              style.textContent = `
+                @font-face {
+                  font-family: '${font.family}';
+                  src: ${font.src};
+                  font-weight: ${font.weight || "normal"};
+                  font-style: ${font.style || "normal"};
+                }
+              `;
+              iframeDoc.head.appendChild(style);
             }
-          `;
-          iframeDoc.head.appendChild(style);
-        }
-      });
+          } catch (error) {
+            console.error("Error loading font:", error);
+          }
+        });
+      }
+    } catch (error) {
+      console.error("Error applying appearance styles:", error);
     }
-  }, [appearance, fonts]);
+  }, [appearance, fonts, iframeRef]);
 
   return null;
 }
