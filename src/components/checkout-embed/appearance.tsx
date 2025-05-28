@@ -37,25 +37,28 @@ export default function Appearance({
 }) {
   useEffect(() => {
     const variables = getVariablesFromAppearanceConfig(appearance);
+    const iframe = document.querySelector("iframe");
+    const iframeDoc =
+      iframe?.contentDocument || iframe?.contentWindow?.document;
 
-    if (variables) {
+    if (variables && iframeDoc) {
       Object.entries(variables).forEach(([key, value]) => {
-        document.documentElement.style.setProperty(key, value);
+        iframeDoc.documentElement.style.setProperty(key, value);
       });
     }
 
     // Load fonts if provided
-    if (fonts) {
+    if (fonts && iframeDoc) {
       fonts.forEach((font) => {
         if ("cssSrc" in font) {
           // Handle CSS font source
-          const link = document.createElement("link");
+          const link = iframeDoc.createElement("link");
           link.rel = "stylesheet";
           link.href = font.cssSrc;
-          document.head.appendChild(link);
+          iframeDoc.head.appendChild(link);
         } else if ("family" in font) {
           // Handle custom font source
-          const style = document.createElement("style");
+          const style = iframeDoc.createElement("style");
           style.textContent = `
             @font-face {
               font-family: '${font.family}';
@@ -64,11 +67,11 @@ export default function Appearance({
               font-style: ${font.style || "normal"};
             }
           `;
-          document.head.appendChild(style);
+          iframeDoc.head.appendChild(style);
         }
       });
     }
-  }, [appearance]);
+  }, [appearance, fonts]);
 
   return null;
 }
