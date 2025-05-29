@@ -71,44 +71,35 @@ const CheckoutForm = ({
     }
   };
 
-  const PaymentElementPortal = () => {
-    const wrapper = document.getElementById("bs-wrapper");
-    if (!wrapper) return null;
-
-    return (
-      <>
-        <div
-          ref={containerRef}
-          className="w-full h-[306.08px] min-[480px]:h-[228.56px]"
-        />
-        {ReactDOM.createPortal(
-          <div
-            style={{
-              display: "block",
-              zIndex: 20,
-              position: "absolute",
-              top: rect?.top,
-              left: rect?.left,
-              width: rect?.width,
-              height: rect?.height,
-            }}
-          >
-            <PaymentElement />
-          </div>,
-          wrapper
-        )}
-      </>
-    );
-  };
+  const wrapper = document.getElementById("bs-wrapper");
+  if (!wrapper) return null;
 
   return (
-    <form onSubmit={handleSubmit}>
-      <div>
-        <PaymentElementPortal />
-        <p className="text-red-500">{errorMessage}</p>
-      </div>
-      {children}
-    </form>
+    <>
+      <div ref={containerRef} className="w-full h-[450px]" />
+      {ReactDOM.createPortal(
+        <div
+          style={{
+            display: "block",
+            zIndex: 20,
+            position: "absolute",
+            top: rect?.top,
+            left: rect?.left,
+            width: rect?.width,
+            height: rect?.height,
+          }}
+        >
+          <form onSubmit={handleSubmit}>
+            <div>
+              <PaymentElement />
+              <p style={{ color: "#fb2c36" }}>{errorMessage}</p>
+            </div>
+            {children}
+          </form>
+        </div>,
+        wrapper
+      )}
+    </>
   );
 };
 
