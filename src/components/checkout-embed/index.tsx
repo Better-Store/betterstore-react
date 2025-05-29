@@ -1,6 +1,6 @@
 import { default as createI18nInstance, Locale } from "@/i18n";
 import { CheckoutSession, createStoreClient } from "@betterstore/sdk";
-import React, { memo, useEffect, useState } from "react";
+import React, { memo, useEffect, useRef, useState } from "react";
 import { IframeWrapper } from "../iframe-wrapper";
 import { Toaster } from "../ui/sonner";
 import Appearance, { AppearanceConfig, Fonts } from "./appearance";
@@ -42,6 +42,7 @@ function CheckoutEmbedComponent({ checkoutId, config }: CheckoutEmbedProps) {
 
   const { formData, step } = useFormStore();
 
+  const paymentSecretPromiseRef = useRef<Promise<void> | null>(null);
   const [paymentSecret, setPaymentSecret] = useState<string | null>(null);
   const [publicKey, setPublicKey] = useState<string | null>(null);
 
@@ -105,25 +106,44 @@ function CheckoutEmbedComponent({ checkoutId, config }: CheckoutEmbedProps) {
     setCheckout({ ...checkout, shipping: cost });
   };
 
+  async function generatePaymentSecret() {
+    const { paymentSecret, publicKey, checkoutSession } =
+      await storeClient.generateCheckoutPaymentSecret(clientSecret, checkoutId);
+
+    setPaymentSecret(paymentSecret);
+    setPublicKey(publicKey);
+    setCheckout(checkoutSession);
+  }
+
+  useEffect(() => {
+    if (
+      step === "payment" &&
+      !paymentSecret &&
+      !paymentSecretPromiseRef.current
+    ) {
+      paymentSecretPromiseRef.current = generatePaymentSecret().finally(() => {
+        paymentSecretPromiseRef.current = null;
+      });
+    }
+  }, [paymentSecret, step]);
+
   const applyDiscountCode = async (code: string) => {
     const newCheckout = await storeClient.applyDiscountCode(
       clientSecret,
       checkoutId,
       code
     );
+
     setCheckout(newCheckout);
+
+    if (step === "payment") {
+      await generatePaymentSecret();
+    }
   };
 
   const revalidateDiscounts = async () => {
     if (step === "payment") {
-      const { paymentSecret, publicKey, checkoutSession } =
-        await storeClient.generateCheckoutPaymentSecret(
-          clientSecret,
-          checkoutId
-        );
-      setPaymentSecret(paymentSecret);
-      setPublicKey(publicKey);
-      setCheckout(checkoutSession);
+      await generatePaymentSecret();
     } else {
       const newCheckout = await storeClient.revalidateDiscounts(
         clientSecret,
@@ -141,17 +161,10 @@ function CheckoutEmbedComponent({ checkoutId, config }: CheckoutEmbedProps) {
       id
     );
 
+    setCheckout(newCheckout);
+
     if (step === "payment") {
-      const { paymentSecret, publicKey, checkoutSession } =
-        await storeClient.generateCheckoutPaymentSecret(
-          clientSecret,
-          checkoutId
-        );
-      setPaymentSecret(paymentSecret);
-      setPublicKey(publicKey);
-      setCheckout(checkoutSession);
-    } else {
-      setCheckout(newCheckout);
+      await generatePaymentSecret();
     }
   };
 
@@ -192,10 +205,7 @@ function CheckoutEmbedComponent({ checkoutId, config }: CheckoutEmbedProps) {
               onSuccess={onSuccess}
               onError={onError}
               exchangeRate={checkout?.exchangeRate ?? 1}
-              setCheckout={setCheckout}
-              setPublicKey={setPublicKey}
               publicKey={publicKey}
-              setPaymentSecret={setPaymentSecret}
               paymentSecret={paymentSecret}
             />
           )}
@@ -214,7 +224,6 @@ function CheckoutEmbedComponent({ checkoutId, config }: CheckoutEmbedProps) {
               exchangeRate={checkout?.exchangeRate ?? 1}
               applyDiscountCode={applyDiscountCode}
               appliedDiscounts={checkout?.appliedDiscounts ?? []}
-              revalidateDiscounts={revalidateDiscounts}
               removeDiscount={removeDiscount}
             />
           )}

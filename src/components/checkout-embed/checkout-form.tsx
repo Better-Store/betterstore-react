@@ -5,7 +5,7 @@ import {
   ShippingRate,
 } from "@betterstore/sdk";
 import { StripeElementLocale } from "@stripe/stripe-js";
-import React, { useCallback, useEffect, useRef, useState } from "react";
+import React, { useCallback, useEffect, useState } from "react";
 import { AppearanceConfig, Fonts } from "./appearance";
 import {
   customerSchema,
@@ -34,9 +34,6 @@ interface CheckoutFormProps {
   locale?: StripeElementLocale;
   setShippingCost: (cost: number) => void;
   exchangeRate: number;
-  setCheckout: (checkout: any) => void;
-  setPaymentSecret: (paymentSecret: string) => void;
-  setPublicKey: (publicKey: string) => void;
   paymentSecret: string | null;
   publicKey: string | null;
 }
@@ -55,9 +52,6 @@ export default function CheckoutForm({
   locale,
   setShippingCost,
   exchangeRate,
-  setCheckout,
-  setPaymentSecret,
-  setPublicKey,
   paymentSecret,
   publicKey,
 }: CheckoutFormProps) {
@@ -70,7 +64,6 @@ export default function CheckoutForm({
     setCheckoutId,
   } = useFormStore();
   const [shippingRates, setShippingRates] = useState<ShippingRate[]>([]);
-  const paymentSecretPromiseRef = useRef<Promise<void> | null>(null);
 
   const validateStep = useCallback(() => {
     if (step === "customer") return;
@@ -268,38 +261,6 @@ export default function CheckoutForm({
   const handleDoubleBack = () => {
     setStep("customer");
   };
-
-  useEffect(() => {
-    const generatePaymentSecret = async () => {
-      try {
-        const {
-          paymentSecret,
-          publicKey,
-          checkoutSession: newCheckout,
-        } = await storeClient.generateCheckoutPaymentSecret(
-          clientSecret,
-          checkoutId
-        );
-
-        setPaymentSecret(paymentSecret);
-        setPublicKey(publicKey);
-        setCheckout(newCheckout);
-      } catch (error) {
-        console.error("Failed to generate payment secret:", error);
-        onError();
-      } finally {
-        paymentSecretPromiseRef.current = null;
-      }
-    };
-
-    if (
-      step === "payment" &&
-      !paymentSecret &&
-      !paymentSecretPromiseRef.current
-    ) {
-      paymentSecretPromiseRef.current = generatePaymentSecret();
-    }
-  }, [paymentSecret]);
 
   const renderStep = () => {
     if (step === "payment" && formData.customer && formData.shipping) {

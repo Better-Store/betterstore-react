@@ -17,7 +17,6 @@ export default function CheckoutSummary({
   onCancel,
   exchangeRate,
   applyDiscountCode,
-  revalidateDiscounts,
   removeDiscount,
 }: {
   appliedDiscounts: CheckoutSession["appliedDiscounts"];
@@ -28,7 +27,6 @@ export default function CheckoutSummary({
   exchangeRate: number;
   onCancel: () => void;
   applyDiscountCode: (code: string) => Promise<void>;
-  revalidateDiscounts: () => Promise<void>;
   removeDiscount: (id: string) => Promise<void>;
 }) {
   const { formData } = useFormStore();
@@ -181,10 +179,7 @@ export default function CheckoutSummary({
               grid: isOpen,
             })}
           >
-            <DiscountCode
-              applyDiscountCode={applyDiscountCode}
-              revalidateDiscounts={revalidateDiscounts}
-            />
+            <DiscountCode applyDiscountCode={applyDiscountCode} />
           </div>
         </>
       )}

@@ -7,10 +7,8 @@ import { toast } from "sonner";
 
 export default function DiscountCode({
   applyDiscountCode,
-  revalidateDiscounts,
 }: {
   applyDiscountCode: (code: string) => Promise<void>;
-  revalidateDiscounts: () => Promise<void>;
 }) {
   const { t } = useTranslation();
   const [discountCode, setDiscountCode] = useState("");
@@ -25,7 +23,6 @@ export default function DiscountCode({
 
     try {
       await applyDiscountCode(discountCode);
-      // await revalidateDiscounts();
       setDiscountCode("");
 
       toast.success(t("CheckoutEmbed.Summary.discountCodeSuccess"));
