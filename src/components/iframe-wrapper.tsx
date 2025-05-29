@@ -35,6 +35,20 @@ export const IframeWrapper = ({
       styleRef.current = style;
 
       setIframeBody(iframeDoc.body);
+
+      // Set up ResizeObserver to adjust iframe height
+      const resizeObserver = new ResizeObserver((entries) => {
+        for (const entry of entries) {
+          const height = entry.contentRect.height;
+          iframe.style.height = `${height}px`;
+        }
+      });
+
+      resizeObserver.observe(iframeDoc.body);
+
+      return () => {
+        resizeObserver.disconnect();
+      };
     };
 
     // For first load
@@ -62,6 +76,7 @@ export const IframeWrapper = ({
         overflowX: "hidden",
         marginInline: "auto",
         scrollbarWidth: "none",
+        overflowY: "auto",
       }}
       ref={wrapperRef}
     >
@@ -69,9 +84,8 @@ export const IframeWrapper = ({
         ref={iframeRef}
         style={{
           width: "100%",
-          height: "100%",
           border: "none",
-          minHeight: "100vh",
+          minHeight: "100%",
         }}
         sandbox="allow-same-origin allow-scripts allow-forms allow-popups allow-popups-to-escape-sandbox allow-top-navigation"
       />
