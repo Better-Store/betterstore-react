@@ -3,7 +3,7 @@ import {
   useElements,
   useStripe,
 } from "@stripe/react-stripe-js";
-import React, { memo, useRef, useState } from "react";
+import React, { memo, useEffect, useRef, useState } from "react";
 import ReactDOM from "react-dom";
 import { useCheckout } from "./useCheckout";
 
@@ -27,6 +27,25 @@ const CheckoutForm = ({
     undefined
   );
   const containerRef = useRef<HTMLDivElement>(null);
+  const [rect, setRect] = useState<DOMRect | null>(null);
+
+  useEffect(() => {
+    const updateRect = () => {
+      if (containerRef.current) {
+        setRect(containerRef.current.getBoundingClientRect());
+      }
+    };
+
+    updateRect();
+
+    window.addEventListener("resize", updateRect);
+    window.addEventListener("scroll", updateRect);
+
+    return () => {
+      window.removeEventListener("resize", updateRect);
+      window.removeEventListener("scroll", updateRect);
+    };
+  }, []);
 
   const handleSubmit = async (event: React.FormEvent) => {
     event.preventDefault();
@@ -60,15 +79,18 @@ const CheckoutForm = ({
     const wrapper = wrapperRef.current;
     if (!wrapper) return null;
 
-    const rect = containerRef.current?.getBoundingClientRect();
-
     return (
       <>
-        <div ref={containerRef} className="w-full h-[400px]" />
+        <div
+          ref={containerRef}
+          className="w-full h-[306.08px] min-[480px]:h-[228.56px]"
+        />
         {ReactDOM.createPortal(
           <div
             style={{
-              position: "absolute",
+              display: "block",
+              zIndex: 20,
+              position: "fixed",
               top: rect?.top,
               left: rect?.left,
               width: rect?.width,
