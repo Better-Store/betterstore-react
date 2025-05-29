@@ -1,5 +1,11 @@
 # @betterstore/sdk
 
+## 0.3.66
+
+### Patch Changes
+
+- bug fix test chatgpt
+
 ## 0.3.65
 
 ### Patch Changes

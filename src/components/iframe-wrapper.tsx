@@ -1,91 +1,104 @@
-import React, { useEffect, useRef, useState } from "react";
+import React, {
+  useCallback,
+  useEffect,
+  useLayoutEffect,
+  useRef,
+  useState,
+} from "react";
 import ReactDOM from "react-dom";
-// @ts-ignore if you're using ?inline loader
+// @ts-ignore
 import globalsCss from "../globals.css";
 
-export const IframeWrapper = ({
-  children,
-  iframeRef,
-  wrapperRef,
-}: {
+interface IframeWrapperProps {
   children: React.ReactNode;
   iframeRef: React.RefObject<HTMLIFrameElement>;
   wrapperRef: React.RefObject<HTMLDivElement>;
-}) => {
-  const [iframeBody, setIframeBody] = useState<HTMLElement | null>(null);
-  const styleRef = useRef<HTMLStyleElement | null>(null);
+}
 
-  useEffect(() => {
-    const iframe = iframeRef.current;
-    if (!iframe) return;
+export const IframeWrapper: React.FC<IframeWrapperProps> = React.memo(
+  ({ children, iframeRef, wrapperRef }) => {
+    const [iframeBody, setIframeBody] = useState<HTMLElement | null>(null);
+    const styleRef = useRef<HTMLStyleElement | null>(null);
+    const resizeObserver = useRef<ResizeObserver>();
 
-    const iframeDoc = iframe.contentDocument || iframe.contentWindow?.document;
-    if (!iframeDoc) return;
-
-    const updateHeight = () => {
-      const newHeight = iframeDoc.body.scrollHeight + 100;
-      iframe.style.height = `${newHeight}px`;
-    };
-
-    const onLoad = () => {
-      // Remove previous style if it exists
-      if (styleRef.current && styleRef.current.parentNode) {
+    const injectStyles = useCallback((doc: Document) => {
+      // Clean up previous style
+      if (styleRef.current?.parentNode) {
         styleRef.current.parentNode.removeChild(styleRef.current);
       }
+      const styleEl = doc.createElement("style");
+      styleEl.textContent = globalsCss;
+      doc.head.appendChild(styleEl);
+      styleRef.current = styleEl;
+    }, []);
 
-      // Create and append new style
-      const style = iframeDoc.createElement("style");
-      style.innerHTML = globalsCss;
-      iframeDoc.head.appendChild(style);
-      styleRef.current = style;
+    const updateHeight = useCallback(() => {
+      const iframe = iframeRef.current;
+      const doc = iframe?.contentDocument;
+      if (iframe && doc) {
+        const height = doc.body.scrollHeight;
+        iframe.style.height = `${height}px`;
+      }
+    }, [iframeRef]);
 
-      setIframeBody(iframeDoc.body);
+    const handleLoad = useCallback(() => {
+      const iframe = iframeRef.current;
+      if (!iframe) return;
+      const doc = iframe.contentDocument!;
+
+      injectStyles(doc);
+      setIframeBody(doc.body);
       updateHeight();
-    };
 
-    // For first load
-    if (iframeDoc.readyState === "complete") onLoad();
-    else iframe.addEventListener("load", onLoad);
-
-    // Add resize listener
-    window.addEventListener("resize", updateHeight);
-
-    return () => {
-      iframe.removeEventListener("load", onLoad);
-      window.removeEventListener("resize", updateHeight);
-      // Cleanup style on unmount
-      if (styleRef.current && styleRef.current.parentNode) {
-        styleRef.current.parentNode.removeChild(styleRef.current);
+      // Observe body mutations & size
+      if ("ResizeObserver" in window) {
+        resizeObserver.current = new ResizeObserver(updateHeight);
+        resizeObserver.current.observe(doc.body);
       }
-    };
-  }, [iframeRef]);
+    }, [iframeRef, injectStyles, updateHeight]);
 
-  return (
-    <div
-      style={{
-        width: "100%",
-        height: "100%",
-        border: "none",
-        minHeight: "100vh",
-        maxWidth: "1200px",
-        position: "relative",
-        overflowX: "hidden",
-        marginInline: "auto",
-        scrollbarWidth: "none",
-        overflowY: "auto",
-      }}
-      ref={wrapperRef}
-    >
-      <iframe
-        ref={iframeRef}
-        style={{
-          width: "100%",
-          border: "none",
-          minHeight: "100vh",
-        }}
-        sandbox="allow-same-origin allow-scripts allow-forms allow-popups allow-popups-to-escape-sandbox allow-top-navigation"
-      />
-      {iframeBody && ReactDOM.createPortal(children, iframeBody)}
-    </div>
-  );
-};
+    useLayoutEffect(() => {
+      const iframe = iframeRef.current;
+      if (!iframe) return;
+
+      // Attach onLoad
+      iframe.addEventListener("load", handleLoad);
+      // If already loaded
+      if (iframe.contentDocument?.readyState === "complete") {
+        handleLoad();
+      }
+
+      return () => {
+        iframe.removeEventListener("load", handleLoad);
+        resizeObserver.current?.disconnect();
+        if (styleRef.current?.parentNode) {
+          styleRef.current.parentNode.removeChild(styleRef.current);
+        }
+      };
+    }, [iframeRef, handleLoad]);
+
+    // Update on window resize
+    useEffect(() => {
+      window.addEventListener("resize", updateHeight);
+      return () => {
+        window.removeEventListener("resize", updateHeight);
+      };
+    }, [updateHeight]);
+
+    return (
+      <div
+        ref={wrapperRef}
+        className="w-full max-w-[1200px] min-h-screen mx-auto overflow-y-auto overflow-x-hidden relative"
+      >
+        <iframe
+          ref={iframeRef}
+          className="w-full min-h-screen border-0"
+          sandbox="allow-same-origin allow-scripts allow-forms allow-popups allow-popups-to-escape-sandbox allow-top-navigation"
+        />
+        {iframeBody && ReactDOM.createPortal(children, iframeBody)}
+      </div>
+    );
+  }
+);
+
+IframeWrapper.displayName = "IframeWrapper";
