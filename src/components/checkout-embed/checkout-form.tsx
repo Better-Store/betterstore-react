@@ -36,6 +36,7 @@ interface CheckoutFormProps {
   exchangeRate: number;
   paymentSecret: string | null;
   publicKey: string | null;
+  paymentComponentKey: number;
 }
 
 export default function CheckoutForm({
@@ -54,6 +55,7 @@ export default function CheckoutForm({
   exchangeRate,
   paymentSecret,
   publicKey,
+  paymentComponentKey,
 }: CheckoutFormProps) {
   const {
     formData,
@@ -266,6 +268,7 @@ export default function CheckoutForm({
     if (step === "payment" && formData.customer && formData.shipping) {
       return (
         <PaymentForm
+          paymentComponentKey={paymentComponentKey}
           locale={locale}
           fonts={fonts}
           checkoutAppearance={checkoutAppearance}

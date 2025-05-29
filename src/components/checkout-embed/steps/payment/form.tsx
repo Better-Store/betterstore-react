@@ -3,7 +3,7 @@ import PaymentElement from "@/components/payment-element";
 import { Button } from "@/components/ui/button";
 import { StripeElementLocale } from "@stripe/stripe-js";
 import { ChevronLeft } from "lucide-react";
-import React, { useEffect, useState } from "react";
+import React, { useState } from "react";
 import { useTranslation } from "react-i18next";
 import {
   AppearanceConfig,
@@ -25,6 +25,7 @@ interface PaymentFormProps {
   fonts?: Fonts;
   locale?: StripeElementLocale;
   publicKey: string | null;
+  paymentComponentKey: number;
 }
 
 export default function PaymentForm({
@@ -41,16 +42,10 @@ export default function PaymentForm({
   fonts,
   locale,
   publicKey,
+  paymentComponentKey,
 }: PaymentFormProps) {
   const [isSubmitting, setIsSubmitting] = useState(false);
-  const [key, setKey] = useState(0);
   const { t } = useTranslation();
-
-  useEffect(() => {
-    if (paymentSecret) {
-      setKey((prev) => prev + 1);
-    }
-  }, [paymentSecret]);
 
   return (
     <div className="space-y-6">
@@ -103,7 +98,7 @@ export default function PaymentForm({
       <div className="mt-8">
         {paymentSecret && (
           <PaymentElement
-            key={key}
+            key={paymentComponentKey}
             fonts={fonts}
             checkoutAppearance={convertCheckoutAppearanceToStripeAppearance(
               checkoutAppearance,

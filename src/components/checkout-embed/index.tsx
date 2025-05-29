@@ -45,6 +45,7 @@ function CheckoutEmbedComponent({ checkoutId, config }: CheckoutEmbedProps) {
   const paymentSecretPromiseRef = useRef<Promise<void> | null>(null);
   const [paymentSecret, setPaymentSecret] = useState<string | null>(null);
   const [publicKey, setPublicKey] = useState<string | null>(null);
+  const [paymentComponentKey, setPaymentComponentKey] = useState(0);
 
   const [checkout, setCheckout] = useState<CheckoutSession | null>(null);
   const [loading, setLoading] = useState(true);
@@ -138,12 +139,14 @@ function CheckoutEmbedComponent({ checkoutId, config }: CheckoutEmbedProps) {
 
     if (step === "payment") {
       await generatePaymentSecret();
+      setPaymentComponentKey((prev) => prev + 1);
     }
   };
 
   const revalidateDiscounts = async () => {
     if (step === "payment") {
       await generatePaymentSecret();
+      setPaymentComponentKey((prev) => prev + 1);
     } else {
       const newCheckout = await storeClient.revalidateDiscounts(
         clientSecret,
@@ -165,6 +168,7 @@ function CheckoutEmbedComponent({ checkoutId, config }: CheckoutEmbedProps) {
 
     if (step === "payment") {
       await generatePaymentSecret();
+      setPaymentComponentKey((prev) => prev + 1);
     }
   };
 
@@ -207,6 +211,7 @@ function CheckoutEmbedComponent({ checkoutId, config }: CheckoutEmbedProps) {
               exchangeRate={checkout?.exchangeRate ?? 1}
               publicKey={publicKey}
               paymentSecret={paymentSecret}
+              paymentComponentKey={paymentComponentKey}
             />
           )}
         </div>
