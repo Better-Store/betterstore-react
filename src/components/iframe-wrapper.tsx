@@ -1,6 +1,12 @@
-import { MotionConfig } from "motion/react";
-import React, { useCallback, useLayoutEffect, useRef } from "react";
-import ReactDOM from "react-dom/client";
+import { MotionConfig } from "motion/dist/react";
+import React, {
+  useCallback,
+  useEffect,
+  useLayoutEffect,
+  useRef,
+  useState,
+} from "react";
+import ReactDOM from "react-dom";
 // @ts-ignore
 import globalsCss from "../globals.css";
 
@@ -12,58 +18,74 @@ interface IframeWrapperProps {
 
 export const IframeWrapper: React.FC<IframeWrapperProps> = React.memo(
   ({ children, iframeRef, wrapperRef }) => {
+    const [iframeBody, setIframeBody] = useState<HTMLElement | null>(null);
     const styleRef = useRef<HTMLStyleElement | null>(null);
-    const rootRef = useRef<ReturnType<typeof ReactDOM.createRoot> | null>(null);
+    const motionRef = useRef<HTMLScriptElement | null>(null);
+    const resizeObserver = useRef<ResizeObserver>();
 
-    // inject your global CSS into the iframe’s <head>
     const injectStyles = useCallback((doc: Document) => {
-      if (styleRef.current) styleRef.current.remove();
+      // Clean up previous style
+      if (styleRef.current?.parentNode) {
+        styleRef.current.parentNode.removeChild(styleRef.current);
+      }
       const styleEl = doc.createElement("style");
       styleEl.textContent = globalsCss;
       doc.head.appendChild(styleEl);
       styleRef.current = styleEl;
     }, []);
 
+    const updateHeight = useCallback(() => {
+      const iframe = iframeRef.current;
+      const doc = iframe?.contentDocument;
+      if (iframe && doc) {
+        const height = doc.body.scrollHeight;
+        iframe.style.height = `${height}px`;
+      }
+    }, [iframeRef]);
+
     const handleLoad = useCallback(() => {
-      const iframe = iframeRef.current!;
+      const iframe = iframeRef.current;
+      if (!iframe) return;
       const doc = iframe.contentDocument!;
+
       injectStyles(doc);
+      setIframeBody(doc.body);
+      updateHeight();
 
-      // create a container for React inside the iframe
-      let mountPoint = doc.getElementById("__react_mount__");
-      if (!mountPoint) {
-        mountPoint = doc.createElement("div");
-        mountPoint.id = "__react_mount__";
-        doc.body.appendChild(mountPoint);
+      // Observe body mutations & size
+      if ("ResizeObserver" in window) {
+        resizeObserver.current = new ResizeObserver(updateHeight);
+        resizeObserver.current.observe(doc.body);
       }
-
-      // createRoot *once*
-      if (!rootRef.current) {
-        rootRef.current = ReactDOM.createRoot(mountPoint);
-      }
-
-      // render your tree inside the iframe’s React root,
-      // wrapped in a MotionConfig so MotionOne binds to the iframe’s window/document
-      rootRef.current.render(<MotionConfig>{children}</MotionConfig>);
-    }, [children, iframeRef, injectStyles]);
+    }, [iframeRef, injectStyles, updateHeight]);
 
     useLayoutEffect(() => {
       const iframe = iframeRef.current;
       if (!iframe) return;
 
+      // Attach onLoad
       iframe.addEventListener("load", handleLoad);
-      // If the iframe is already loaded (cache, SSR, etc.)
+      // If already loaded
       if (iframe.contentDocument?.readyState === "complete") {
         handleLoad();
       }
 
       return () => {
         iframe.removeEventListener("load", handleLoad);
-        // unmount React on teardown
-        rootRef.current?.unmount();
-        styleRef.current?.remove();
+        resizeObserver.current?.disconnect();
+        if (styleRef.current?.parentNode) {
+          styleRef.current.parentNode.removeChild(styleRef.current);
+        }
       };
     }, [iframeRef, handleLoad]);
+
+    // Update on window resize
+    useEffect(() => {
+      window.addEventListener("resize", updateHeight);
+      return () => {
+        window.removeEventListener("resize", updateHeight);
+      };
+    }, [updateHeight]);
 
     return (
       <div
@@ -75,6 +97,11 @@ export const IframeWrapper: React.FC<IframeWrapperProps> = React.memo(
           className="w-full min-h-screen border-0"
           sandbox="allow-same-origin allow-scripts allow-forms allow-popups allow-popups-to-escape-sandbox allow-top-navigation"
         />
+        {iframeBody &&
+          ReactDOM.createPortal(
+            <MotionConfig>{children}</MotionConfig>,
+            iframeBody
+          )}
       </div>
     );
   }
