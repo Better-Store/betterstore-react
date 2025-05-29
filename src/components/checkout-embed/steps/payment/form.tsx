@@ -111,7 +111,14 @@ export default function PaymentForm({
             setSubmitting={setIsSubmitting}
             publicKey={publicKey}
           >
-            <div className="flex justify-between items-center pt-8">
+            <div
+              style={{
+                display: "flex",
+                justifyContent: "space-between",
+                alignItems: "center",
+                paddingTop: "2rem",
+              }}
+            >
               <Button type="button" variant="ghost" onClick={onBack}>
                 <ChevronLeft />
                 {t("CheckoutEmbed.Payment.back")}

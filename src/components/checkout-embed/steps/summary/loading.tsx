@@ -23,7 +23,7 @@ export default function CheckoutSummaryLoading() {
 
       <hr />
 
-      <div className="hidden md:grid gap-3">
+      <div className="hidden md:grid gap-2">
         <div className="flex justify-between">
           <p>{t("CheckoutEmbed.Summary.subtotal")}</p>
           <Skeleton className="w-20 h-[18px]" />

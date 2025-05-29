@@ -145,6 +145,14 @@ export default function ShippingMethodForm({
                     }
                   )}
                   onClick={() => {
+                    // For Zasilkovna, require pickup point selection
+                    if (
+                      rate.provider === "zasilkovna" &&
+                      !form.watch("pickupPointId")
+                    ) {
+                      return; // Don't proceed if no pickup point selected
+                    }
+
                     const newFormData = {
                       rateId,
                       provider: rate.provider,
