@@ -166,14 +166,14 @@ function CheckoutEmbedComponent({ checkoutId, config }: CheckoutEmbedProps) {
 
   return (
     <IframeWrapper iframeRef={iframeRef} wrapperRef={wrapperRef}>
-      <div className="checkout-embed h-full gap-6 md:gap-0 py-4 md:py-12 flex flex-col md:grid md:grid-cols-7 ">
+      <div className="checkout-embed h-max gap-6 md:gap-0 py-4 md:py-12 flex flex-col md:grid md:grid-cols-7 ">
         <Appearance
           appearance={appearance}
           fonts={config.fonts}
           iframeRef={iframeRef}
         />
 
-        <div className="md:col-span-4 px-4 md:px-8">
+        <div className="md:col-span-4 px-4 h-max md:px-8">
           {loading ? (
             <CheckoutFormLoading />
           ) : (
@@ -200,7 +200,7 @@ function CheckoutEmbedComponent({ checkoutId, config }: CheckoutEmbedProps) {
             />
           )}
         </div>
-        <div className="md:col-span-3 px-4 md:px-8 order-first md:order-last">
+        <div className="md:col-span-3 px-4 md:px-8 h-max order-first md:order-last">
           <Toaster />
           {loading ? (
             <CheckoutSummaryLoading />

@@ -304,26 +304,28 @@ export default function CheckoutForm({
 
   const renderStep = () => {
     if (step === "payment" && formData.customer && formData.shipping) {
-      <PaymentForm
-        locale={locale}
-        fonts={fonts}
-        checkoutAppearance={checkoutAppearance}
-        paymentSecret={paymentSecret}
-        onSuccess={onSuccess}
-        onError={onError}
-        onBack={handleBack}
-        onDoubleBack={handleDoubleBack}
-        contactEmail={formData.customer.email}
-        shippingAddress={formatAddress(formData.customer.address)}
-        shippingName={formData.shipping.name}
-        shippingPrice={storeHelpers.formatPrice(
-          formData.shipping.price,
-          currency,
-          exchangeRate
-        )}
-        publicKey={publicKey}
-        wrapperRef={wrapperRef}
-      />;
+      return (
+        <PaymentForm
+          locale={locale}
+          fonts={fonts}
+          checkoutAppearance={checkoutAppearance}
+          paymentSecret={paymentSecret}
+          onSuccess={onSuccess}
+          onError={onError}
+          onBack={handleBack}
+          onDoubleBack={handleDoubleBack}
+          contactEmail={formData.customer.email}
+          shippingAddress={formatAddress(formData.customer.address)}
+          shippingName={formData.shipping.name}
+          shippingPrice={storeHelpers.formatPrice(
+            formData.shipping.price,
+            currency,
+            exchangeRate
+          )}
+          publicKey={publicKey}
+          wrapperRef={wrapperRef}
+        />
+      );
     }
 
     if (step === "shipping" && formData.customer) {
@@ -353,5 +355,5 @@ export default function CheckoutForm({
     );
   };
 
-  return <div className="relative min-h-full w-full">{renderStep()}</div>;
+  return <div className="relative min-h-full w-full h-max">{renderStep()}</div>;
 }
