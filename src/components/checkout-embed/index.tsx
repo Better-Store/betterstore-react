@@ -178,6 +178,7 @@ function CheckoutEmbedComponent({ checkoutId, config }: CheckoutEmbedProps) {
             <CheckoutFormLoading />
           ) : (
             <CheckoutForm
+              wrapperRef={wrapperRef}
               locale={locale}
               setShippingCost={setShippingCost}
               storeClient={storeClient}
