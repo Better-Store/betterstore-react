@@ -61,23 +61,18 @@ const CheckoutForm = ({
     if (!wrapper) return null;
 
     const rect = containerRef.current?.getBoundingClientRect();
-    if (!rect) return null;
 
     return (
       <>
-        <div
-          ref={containerRef}
-          className="w-full"
-          style={{ height: "400px" }}
-        />
+        <div ref={containerRef} className="w-full h-[400px]" />
         {ReactDOM.createPortal(
           <div
             style={{
               position: "absolute",
-              top: rect.top,
-              left: rect.left,
-              width: rect.width,
-              height: rect.height,
+              top: rect?.top,
+              left: rect?.left,
+              width: rect?.width,
+              height: rect?.height,
             }}
           >
             <PaymentElement />
