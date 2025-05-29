@@ -3,7 +3,7 @@ import {
   useElements,
   useStripe,
 } from "@stripe/react-stripe-js";
-import React, { memo, useEffect, useState } from "react";
+import React, { memo, useEffect, useRef, useState } from "react";
 import ReactDOM from "react-dom";
 import { useCheckout } from "./useCheckout";
 
@@ -27,6 +27,13 @@ const CheckoutForm = ({
   const [portalContainer, setPortalContainer] = useState<HTMLElement | null>(
     null
   );
+  const containerRef = useRef<HTMLDivElement>(null);
+  const [portalPosition, setPortalPosition] = useState({
+    top: 0,
+    left: 0,
+    width: 0,
+    height: 0,
+  });
 
   useEffect(() => {
     // Create a container for the portal outside the iframe
@@ -45,6 +52,32 @@ const CheckoutForm = ({
       if (container && container.parentNode) {
         container.parentNode.removeChild(container);
       }
+    };
+  }, []);
+
+  useEffect(() => {
+    const updatePosition = () => {
+      if (containerRef.current) {
+        const rect = containerRef.current.getBoundingClientRect();
+        setPortalPosition({
+          top: rect.top,
+          left: rect.left,
+          width: rect.width,
+          height: rect.height,
+        });
+      }
+    };
+
+    // Initial position
+    updatePosition();
+
+    // Update position on resize and scroll
+    window.addEventListener("resize", updatePosition);
+    window.addEventListener("scroll", updatePosition);
+
+    return () => {
+      window.removeEventListener("resize", updatePosition);
+      window.removeEventListener("scroll", updatePosition);
     };
   }, []);
 
@@ -79,25 +112,28 @@ const CheckoutForm = ({
   const PaymentElementPortal = () => {
     if (!portalContainer) return null;
 
-    return ReactDOM.createPortal(
-      <div
-        style={{
-          position: "absolute",
-          top: "50%",
-          left: "50%",
-          transform: "translate(-50%, -50%)",
-          width: "100%",
-          maxWidth: "500px",
-          pointerEvents: "auto",
-          backgroundColor: "white",
-          padding: "20px",
-          borderRadius: "8px",
-          boxShadow: "0 4px 6px rgba(0, 0, 0, 0.1)",
-        }}
-      >
-        <PaymentElement />
-      </div>,
-      portalContainer
+    return (
+      <>
+        <div
+          ref={containerRef}
+          className="w-full"
+          style={{ height: "400px" }}
+        />
+        {ReactDOM.createPortal(
+          <div
+            style={{
+              position: "absolute",
+              top: portalPosition.top,
+              left: portalPosition.left,
+              width: portalPosition.width,
+              height: portalPosition.height,
+            }}
+          >
+            <PaymentElement />
+          </div>,
+          portalContainer
+        )}
+      </>
     );
   };
 

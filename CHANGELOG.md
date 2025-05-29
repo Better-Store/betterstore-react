@@ -1,5 +1,11 @@
 # @betterstore/sdk
 
+## 0.3.53
+
+### Patch Changes
+
+- payment portal test
+
 ## 0.3.52
 
 ### Patch Changes
