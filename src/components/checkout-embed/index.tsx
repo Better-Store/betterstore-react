@@ -138,21 +138,33 @@ function CheckoutEmbedComponent({ checkoutId, config }: CheckoutEmbedProps) {
     setCheckout(newCheckout);
 
     if (step === "payment") {
-      await generatePaymentSecret();
-      setPaymentComponentKey((prev) => prev + 1);
+      const newTotal = calculateTotalWithDiscounts(newCheckout);
+      const currentTotal = calculateTotalWithDiscounts(checkout);
+      if (newTotal !== currentTotal) {
+        await generatePaymentSecret();
+        setPaymentComponentKey((prev) => prev + 1);
+      }
     }
   };
 
   const revalidateDiscounts = async () => {
     if (step === "payment") {
-      await generatePaymentSecret();
-      setPaymentComponentKey((prev) => prev + 1);
+      const newCheckout = await storeClient.revalidateDiscounts(
+        clientSecret,
+        checkoutId
+      );
+      const newTotal = calculateTotalWithDiscounts(newCheckout);
+      const currentTotal = calculateTotalWithDiscounts(checkout);
+      if (newTotal !== currentTotal) {
+        await generatePaymentSecret();
+        setPaymentComponentKey((prev) => prev + 1);
+      }
+      setCheckout(newCheckout);
     } else {
       const newCheckout = await storeClient.revalidateDiscounts(
         clientSecret,
         checkoutId
       );
-
       setCheckout(newCheckout);
     }
   };
@@ -167,9 +179,41 @@ function CheckoutEmbedComponent({ checkoutId, config }: CheckoutEmbedProps) {
     setCheckout(newCheckout);
 
     if (step === "payment") {
-      await generatePaymentSecret();
-      setPaymentComponentKey((prev) => prev + 1);
+      const newTotal = calculateTotalWithDiscounts(newCheckout);
+      const currentTotal = calculateTotalWithDiscounts(checkout);
+      if (newTotal !== currentTotal) {
+        await generatePaymentSecret();
+        setPaymentComponentKey((prev) => prev + 1);
+      }
     }
+  };
+
+  const calculateTotalWithDiscounts = (checkout: CheckoutSession | null) => {
+    if (!checkout) return 0;
+
+    const subtotal = checkout.lineItems.reduce((acc, item) => {
+      const productItem = item.productData?.selectedVariant || item.productData;
+      return acc + (productItem?.priceInCents ?? 0) * item.quantity;
+    }, 0);
+
+    const shippingPrice = checkout.shipping ?? 0;
+    const total = subtotal + (checkout.tax ?? 0) + shippingPrice;
+
+    const isShippingFree =
+      subtotal > shippingPrice &&
+      checkout.appliedDiscounts.some(
+        (discount) => discount.discount.type === "FREE_SHIPPING"
+      );
+
+    const filteredDiscounts = checkout.appliedDiscounts.filter(
+      (discount) => discount.discount.type !== "FREE_SHIPPING"
+    );
+
+    return (
+      total -
+      filteredDiscounts.reduce((acc, { amount }) => acc + amount, 0) -
+      (isShippingFree ? shippingPrice : 0)
+    );
   };
 
   useEffect(() => {
