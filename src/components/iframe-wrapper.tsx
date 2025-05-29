@@ -1,4 +1,3 @@
-import { MotionConfig } from "motion/react";
 import React, {
   useCallback,
   useEffect,
@@ -20,7 +19,6 @@ export const IframeWrapper: React.FC<IframeWrapperProps> = React.memo(
   ({ children, iframeRef, wrapperRef }) => {
     const [iframeBody, setIframeBody] = useState<HTMLElement | null>(null);
     const styleRef = useRef<HTMLStyleElement | null>(null);
-    const motionRef = useRef<HTMLScriptElement | null>(null);
     const resizeObserver = useRef<ResizeObserver>();
 
     const injectStyles = useCallback((doc: Document) => {
@@ -97,11 +95,7 @@ export const IframeWrapper: React.FC<IframeWrapperProps> = React.memo(
           className="w-full min-h-screen border-0"
           sandbox="allow-same-origin allow-scripts allow-forms allow-popups allow-popups-to-escape-sandbox allow-top-navigation"
         />
-        {iframeBody &&
-          ReactDOM.createPortal(
-            <MotionConfig>{children}</MotionConfig>,
-            iframeBody
-          )}
+        {iframeBody && ReactDOM.createPortal(children, iframeBody)}
       </div>
     );
   }

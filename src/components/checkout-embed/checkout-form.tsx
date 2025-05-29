@@ -5,7 +5,6 @@ import {
   ShippingRate,
 } from "@betterstore/sdk";
 import { StripeElementLocale } from "@stripe/stripe-js";
-import { AnimatePresence, motion, MotionProps } from "motion/react";
 import React, { useCallback, useEffect, useState } from "react";
 import { AppearanceConfig, Fonts } from "./appearance";
 import {
@@ -42,13 +41,6 @@ interface CheckoutFormProps {
   publicKey: string | null;
   wrapperRef: React.RefObject<HTMLDivElement>;
 }
-
-const motionSettings = {
-  initial: { opacity: 0 },
-  animate: { opacity: 1 },
-  exit: { opacity: 0 },
-  transition: { duration: 0.2 },
-} satisfies MotionProps;
 
 export default function CheckoutForm({
   storeClient,
@@ -310,74 +302,56 @@ export default function CheckoutForm({
     }
   }, [paymentSecret]);
 
-  return (
-    <div className="relative min-h-full w-full">
-      <AnimatePresence mode="wait">
-        {step === "customer" && (
-          <motion.div
-            key="customer"
-            {...motionSettings}
-            className="absolute w-full"
-          >
-            <CustomerForm
-              initialData={formData.customer}
-              onSubmit={handleCustomerSubmit}
-            />
-          </motion.div>
+  const renderStep = () => {
+    if (step === "payment" && formData.customer && formData.shipping) {
+      <PaymentForm
+        locale={locale}
+        fonts={fonts}
+        checkoutAppearance={checkoutAppearance}
+        paymentSecret={paymentSecret}
+        onSuccess={onSuccess}
+        onError={onError}
+        onBack={handleBack}
+        onDoubleBack={handleDoubleBack}
+        contactEmail={formData.customer.email}
+        shippingAddress={formatAddress(formData.customer.address)}
+        shippingName={formData.shipping.name}
+        shippingPrice={storeHelpers.formatPrice(
+          formData.shipping.price,
+          currency,
+          exchangeRate
         )}
+        publicKey={publicKey}
+        wrapperRef={wrapperRef}
+      />;
+    }
 
-        {step === "shipping" && formData.customer && (
-          <motion.div
-            key="shipping"
-            {...motionSettings}
-            className="absolute w-full"
-          >
-            <ShippingMethodForm
-              setFormData={setFormData}
-              formData={formData}
-              shippingRates={shippingRates}
-              initialData={formData.shipping}
-              onSubmit={handleShippingSubmit}
-              onBack={handleBack}
-              contactEmail={formData.customer.email}
-              shippingAddress={formatAddress(formData.customer.address)}
-              currency={currency}
-              exchangeRate={exchangeRate}
-              locale={locale}
-              countryCode={formData.customer.address.countryCode}
-            />
-          </motion.div>
-        )}
+    if (step === "shipping" && formData.customer) {
+      return (
+        <ShippingMethodForm
+          setFormData={setFormData}
+          formData={formData}
+          shippingRates={shippingRates}
+          initialData={formData.shipping}
+          onSubmit={handleShippingSubmit}
+          onBack={handleBack}
+          contactEmail={formData.customer.email}
+          shippingAddress={formatAddress(formData.customer.address)}
+          currency={currency}
+          exchangeRate={exchangeRate}
+          locale={locale}
+          countryCode={formData.customer.address.countryCode}
+        />
+      );
+    }
 
-        {step === "payment" && formData.customer && formData.shipping && (
-          <motion.div
-            key="payment"
-            {...motionSettings}
-            className="absolute w-full"
-          >
-            <PaymentForm
-              locale={locale}
-              fonts={fonts}
-              checkoutAppearance={checkoutAppearance}
-              paymentSecret={paymentSecret}
-              onSuccess={onSuccess}
-              onError={onError}
-              onBack={handleBack}
-              onDoubleBack={handleDoubleBack}
-              contactEmail={formData.customer.email}
-              shippingAddress={formatAddress(formData.customer.address)}
-              shippingName={formData.shipping.name}
-              shippingPrice={storeHelpers.formatPrice(
-                formData.shipping.price,
-                currency,
-                exchangeRate
-              )}
-              publicKey={publicKey}
-              wrapperRef={wrapperRef}
-            />
-          </motion.div>
-        )}
-      </AnimatePresence>
-    </div>
-  );
+    return (
+      <CustomerForm
+        initialData={formData.customer}
+        onSubmit={handleCustomerSubmit}
+      />
+    );
+  };
+
+  return <div className="relative min-h-full w-full">{renderStep()}</div>;
 }
