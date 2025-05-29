@@ -107,6 +107,10 @@ export default function CheckoutForm({
       setCheckoutId(checkoutId);
 
       if (customer) {
+        if (customer?.address?.city) {
+          setStep("shipping");
+        }
+
         setFormData({
           customerId: customer.id,
           customer: {
@@ -124,6 +128,7 @@ export default function CheckoutForm({
             },
           },
         });
+        return;
       } else if (formData.customer?.email) {
         setFormData({
           customer: formData.customer,
@@ -136,6 +141,12 @@ export default function CheckoutForm({
     }
 
     if (customer && !formData.customer?.email) {
+      setStep("customer");
+
+      if (customer.address?.city) {
+        setStep("shipping");
+      }
+
       setFormData({
         ...formData,
         customerId: customer.id,
@@ -154,7 +165,6 @@ export default function CheckoutForm({
           },
         },
       });
-      setStep("customer");
     }
   }, [customer]);
 
