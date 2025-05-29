@@ -1,6 +1,6 @@
-import React, { useEffect, useRef } from "react";
-import { createRoot } from "react-dom/client";
-// @ts-ignore
+import React, { useEffect, useRef, useState } from "react";
+import ReactDOM from "react-dom";
+// @ts-ignore if you're using ?inline loader
 import globalsCss from "../globals.css";
 
 export const IframeWrapper = ({
@@ -12,8 +12,8 @@ export const IframeWrapper = ({
   iframeRef: React.RefObject<HTMLIFrameElement>;
   wrapperRef: React.RefObject<HTMLDivElement>;
 }) => {
+  const [iframeBody, setIframeBody] = useState<HTMLElement | null>(null);
   const styleRef = useRef<HTMLStyleElement | null>(null);
-  const reactRootRef = useRef<ReturnType<typeof createRoot> | null>(null);
 
   useEffect(() => {
     const iframe = iframeRef.current;
@@ -28,58 +28,40 @@ export const IframeWrapper = ({
     };
 
     const onLoad = () => {
-      if (styleRef.current?.parentNode) {
+      // Remove previous style if it exists
+      if (styleRef.current && styleRef.current.parentNode) {
         styleRef.current.parentNode.removeChild(styleRef.current);
       }
 
+      // Create and append new style
       const style = iframeDoc.createElement("style");
       style.innerHTML = globalsCss;
       iframeDoc.head.appendChild(style);
       styleRef.current = style;
 
-      const mountPoint =
-        iframeDoc.getElementById("react-mount") ||
-        iframeDoc.createElement("div");
-      mountPoint.id = "react-mount";
-      iframeDoc.body.appendChild(mountPoint);
-
-      // Create React root inside iframe
-      if (!reactRootRef.current) {
-        reactRootRef.current = createRoot(mountPoint);
-      }
-
-      reactRootRef.current.render(children);
+      setIframeBody(iframeDoc.body);
       updateHeight();
     };
 
+    // For first load
     if (iframeDoc.readyState === "complete") onLoad();
     else iframe.addEventListener("load", onLoad);
 
+    // Add resize listener
     window.addEventListener("resize", updateHeight);
 
     return () => {
       iframe.removeEventListener("load", onLoad);
       window.removeEventListener("resize", updateHeight);
-
-      if (styleRef.current?.parentNode) {
+      // Cleanup style on unmount
+      if (styleRef.current && styleRef.current.parentNode) {
         styleRef.current.parentNode.removeChild(styleRef.current);
       }
-
-      // Safely unmount the root
-      if (reactRootRef.current) {
-        try {
-          reactRootRef.current.unmount();
-        } catch (error) {
-          console.warn("Error during root unmount:", error);
-        }
-        reactRootRef.current = null;
-      }
     };
-  }, [iframeRef, children]);
+  }, [iframeRef]);
 
   return (
     <div
-      ref={wrapperRef}
       style={{
         width: "100%",
         height: "100%",
@@ -92,6 +74,7 @@ export const IframeWrapper = ({
         scrollbarWidth: "none",
         overflowY: "auto",
       }}
+      ref={wrapperRef}
     >
       <iframe
         ref={iframeRef}
@@ -102,6 +85,7 @@ export const IframeWrapper = ({
         }}
         sandbox="allow-same-origin allow-scripts allow-forms allow-popups allow-popups-to-escape-sandbox allow-top-navigation"
       />
+      {iframeBody && ReactDOM.createPortal(children, iframeBody)}
     </div>
   );
 };
