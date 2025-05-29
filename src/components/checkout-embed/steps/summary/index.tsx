@@ -197,7 +197,7 @@ export default function CheckoutSummary({
       />
 
       <div
-        className={clsx("gap-0 order-3 md:order-none", {
+        className={clsx("gap-5 order-3 md:order-none", {
           "hidden md:grid": !isOpen,
           grid: isOpen,
         })}
@@ -268,7 +268,7 @@ export default function CheckoutSummary({
               </div>
 
               <div className="ml-4 flex-1">
-                <h3 className="text-lg font-medium">
+                <h3 className="text-base font-medium">
                   {item.productData?.title}
                 </h3>
                 <p className="text-muted-foreground text-ellipsis line-clamp-1 md:max-w-[75%] text-sm">

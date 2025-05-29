@@ -12,7 +12,7 @@ export default function CheckoutSummaryLoading() {
       <div className="flex justify-between items-center">
         <div className="flex items-center gap-2 cursor-pointer">
           <h2>{t("CheckoutEmbed.Summary.title")}</h2>
-          <ChevronDown className="size-5 transition-transform" />
+          <ChevronDown className="md:hidden size-5 transition-transform" />
         </div>
 
         <Skeleton className="w-20 h-[20px] md:hidden" />
