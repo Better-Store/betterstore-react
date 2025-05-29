@@ -108,12 +108,14 @@ function CheckoutEmbedComponent({ checkoutId, config }: CheckoutEmbedProps) {
   };
 
   async function generatePaymentSecret() {
+    console.log("[Payment Debug] Generating new payment secret");
     const { paymentSecret, publicKey, checkoutSession } =
       await storeClient.generateCheckoutPaymentSecret(clientSecret, checkoutId);
 
     setPaymentSecret(paymentSecret);
     setPublicKey(publicKey);
     setCheckout(checkoutSession);
+    console.log("[Payment Debug] New payment secret generated");
   }
 
   useEffect(() => {
@@ -122,6 +124,9 @@ function CheckoutEmbedComponent({ checkoutId, config }: CheckoutEmbedProps) {
       !paymentSecret &&
       !paymentSecretPromiseRef.current
     ) {
+      console.log(
+        "[Payment Debug] Initial payment secret generation triggered by useEffect"
+      );
       paymentSecretPromiseRef.current = generatePaymentSecret().finally(() => {
         paymentSecretPromiseRef.current = null;
       });
@@ -129,6 +134,7 @@ function CheckoutEmbedComponent({ checkoutId, config }: CheckoutEmbedProps) {
   }, [paymentSecret, step]);
 
   const applyDiscountCode = async (code: string) => {
+    console.log("[Payment Debug] Applying discount code:", code);
     const newCheckout = await storeClient.applyDiscountCode(
       clientSecret,
       checkoutId,
@@ -140,14 +146,28 @@ function CheckoutEmbedComponent({ checkoutId, config }: CheckoutEmbedProps) {
     if (step === "payment") {
       const newTotal = calculateTotalWithDiscounts(newCheckout);
       const currentTotal = calculateTotalWithDiscounts(checkout);
+      console.log(
+        "[Payment Debug] Discount applied - New total:",
+        newTotal,
+        "Current total:",
+        currentTotal
+      );
       if (newTotal !== currentTotal) {
+        console.log(
+          "[Payment Debug] Total changed, regenerating payment secret"
+        );
         await generatePaymentSecret();
         setPaymentComponentKey((prev) => prev + 1);
+      } else {
+        console.log(
+          "[Payment Debug] Total unchanged, skipping payment secret regeneration"
+        );
       }
     }
   };
 
   const revalidateDiscounts = async () => {
+    console.log("[Payment Debug] Revalidating discounts");
     if (step === "payment") {
       const newCheckout = await storeClient.revalidateDiscounts(
         clientSecret,
@@ -155,9 +175,22 @@ function CheckoutEmbedComponent({ checkoutId, config }: CheckoutEmbedProps) {
       );
       const newTotal = calculateTotalWithDiscounts(newCheckout);
       const currentTotal = calculateTotalWithDiscounts(checkout);
+      console.log(
+        "[Payment Debug] Discounts revalidated - New total:",
+        newTotal,
+        "Current total:",
+        currentTotal
+      );
       if (newTotal !== currentTotal) {
+        console.log(
+          "[Payment Debug] Total changed, regenerating payment secret"
+        );
         await generatePaymentSecret();
         setPaymentComponentKey((prev) => prev + 1);
+      } else {
+        console.log(
+          "[Payment Debug] Total unchanged, skipping payment secret regeneration"
+        );
       }
       setCheckout(newCheckout);
     } else {
@@ -170,6 +203,7 @@ function CheckoutEmbedComponent({ checkoutId, config }: CheckoutEmbedProps) {
   };
 
   const removeDiscount = async (id: string) => {
+    console.log("[Payment Debug] Removing discount:", id);
     const newCheckout = await storeClient.removeDiscount(
       clientSecret,
       checkoutId,
@@ -181,9 +215,22 @@ function CheckoutEmbedComponent({ checkoutId, config }: CheckoutEmbedProps) {
     if (step === "payment") {
       const newTotal = calculateTotalWithDiscounts(newCheckout);
       const currentTotal = calculateTotalWithDiscounts(checkout);
+      console.log(
+        "[Payment Debug] Discount removed - New total:",
+        newTotal,
+        "Current total:",
+        currentTotal
+      );
       if (newTotal !== currentTotal) {
+        console.log(
+          "[Payment Debug] Total changed, regenerating payment secret"
+        );
         await generatePaymentSecret();
         setPaymentComponentKey((prev) => prev + 1);
+      } else {
+        console.log(
+          "[Payment Debug] Total unchanged, skipping payment secret regeneration"
+        );
       }
     }
   };
@@ -209,21 +256,39 @@ function CheckoutEmbedComponent({ checkoutId, config }: CheckoutEmbedProps) {
       (discount) => discount.discount.type !== "FREE_SHIPPING"
     );
 
-    return (
+    const finalTotal =
       total -
       filteredDiscounts.reduce((acc, { amount }) => acc + amount, 0) -
-      (isShippingFree ? shippingPrice : 0)
-    );
+      (isShippingFree ? shippingPrice : 0);
+
+    console.log("[Payment Debug] Total calculation:", {
+      subtotal,
+      shippingPrice,
+      tax: checkout.tax,
+      isShippingFree,
+      discountAmount: filteredDiscounts.reduce(
+        (acc, { amount }) => acc + amount,
+        0
+      ),
+      finalTotal,
+    });
+
+    return finalTotal;
   };
 
   useEffect(() => {
+    console.log("[Payment Debug] Setting up discount revalidation interval");
     const interval = setTimeout(() => {
       if (step !== "payment") {
+        console.log("[Payment Debug] Interval triggered revalidation");
         revalidateDiscounts();
       }
     }, 1000 * 5);
 
-    return () => clearInterval(interval);
+    return () => {
+      console.log("[Payment Debug] Clearing revalidation interval");
+      clearInterval(interval);
+    };
   }, []);
 
   return (
