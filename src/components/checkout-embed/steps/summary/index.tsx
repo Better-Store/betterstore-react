@@ -299,7 +299,7 @@ export default function CheckoutSummary({
                     </p>
                   </div>
                 ) : (
-                  <p className="text-lg font-medium">
+                  <p className="text-base font-medium">
                     {storeHelpers.formatPrice(
                       finalItem?.priceInCents ?? 0,
                       currency,
