@@ -299,7 +299,7 @@ export default function CheckoutForm({
     ) {
       paymentSecretPromiseRef.current = generatePaymentSecret();
     }
-  }, [step, checkoutId, clientSecret, paymentSecret, onError]);
+  }, [paymentSecret]);
 
   const renderStep = () => {
     if (step === "payment" && formData.customer && formData.shipping) {

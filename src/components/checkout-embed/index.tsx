@@ -157,7 +157,9 @@ function CheckoutEmbedComponent({ checkoutId, config }: CheckoutEmbedProps) {
 
   useEffect(() => {
     const interval = setTimeout(() => {
-      revalidateDiscounts();
+      if (step !== "payment") {
+        revalidateDiscounts();
+      }
     }, 1000 * 5);
 
     return () => clearInterval(interval);
