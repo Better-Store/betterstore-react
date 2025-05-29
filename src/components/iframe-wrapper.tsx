@@ -65,8 +65,15 @@ export const IframeWrapper = ({
         styleRef.current.parentNode.removeChild(styleRef.current);
       }
 
-      reactRootRef.current?.unmount();
-      reactRootRef.current = null;
+      // Safely unmount the root
+      if (reactRootRef.current) {
+        try {
+          reactRootRef.current.unmount();
+        } catch (error) {
+          console.warn("Error during root unmount:", error);
+        }
+        reactRootRef.current = null;
+      }
     };
   }, [iframeRef, children]);
 
