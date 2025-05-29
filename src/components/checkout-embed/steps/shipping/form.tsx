@@ -120,17 +120,31 @@ export default function ShippingMethodForm({
                   pickupPointId: string,
                   pickupPointName: string
                 ) => {
-                  form.setValue("pickupPointId", pickupPointId);
-                  form.setValue("pickupPointDisplayName", pickupPointName);
+                  const newFormData = {
+                    rateId,
+                    provider: rate.provider,
+                    price: intPrice,
+                    name: rate.name,
+                    pickupPointId:
+                      rate.provider === "zasilkovna" ? pickupPointId : "",
+                    pickupPointDisplayName:
+                      rate.provider === "zasilkovna" ? pickupPointName : "",
+                  };
+
+                  form.setValue("rateId", newFormData.rateId);
+                  form.setValue("provider", newFormData.provider);
+                  form.setValue("name", newFormData.name);
+                  form.setValue("price", newFormData.price);
+                  form.setValue("pickupPointId", newFormData.pickupPointId);
+                  form.setValue(
+                    "pickupPointDisplayName",
+                    newFormData.pickupPointDisplayName
+                  );
+
                   setFormData({
                     ...formData,
                     shipping: {
-                      rateId,
-                      provider: rate.provider,
-                      price: intPrice,
-                      name: rate.name,
-                      pickupPointId,
-                      pickupPointDisplayName,
+                      ...newFormData,
                     },
                   });
                 }}
@@ -144,59 +158,12 @@ export default function ShippingMethodForm({
                       "bg-muted border-primary": currentRateId === rateId,
                     }
                   )}
-                  onClick={() => {
-                    // For Zasilkovna, require pickup point selection
-                    if (
-                      rate.provider === "zasilkovna" &&
-                      !form.watch("pickupPointId")
-                    ) {
-                      return; // Don't proceed if no pickup point selected
-                    }
-
-                    const newFormData = {
-                      rateId,
-                      provider: rate.provider,
-                      price: intPrice,
-                      name: rate.name,
-                      pickupPointId:
-                        rate.provider === "zasilkovna"
-                          ? form.watch("pickupPointId")
-                          : "",
-                      pickupPointDisplayName:
-                        rate.provider === "zasilkovna"
-                          ? form.watch("pickupPointDisplayName")
-                          : "",
-                    };
-
-                    form.setValue("rateId", rateId);
-                    form.setValue("provider", rate.provider);
-                    form.setValue("name", rate.name);
-                    form.setValue("price", intPrice);
-                    if (rate.provider !== "zasilkovna") {
-                      form.setValue("pickupPointDisplayName", "");
-                      form.setValue("pickupPointId", "");
-                    }
-
-                    setFormData({
-                      ...formData,
-                      shipping: newFormData,
-                    });
-                  }}
                 >
                   <div className="flex items-center justify-between w-full">
                     <p>{rate.name}</p>
                     <p>{displayPrice}</p>
                   </div>
                   <p className="text-sm text-muted-foreground">{description}</p>
-                  {/* {rate.estimatedDays && (
-                  <p className="text-sm text-muted-foreground">
-                    {t("CheckoutEmbed.Shipping.estimatedDeliveryDate")}{" "}
-                    {rate.estimatedDays}{" "}
-                    {rate.estimatedDays === 1
-                      ? t("CheckoutEmbed.Shipping.day")
-                      : t("CheckoutEmbed.Shipping.days")}
-                  </p>
-                )} */}
                   {pickupPointDisplayName && (
                     <>
                       <hr className="my-2" />
