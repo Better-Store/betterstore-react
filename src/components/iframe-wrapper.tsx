@@ -6,6 +6,7 @@ import globalsCss from "../globals.css";
 export const IframeWrapper = ({
   children,
   iframeRef,
+  wrapperRef,
 }: {
   children: React.ReactNode;
   iframeRef: React.RefObject<HTMLIFrameElement>;
@@ -50,7 +51,7 @@ export const IframeWrapper = ({
   }, [iframeRef]);
 
   return (
-    <>
+    <div className="w-full" ref={wrapperRef}>
       <iframe
         ref={iframeRef}
         style={{
@@ -62,6 +63,6 @@ export const IframeWrapper = ({
         sandbox="allow-same-origin allow-scripts allow-forms allow-popups allow-popups-to-escape-sandbox allow-top-navigation"
       />
       {iframeBody && ReactDOM.createPortal(children, iframeBody)}
-    </>
+    </div>
   );
 };
