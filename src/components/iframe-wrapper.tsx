@@ -1,11 +1,6 @@
-import React, {
-  useCallback,
-  useEffect,
-  useLayoutEffect,
-  useRef,
-  useState,
-} from "react";
-import ReactDOM from "react-dom";
+import { MotionConfig } from "motion/react";
+import React, { useCallback, useLayoutEffect, useRef } from "react";
+import ReactDOM from "react-dom/client";
 // @ts-ignore
 import globalsCss from "../globals.css";
 
@@ -17,99 +12,58 @@ interface IframeWrapperProps {
 
 export const IframeWrapper: React.FC<IframeWrapperProps> = React.memo(
   ({ children, iframeRef, wrapperRef }) => {
-    const [iframeBody, setIframeBody] = useState<HTMLElement | null>(null);
     const styleRef = useRef<HTMLStyleElement | null>(null);
-    const motionRef = useRef<HTMLScriptElement | null>(null);
-    const resizeObserver = useRef<ResizeObserver>();
+    const rootRef = useRef<ReturnType<typeof ReactDOM.createRoot> | null>(null);
 
+    // inject your global CSS into the iframe’s <head>
     const injectStyles = useCallback((doc: Document) => {
-      // Clean up previous style
-      if (styleRef.current?.parentNode) {
-        styleRef.current.parentNode.removeChild(styleRef.current);
-      }
+      if (styleRef.current) styleRef.current.remove();
       const styleEl = doc.createElement("style");
       styleEl.textContent = globalsCss;
       doc.head.appendChild(styleEl);
       styleRef.current = styleEl;
     }, []);
 
-    const cloneGlobals = (iframeWin: Window) => {
-      const parentWin = window as any;
-      // Grab all own props of the parent window...
-      Object.getOwnPropertyNames(parentWin).forEach((key) => {
-        // Skip non–configurable or already-present props
-        if (key in iframeWin) return;
-        const desc = Object.getOwnPropertyDescriptor(parentWin, key)!;
-        // Only clone functions or configurable props
-        if (
-          typeof desc.value === "function" ||
-          (desc.configurable && (desc.writable || desc.get))
-        ) {
-          Object.defineProperty(iframeWin, key, {
-            ...desc,
-            // if it's a function, bind it back to parent window
-            value:
-              typeof desc.value === "function"
-                ? desc.value.bind(parentWin)
-                : desc.value,
-          });
-        }
-      });
-    };
-
-    const updateHeight = useCallback(() => {
-      const iframe = iframeRef.current;
-      const doc = iframe?.contentDocument;
-      if (iframe && doc) {
-        const height = doc.body.scrollHeight;
-        iframe.style.height = `${height}px`;
-      }
-    }, [iframeRef]);
-
     const handleLoad = useCallback(() => {
-      const iframe = iframeRef.current;
-      if (!iframe) return;
+      const iframe = iframeRef.current!;
       const doc = iframe.contentDocument!;
-
-      cloneGlobals(iframe.contentWindow!);
       injectStyles(doc);
-      setIframeBody(doc.body);
-      updateHeight();
 
-      // Observe body mutations & size
-      if ("ResizeObserver" in window) {
-        resizeObserver.current = new ResizeObserver(updateHeight);
-        resizeObserver.current.observe(doc.body);
+      // create a container for React inside the iframe
+      let mountPoint = doc.getElementById("__react_mount__");
+      if (!mountPoint) {
+        mountPoint = doc.createElement("div");
+        mountPoint.id = "__react_mount__";
+        doc.body.appendChild(mountPoint);
       }
-    }, [iframeRef, injectStyles, updateHeight]);
+
+      // createRoot *once*
+      if (!rootRef.current) {
+        rootRef.current = ReactDOM.createRoot(mountPoint);
+      }
+
+      // render your tree inside the iframe’s React root,
+      // wrapped in a MotionConfig so MotionOne binds to the iframe’s window/document
+      rootRef.current.render(<MotionConfig>{children}</MotionConfig>);
+    }, [children, iframeRef, injectStyles]);
 
     useLayoutEffect(() => {
       const iframe = iframeRef.current;
       if (!iframe) return;
 
-      // Attach onLoad
       iframe.addEventListener("load", handleLoad);
-      // If already loaded
+      // If the iframe is already loaded (cache, SSR, etc.)
       if (iframe.contentDocument?.readyState === "complete") {
         handleLoad();
       }
 
       return () => {
         iframe.removeEventListener("load", handleLoad);
-        resizeObserver.current?.disconnect();
-        if (styleRef.current?.parentNode) {
-          styleRef.current.parentNode.removeChild(styleRef.current);
-        }
+        // unmount React on teardown
+        rootRef.current?.unmount();
+        styleRef.current?.remove();
       };
     }, [iframeRef, handleLoad]);
-
-    // Update on window resize
-    useEffect(() => {
-      window.addEventListener("resize", updateHeight);
-      return () => {
-        window.removeEventListener("resize", updateHeight);
-      };
-    }, [updateHeight]);
 
     return (
       <div
@@ -121,7 +75,6 @@ export const IframeWrapper: React.FC<IframeWrapperProps> = React.memo(
           className="w-full min-h-screen border-0"
           sandbox="allow-same-origin allow-scripts allow-forms allow-popups allow-popups-to-escape-sandbox allow-top-navigation"
         />
-        {iframeBody && ReactDOM.createPortal(children, iframeBody)}
       </div>
     );
   }
