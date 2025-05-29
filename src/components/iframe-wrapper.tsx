@@ -23,7 +23,8 @@ export const IframeWrapper = ({
     if (!iframeDoc) return;
 
     const updateHeight = () => {
-      iframe.style.height = `${iframeDoc.body.scrollHeight}px`;
+      const newHeight = iframeDoc.body.scrollHeight + 100;
+      iframe.style.height = `${newHeight}px`;
     };
 
     const onLoad = () => {
