@@ -37,7 +37,6 @@ function CheckoutEmbedComponent({ checkoutId, config }: CheckoutEmbedProps) {
     [clientProxy]
   );
   const iframeRef = React.useRef<HTMLIFrameElement>(null);
-  const wrapperRef = React.useRef<HTMLDivElement>(null);
 
   React.useMemo(() => createI18nInstance(locale), []);
 
@@ -165,7 +164,7 @@ function CheckoutEmbedComponent({ checkoutId, config }: CheckoutEmbedProps) {
   }, []);
 
   return (
-    <IframeWrapper iframeRef={iframeRef} wrapperRef={wrapperRef}>
+    <IframeWrapper iframeRef={iframeRef}>
       <div className="checkout-embed h-max gap-6 md:gap-0 py-4 md:py-12 flex flex-col md:grid md:grid-cols-7 ">
         <Appearance
           appearance={appearance}
@@ -178,7 +177,6 @@ function CheckoutEmbedComponent({ checkoutId, config }: CheckoutEmbedProps) {
             <CheckoutFormLoading />
           ) : (
             <CheckoutForm
-              wrapperRef={wrapperRef}
               locale={locale}
               setShippingCost={setShippingCost}
               storeClient={storeClient}

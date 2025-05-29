@@ -12,11 +12,10 @@ import globalsCss from "../globals.css";
 interface IframeWrapperProps {
   children: React.ReactNode;
   iframeRef: React.RefObject<HTMLIFrameElement>;
-  wrapperRef: React.RefObject<HTMLDivElement>;
 }
 
 export const IframeWrapper: React.FC<IframeWrapperProps> = React.memo(
-  ({ children, iframeRef, wrapperRef }) => {
+  ({ children, iframeRef }) => {
     const [iframeBody, setIframeBody] = useState<HTMLElement | null>(null);
     const styleRef = useRef<HTMLStyleElement | null>(null);
     const resizeObserver = useRef<ResizeObserver>();
@@ -87,7 +86,7 @@ export const IframeWrapper: React.FC<IframeWrapperProps> = React.memo(
 
     return (
       <div
-        ref={wrapperRef}
+        id="bs-wrapper"
         className="w-full max-w-[1200px] min-h-screen mx-auto overflow-y-auto overflow-x-hidden relative"
       >
         <iframe

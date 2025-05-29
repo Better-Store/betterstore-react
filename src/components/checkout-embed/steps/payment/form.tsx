@@ -25,7 +25,6 @@ interface PaymentFormProps {
   fonts?: Fonts;
   locale?: StripeElementLocale;
   publicKey: string | null;
-  wrapperRef: React.RefObject<HTMLDivElement>;
 }
 
 export default function PaymentForm({
@@ -42,7 +41,6 @@ export default function PaymentForm({
   fonts,
   locale,
   publicKey,
-  wrapperRef,
 }: PaymentFormProps) {
   const [isSubmitting, setIsSubmitting] = useState(false);
   const [key, setKey] = useState(0);
@@ -117,7 +115,6 @@ export default function PaymentForm({
             onError={onError}
             setSubmitting={setIsSubmitting}
             publicKey={publicKey}
-            wrapperRef={wrapperRef}
           >
             <div className="flex justify-between items-center pt-8">
               <Button type="button" variant="ghost" onClick={onBack}>

@@ -5,7 +5,7 @@ import {
   ShippingRate,
 } from "@betterstore/sdk";
 import { StripeElementLocale } from "@stripe/stripe-js";
-import React, { useCallback, useEffect, useState } from "react";
+import React, { useCallback, useEffect, useRef, useState } from "react";
 import { AppearanceConfig, Fonts } from "./appearance";
 import {
   customerSchema,
@@ -39,7 +39,6 @@ interface CheckoutFormProps {
   setPublicKey: (publicKey: string) => void;
   paymentSecret: string | null;
   publicKey: string | null;
-  wrapperRef: React.RefObject<HTMLDivElement>;
 }
 
 export default function CheckoutForm({
@@ -61,7 +60,6 @@ export default function CheckoutForm({
   setPublicKey,
   paymentSecret,
   publicKey,
-  wrapperRef,
 }: CheckoutFormProps) {
   const {
     formData,
@@ -72,6 +70,7 @@ export default function CheckoutForm({
     setCheckoutId,
   } = useFormStore();
   const [shippingRates, setShippingRates] = useState<ShippingRate[]>([]);
+  const paymentSecretPromiseRef = useRef<Promise<void> | null>(null);
 
   const validateStep = useCallback(() => {
     if (step === "customer") return;
@@ -252,20 +251,8 @@ export default function CheckoutForm({
         name: data.name,
       },
     });
-    const {
-      paymentSecret,
-      publicKey,
-      checkoutSession: newCheckout,
-    } = await storeClient.generateCheckoutPaymentSecret(
-      clientSecret,
-      checkoutId
-    );
 
-    setPaymentSecret(paymentSecret);
-    setPublicKey(publicKey);
     setShippingCost(data.price);
-    setCheckout(newCheckout);
-
     setStep("payment");
   };
 
@@ -283,24 +270,36 @@ export default function CheckoutForm({
   };
 
   useEffect(() => {
-    const asyncFunc = async () => {
-      const {
-        paymentSecret,
-        publicKey,
-        checkoutSession: newCheckout,
-      } = await storeClient.generateCheckoutPaymentSecret(
-        clientSecret,
-        checkoutId
-      );
-      setPaymentSecret(paymentSecret);
-      setPublicKey(publicKey);
-      setCheckout(newCheckout);
+    const generatePaymentSecret = async () => {
+      try {
+        const {
+          paymentSecret,
+          publicKey,
+          checkoutSession: newCheckout,
+        } = await storeClient.generateCheckoutPaymentSecret(
+          clientSecret,
+          checkoutId
+        );
+
+        setPaymentSecret(paymentSecret);
+        setPublicKey(publicKey);
+        setCheckout(newCheckout);
+      } catch (error) {
+        console.error("Failed to generate payment secret:", error);
+        onError();
+      } finally {
+        paymentSecretPromiseRef.current = null;
+      }
     };
 
-    if (!paymentSecret && step === "payment") {
-      asyncFunc();
+    if (
+      step === "payment" &&
+      !paymentSecret &&
+      !paymentSecretPromiseRef.current
+    ) {
+      paymentSecretPromiseRef.current = generatePaymentSecret();
     }
-  }, [paymentSecret]);
+  }, [step, checkoutId, clientSecret, paymentSecret, onError]);
 
   const renderStep = () => {
     if (step === "payment" && formData.customer && formData.shipping) {
@@ -323,7 +322,6 @@ export default function CheckoutForm({
             exchangeRate
           )}
           publicKey={publicKey}
-          wrapperRef={wrapperRef}
         />
       );
     }

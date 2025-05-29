@@ -12,13 +12,11 @@ const CheckoutForm = ({
   onError,
   children,
   setSubmitting,
-  wrapperRef,
 }: {
   onSuccess?: () => void;
   onError?: () => void;
   children: React.ReactNode;
   setSubmitting?: (isSubmitting: boolean) => void;
-  wrapperRef: React.RefObject<HTMLDivElement>;
 }) => {
   const stripe = useStripe();
   const elements = useElements();
@@ -74,7 +72,7 @@ const CheckoutForm = ({
   };
 
   const PaymentElementPortal = () => {
-    const wrapper = wrapperRef.current;
+    const wrapper = document.getElementById("bs-wrapper");
     if (!wrapper) return null;
 
     return (
