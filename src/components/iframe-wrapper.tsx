@@ -19,6 +19,7 @@ export const IframeWrapper: React.FC<IframeWrapperProps> = React.memo(
   ({ children, iframeRef, wrapperRef }) => {
     const [iframeBody, setIframeBody] = useState<HTMLElement | null>(null);
     const styleRef = useRef<HTMLStyleElement | null>(null);
+    const motionRef = useRef<HTMLScriptElement | null>(null);
     const resizeObserver = useRef<ResizeObserver>();
 
     const injectStyles = useCallback((doc: Document) => {
@@ -26,19 +27,25 @@ export const IframeWrapper: React.FC<IframeWrapperProps> = React.memo(
       if (styleRef.current?.parentNode) {
         styleRef.current.parentNode.removeChild(styleRef.current);
       }
-      // Inject global CSS
       const styleEl = doc.createElement("style");
       styleEl.textContent = globalsCss;
       doc.head.appendChild(styleEl);
       styleRef.current = styleEl;
+    }, []);
 
-      // Clone Framer Motion styles into iframe
-      Array.from(document.querySelectorAll("style[data-motion]")).forEach(
-        (styleTag) => {
-          const clone = styleTag.cloneNode(true) as HTMLStyleElement;
-          doc.head.appendChild(clone);
-        }
-      );
+    const injectMotion = useCallback((doc: Document) => {
+      // Clean up previous style
+      if (motionRef.current?.parentNode) {
+        motionRef.current.parentNode.removeChild(motionRef.current);
+      }
+      const script = doc.createElement("script");
+      script.type = "module";
+      script.textContent = `
+        import { motion } from 'https://esm.sh/motion';
+        window.Motion = motion;
+      `;
+      doc.head.appendChild(script);
+      motionRef.current = script;
     }, []);
 
     const updateHeight = useCallback(() => {
@@ -55,11 +62,12 @@ export const IframeWrapper: React.FC<IframeWrapperProps> = React.memo(
       if (!iframe) return;
       const doc = iframe.contentDocument!;
 
+      injectMotion(doc);
       injectStyles(doc);
       setIframeBody(doc.body);
       updateHeight();
 
-      // Observe body size changes
+      // Observe body mutations & size
       if ("ResizeObserver" in window) {
         resizeObserver.current = new ResizeObserver(updateHeight);
         resizeObserver.current.observe(doc.body);
@@ -70,7 +78,9 @@ export const IframeWrapper: React.FC<IframeWrapperProps> = React.memo(
       const iframe = iframeRef.current;
       if (!iframe) return;
 
+      // Attach onLoad
       iframe.addEventListener("load", handleLoad);
+      // If already loaded
       if (iframe.contentDocument?.readyState === "complete") {
         handleLoad();
       }
@@ -84,6 +94,7 @@ export const IframeWrapper: React.FC<IframeWrapperProps> = React.memo(
       };
     }, [iframeRef, handleLoad]);
 
+    // Update on window resize
     useEffect(() => {
       window.addEventListener("resize", updateHeight);
       return () => {
