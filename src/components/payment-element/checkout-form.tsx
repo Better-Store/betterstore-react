@@ -39,11 +39,9 @@ const CheckoutForm = ({
     updateRect();
 
     window.addEventListener("resize", updateRect);
-    window.addEventListener("scroll", updateRect);
 
     return () => {
       window.removeEventListener("resize", updateRect);
-      window.removeEventListener("scroll", updateRect);
     };
   }, []);
 

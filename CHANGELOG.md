@@ -1,5 +1,11 @@
 # @betterstore/sdk
 
+## 0.3.64
+
+### Patch Changes
+
+- new approach test
+
 ## 0.3.63
 
 ### Patch Changes
