@@ -33,20 +33,29 @@ export const IframeWrapper: React.FC<IframeWrapperProps> = React.memo(
       styleRef.current = styleEl;
     }, []);
 
-    const injectMotion = useCallback((doc: Document) => {
-      // Clean up previous style
-      if (motionRef.current?.parentNode) {
-        motionRef.current.parentNode.removeChild(motionRef.current);
-      }
-      const script = doc.createElement("script");
-      script.type = "module";
-      script.textContent = `
-        import { motion } from 'https://esm.sh/motion';
-        window.Motion = motion;
-      `;
-      doc.head.appendChild(script);
-      motionRef.current = script;
-    }, []);
+    const cloneGlobals = (iframeWin: Window) => {
+      const parentWin = window as any;
+      // Grab all own props of the parent window...
+      Object.getOwnPropertyNames(parentWin).forEach((key) => {
+        // Skip non–configurable or already-present props
+        if (key in iframeWin) return;
+        const desc = Object.getOwnPropertyDescriptor(parentWin, key)!;
+        // Only clone functions or configurable props
+        if (
+          typeof desc.value === "function" ||
+          (desc.configurable && (desc.writable || desc.get))
+        ) {
+          Object.defineProperty(iframeWin, key, {
+            ...desc,
+            // if it's a function, bind it back to parent window
+            value:
+              typeof desc.value === "function"
+                ? desc.value.bind(parentWin)
+                : desc.value,
+          });
+        }
+      });
+    };
 
     const updateHeight = useCallback(() => {
       const iframe = iframeRef.current;
@@ -62,7 +71,7 @@ export const IframeWrapper: React.FC<IframeWrapperProps> = React.memo(
       if (!iframe) return;
       const doc = iframe.contentDocument!;
 
-      injectMotion(doc);
+      cloneGlobals(iframe.contentWindow!);
       injectStyles(doc);
       setIframeBody(doc.body);
       updateHeight();
