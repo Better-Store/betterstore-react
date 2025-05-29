@@ -22,6 +22,10 @@ export const IframeWrapper = ({
     const iframeDoc = iframe.contentDocument || iframe.contentWindow?.document;
     if (!iframeDoc) return;
 
+    const updateHeight = () => {
+      iframe.style.height = `${iframeDoc.body.scrollHeight}px`;
+    };
+
     const onLoad = () => {
       // Remove previous style if it exists
       if (styleRef.current && styleRef.current.parentNode) {
@@ -35,28 +39,19 @@ export const IframeWrapper = ({
       styleRef.current = style;
 
       setIframeBody(iframeDoc.body);
-
-      // Set up ResizeObserver to adjust iframe height
-      const resizeObserver = new ResizeObserver((entries) => {
-        for (const entry of entries) {
-          const height = entry.contentRect.height;
-          iframe.style.height = `${height}px`;
-        }
-      });
-
-      resizeObserver.observe(iframeDoc.body);
-
-      return () => {
-        resizeObserver.disconnect();
-      };
+      updateHeight();
     };
 
     // For first load
     if (iframeDoc.readyState === "complete") onLoad();
     else iframe.addEventListener("load", onLoad);
 
+    // Add resize listener
+    window.addEventListener("resize", updateHeight);
+
     return () => {
       iframe.removeEventListener("load", onLoad);
+      window.removeEventListener("resize", updateHeight);
       // Cleanup style on unmount
       if (styleRef.current && styleRef.current.parentNode) {
         styleRef.current.parentNode.removeChild(styleRef.current);
@@ -85,7 +80,7 @@ export const IframeWrapper = ({
         style={{
           width: "100%",
           border: "none",
-          minHeight: "100%",
+          minHeight: "100vh",
         }}
         sandbox="allow-same-origin allow-scripts allow-forms allow-popups allow-popups-to-escape-sandbox allow-top-navigation"
       />
