@@ -51,7 +51,20 @@ export const IframeWrapper = ({
   }, [iframeRef]);
 
   return (
-    <div className="w-full" ref={wrapperRef}>
+    <div
+      style={{
+        width: "100%",
+        height: "100%",
+        border: "none",
+        minHeight: "100vh",
+        maxWidth: "1200px",
+        position: "relative",
+        overflowX: "hidden",
+        marginInline: "auto",
+        scrollbarWidth: "none",
+      }}
+      ref={wrapperRef}
+    >
       <iframe
         ref={iframeRef}
         style={{

@@ -90,7 +90,7 @@ const CheckoutForm = ({
             style={{
               display: "block",
               zIndex: 20,
-              position: "fixed",
+              position: "absolute",
               top: rect?.top,
               left: rect?.left,
               width: rect?.width,
