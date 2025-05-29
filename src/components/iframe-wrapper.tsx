@@ -1,4 +1,4 @@
-import { MotionConfig } from "motion/dist/react";
+import { MotionConfig } from "motion/react";
 import React, {
   useCallback,
   useEffect,
