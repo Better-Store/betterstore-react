@@ -81,7 +81,7 @@ export default function CheckoutSummary({
       <div className="flex justify-between items-center">
         <div
           onClick={() => setIsOpen(!isOpen)}
-          className="flex items-center gap-2 cursor-pointer"
+          className="flex items-center gap-2 max-md:cursor-pointer"
         >
           <h2>{t("CheckoutEmbed.Summary.title")}</h2>
           <ChevronDown

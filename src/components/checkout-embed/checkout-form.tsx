@@ -136,8 +136,6 @@ export default function CheckoutForm({
     }
 
     if (customer && !formData.customer?.email) {
-      const step = customer.id ? "shipping" : "customer";
-
       setFormData({
         ...formData,
         customerId: customer.id,
@@ -156,7 +154,7 @@ export default function CheckoutForm({
           },
         },
       });
-      setStep(step);
+      setStep("customer");
     }
   }, [customer]);
 
