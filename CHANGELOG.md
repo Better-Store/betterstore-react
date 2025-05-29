@@ -1,5 +1,11 @@
 # @betterstore/sdk
 
+## 0.3.54
+
+### Patch Changes
+
+- payment element portal tes
+
 ## 0.3.53
 
 ### Patch Changes

@@ -37,6 +37,7 @@ function CheckoutEmbedComponent({ checkoutId, config }: CheckoutEmbedProps) {
     [clientProxy]
   );
   const iframeRef = React.useRef<HTMLIFrameElement>(null);
+  const wrapperRef = React.useRef<HTMLDivElement>(null);
 
   React.useMemo(() => createI18nInstance(locale), []);
 
@@ -164,7 +165,7 @@ function CheckoutEmbedComponent({ checkoutId, config }: CheckoutEmbedProps) {
   }, []);
 
   return (
-    <IframeWrapper iframeRef={iframeRef}>
+    <IframeWrapper iframeRef={iframeRef} wrapperRef={wrapperRef}>
       <div className="checkout-embed scrollbar-hidden mx-auto max-w-[1200px] min-h-screen overflow-x-hidden gap-6 md:gap-0 py-4 md:py-12 flex flex-col md:grid md:grid-cols-7 ">
         <Appearance
           appearance={appearance}

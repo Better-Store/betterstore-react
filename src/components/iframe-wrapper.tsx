@@ -6,9 +6,11 @@ import globalsCss from "../globals.css";
 export const IframeWrapper = ({
   children,
   iframeRef,
+  wrapperRef,
 }: {
   children: React.ReactNode;
   iframeRef: React.RefObject<HTMLIFrameElement>;
+  wrapperRef: React.RefObject<HTMLDivElement>;
 }) => {
   const [iframeBody, setIframeBody] = useState<HTMLElement | null>(null);
   const styleRef = useRef<HTMLStyleElement | null>(null);
@@ -49,18 +51,28 @@ export const IframeWrapper = ({
   }, [iframeRef]);
 
   return (
-    <>
+    <div
+      ref={wrapperRef}
+      style={{
+        width: "100%",
+        height: "100%",
+        border: "none",
+        padding: 0,
+        margin: 0,
+        minHeight: "100vh",
+        position: "relative",
+      }}
+    >
       <iframe
         ref={iframeRef}
         style={{
           width: "100%",
           height: "100%",
           border: "none",
-          minHeight: "100vh",
         }}
         sandbox="allow-same-origin allow-scripts allow-forms allow-popups allow-popups-to-escape-sandbox allow-top-navigation"
       />
       {iframeBody && ReactDOM.createPortal(children, iframeBody)}
-    </>
+    </div>
   );
 };

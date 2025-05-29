@@ -19,6 +19,7 @@ function PaymentElement({
   onError,
   children,
   setSubmitting,
+  wrapperRef,
 }: {
   paymentSecret: string;
   publicKey: string | null;
@@ -29,6 +30,7 @@ function PaymentElement({
   onError?: () => void;
   children: React.ReactNode;
   setSubmitting?: (isSubmitting: boolean) => void;
+  wrapperRef: React.RefObject<HTMLDivElement>;
 }) {
   const stripePromise = loadStripe(publicKey ?? "");
 
@@ -46,6 +48,7 @@ function PaymentElement({
         onError={onError}
         children={children}
         setSubmitting={setSubmitting}
+        wrapperRef={wrapperRef}
       />
     </Elements>
   );

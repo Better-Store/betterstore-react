@@ -40,6 +40,7 @@ interface CheckoutFormProps {
   setPublicKey: (publicKey: string) => void;
   paymentSecret: string | null;
   publicKey: string | null;
+  wrapperRef: React.RefObject<HTMLDivElement>;
 }
 
 const motionSettings = {
@@ -68,6 +69,7 @@ export default function CheckoutForm({
   setPublicKey,
   paymentSecret,
   publicKey,
+  wrapperRef,
 }: CheckoutFormProps) {
   const {
     formData,
@@ -371,6 +373,7 @@ export default function CheckoutForm({
                 exchangeRate
               )}
               publicKey={publicKey}
+              wrapperRef={wrapperRef}
             />
           </motion.div>
         )}

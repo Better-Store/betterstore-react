@@ -3,7 +3,7 @@ import {
   useElements,
   useStripe,
 } from "@stripe/react-stripe-js";
-import React, { memo, useEffect, useRef, useState } from "react";
+import React, { memo, useRef, useState } from "react";
 import ReactDOM from "react-dom";
 import { useCheckout } from "./useCheckout";
 
@@ -12,11 +12,13 @@ const CheckoutForm = ({
   onError,
   children,
   setSubmitting,
+  wrapperRef,
 }: {
   onSuccess?: () => void;
   onError?: () => void;
   children: React.ReactNode;
   setSubmitting?: (isSubmitting: boolean) => void;
+  wrapperRef: React.RefObject<HTMLDivElement>;
 }) => {
   const stripe = useStripe();
   const elements = useElements();
@@ -24,62 +26,7 @@ const CheckoutForm = ({
   const [errorMessage, setErrorMessage] = useState<string | undefined>(
     undefined
   );
-  const [portalContainer, setPortalContainer] = useState<HTMLElement | null>(
-    null
-  );
   const containerRef = useRef<HTMLDivElement>(null);
-  const [portalPosition, setPortalPosition] = useState({
-    top: 0,
-    left: 0,
-    width: 0,
-    height: 0,
-  });
-
-  useEffect(() => {
-    // Create a container for the portal outside the iframe
-    const container = document.createElement("div");
-    container.style.position = "fixed";
-    container.style.top = "0";
-    container.style.left = "0";
-    container.style.width = "100%";
-    container.style.height = "100%";
-    container.style.zIndex = "9999";
-    container.style.pointerEvents = "none";
-    document.body.appendChild(container);
-    setPortalContainer(container);
-
-    return () => {
-      if (container && container.parentNode) {
-        container.parentNode.removeChild(container);
-      }
-    };
-  }, []);
-
-  useEffect(() => {
-    const updatePosition = () => {
-      if (containerRef.current) {
-        const rect = containerRef.current.getBoundingClientRect();
-        setPortalPosition({
-          top: rect.top,
-          left: rect.left,
-          width: rect.width,
-          height: rect.height,
-        });
-      }
-    };
-
-    // Initial position
-    updatePosition();
-
-    // Update position on resize and scroll
-    window.addEventListener("resize", updatePosition);
-    window.addEventListener("scroll", updatePosition);
-
-    return () => {
-      window.removeEventListener("resize", updatePosition);
-      window.removeEventListener("scroll", updatePosition);
-    };
-  }, []);
 
   const handleSubmit = async (event: React.FormEvent) => {
     event.preventDefault();
@@ -110,7 +57,11 @@ const CheckoutForm = ({
   };
 
   const PaymentElementPortal = () => {
-    if (!portalContainer) return null;
+    const wrapper = wrapperRef.current;
+    if (!wrapper) return null;
+
+    const rect = containerRef.current?.getBoundingClientRect();
+    if (!rect) return null;
 
     return (
       <>
@@ -123,15 +74,15 @@ const CheckoutForm = ({
           <div
             style={{
               position: "absolute",
-              top: portalPosition.top,
-              left: portalPosition.left,
-              width: portalPosition.width,
-              height: portalPosition.height,
+              top: rect.top,
+              left: rect.left,
+              width: rect.width,
+              height: rect.height,
             }}
           >
             <PaymentElement />
           </div>,
-          portalContainer
+          wrapper
         )}
       </>
     );
