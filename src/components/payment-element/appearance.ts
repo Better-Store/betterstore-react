@@ -55,9 +55,6 @@ export const appearance = {
       fontSize: "14px",
       fontWeight: "500",
     },
-    ".Input:disabled, .Input--invalid:disabled": {
-      cursor: "not-allowed",
-    },
     // ".Block": {
     //   backgroundColor: "#000000",
     //   boxShadow: "none",

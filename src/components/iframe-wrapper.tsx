@@ -58,7 +58,7 @@ export const IframeWrapper = ({
           border: "none",
           minHeight: "100vh",
         }}
-        sandbox="allow-same-origin allow-scripts allow-forms"
+        sandbox="allow-same-origin allow-scripts allow-forms allow-popups allow-popups-to-escape-sandbox allow-top-navigation"
       />
       {iframeBody && ReactDOM.createPortal(children, iframeBody)}
     </>
