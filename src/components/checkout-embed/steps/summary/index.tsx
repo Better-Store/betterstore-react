@@ -283,7 +283,7 @@ export default function CheckoutSummary({
                         exchangeRate
                       )}
                     </p>
-                    <p className="text-lg font-medium">
+                    <p className="text-base font-medium">
                       {discountedPrice <= 0
                         ? t("CheckoutEmbed.Summary.free")
                         : storeHelpers.formatPrice(
