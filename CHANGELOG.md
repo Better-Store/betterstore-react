@@ -1,5 +1,11 @@
 # @betterstore/sdk
 
+## 0.3.86
+
+### Patch Changes
+
+- text for cz locale fixes
+
 ## 0.3.85
 
 ### Patch Changes
