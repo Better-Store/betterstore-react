@@ -1,5 +1,11 @@
 # @betterstore/sdk
 
+## 0.3.88
+
+### Patch Changes
+
+- new metadata for order item
+
 ## 0.3.87
 
 ### Patch Changes

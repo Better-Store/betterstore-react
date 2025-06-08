@@ -2,14 +2,10 @@ import { Product, LineItemCreate as SDKLineItemCreate } from "@betterstore/sdk";
 import { create } from "zustand";
 import { persist } from "zustand/middleware";
 
-type RecursiveRecord = {
-  [key: string]: any;
-};
-
 type LineItemOptionalParams = {
   quantity?: number;
   variantOptions?: { name: string; value: string }[];
-  metadata?: RecursiveRecord;
+  metadata?: Record<string, any>;
 };
 
 export interface CartLineItem
