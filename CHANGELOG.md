@@ -1,5 +1,11 @@
 # @betterstore/sdk
 
+## 0.3.87
+
+### Patch Changes
+
+- product variant description added
+
 ## 0.3.86
 
 ### Patch Changes
